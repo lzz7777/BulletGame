@@ -1,0 +1,16 @@
+{
+    "name": "Reporter",
+    "rootNamespace": "",
+    "references": [
+        "Tayx.Graphy"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
