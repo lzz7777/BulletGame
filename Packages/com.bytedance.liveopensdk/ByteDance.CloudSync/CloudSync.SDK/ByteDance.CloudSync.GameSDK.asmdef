@@ -1,0 +1,23 @@
+{
+    "name": "ByteDance.CloudSync.GameSDK",
+    "rootNamespace": "",
+    "references": [
+        "GUID:54f18e310621da44bb34883bb50879bc",
+        "GUID:4db2d224174e4854946b74235a056aa3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.bytedance.starklogs",
+            "expression": "1.0.0",
+            "define": "CLOUDGAME_ENABLE_STARKLOGS"
+        }
+    ],
+    "noEngineReferences": false
+}

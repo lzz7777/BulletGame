@@ -1,0 +1,31 @@
+{
+    "name": "ByteDance.LiveOpenSdk.Runtime",
+    "rootNamespace": "ByteDance.LiveOpenSdk.Runtime",
+    "references": [
+        "Unity.InputSystem",
+        "ByteDance.StarkLogs.Runtime",
+        "ByteDance.LiveOpenSdk.Perf",
+        "ByteDance.CloudSync",
+        "ByteDance.CloudSync.System"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.0",
+            "define": "LIVEOPENSDK_ENABLE_INPUT_SYSTEM"
+        },
+        {
+            "name": "com.bytedance.starklogs",
+            "expression": "1.0.0",
+            "define": "LIVEOPENSDK_ENABLE_STARKLOGS"
+        }
+    ],
+    "noEngineReferences": false
+}

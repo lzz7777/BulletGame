@@ -1,0 +1,47 @@
+
+{
+    "displayName" : "LiveOpenSDK",
+    "name"        : "com.bytedance.liveopensdk",
+    "version"     : "2.7.11",
+    "description" : "直播小玩法开放SDK\n\n最近更新：\n[2.7.9]\n  * 添加进出房消息\n[2.7.7]\n  * 优化 云同步增加符号保护 \n[2.7.4]\n  * 直播玩法 - 支持指令消息同时推送至SDK和服务器\n  * 直播玩法 - 支持魔法礼物\n[2.7.3]\n  * 云同步 - 修复偶现网络连接错误的问题\n[2.7.2]\n  * 云同步 - 优化云游戏服务自动重连可靠性\n[2.7.1]\n  * 优化 FPS和卡顿监控日志优化\n[2.7.0]\n  * 新增 自定义日志上报接口\n[2.6.4]\n  * 云同步 - 优化切流指令超时处理的可靠性\n[2.6.3]\n  * 云同步 - 修正偶现切流后抛异常的问题\n[2.6.2]\n  * 云同步 - 修正偶现的结束同玩消息超时后状态错误的问题\n[2.6.1]\n  * 云同步 - 修正偶现的结束同玩时客机无法退出的问题\n[2.6.0]\n  * 新增 快捷选队推送消息\n  * 修改 初始化接口增加参数\n  * 云同步\n    - 优化 支持鼠标滚轮、右键、中键\n    - 优化 兼容支持本地启动单人模式。\n      - 环境判断方法：`ICloudSync.Env.IsDouyinPcLocal()`\n    - 优化 更新Demo示例工程\n    - 新增 直播玩法配置：是否开启云同步的配置，跟随包体上传。\n      - Editor配置菜单：\"Tools/LiveOpenSDK/抖音直播玩法配置\"\n",
+    "keywords"    : [
+    ],
+    "category"    : "Libraries",
+    "links"       : [
+        {
+            "label" : "SDK使用手册 | User Manual",
+            "url"   : "https://developer.open-douyin.com/docs/resource/zh-CN/interaction/introduction/zn/load"
+        },
+        {
+            "label" : "直播小玩法文档",
+            "url"   : "https://developer.open-douyin.com/docs/resource/zh-CN/interaction/introduction/introduction/1"
+        },
+        {
+            "label" : "更新日志",
+            "url"   : "https://developer.open-douyin.com/docs/resource/zh-CN/interaction/develop/unity-sdk/update-log"
+        }
+    ],
+    "unitySinceBuild" : "2019.4",
+    "unityUntilBuild" : "*",
+    "dependencies"    : {
+        "com.unity.nuget.newtonsoft-json" : "3.2.1"
+    },
+    "upmDependencies" : {
+        "com.unity.webrtc": "3.0.0-pre.7",
+        "com.unity.inputsystem": "1.7.0"
+    },
+    "unity"           : "2019.4",
+    "optionalDependencies" : {
+        "com.bytedance.starklogs" : "1.0.6"
+    },
+    "documentationUrl"     : "https://developer.open-douyin.com/docs/resource/zh-CN/interaction/introduction/zn/load",
+    "changelogUrl"         : "https://developer.open-douyin.com/docs/resource/zh-CN/interaction/introduction/zn/load",
+    "bgdt"                 : {
+        "install" : [
+            {
+                "path" : "./",
+                "to"   : "${upm_root}"
+            }
+        ]
+    }
+}

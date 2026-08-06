@@ -1,0 +1,17 @@
+{
+    "name": "ByteDance.CloudSync.VirtualScreen",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9b9dfddc0b5b9bf42945a070c7526931",
+        "GUID:4db2d224174e4854946b74235a056aa3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

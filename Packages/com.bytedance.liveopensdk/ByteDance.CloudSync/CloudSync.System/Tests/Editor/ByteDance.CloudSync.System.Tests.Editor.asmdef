@@ -1,0 +1,23 @@
+{
+    "name": "ByteDance.CloudSync.System.Tests.Editor",
+    "rootNamespace": "ByteDance.CloudSync.Tests",
+    "references": [
+        "GUID:aeb55f843d2ca6e4aae130af1be91d3e",
+        "GUID:9b9dfddc0b5b9bf42945a070c7526931",
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:728bc9a507710ea45a39668667f530ad"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

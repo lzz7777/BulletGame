@@ -1,0 +1,23 @@
+{
+    "name": "ByteDance.CloudSync.Mock",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9b9dfddc0b5b9bf42945a070c7526931",
+        "GUID:aeb55f843d2ca6e4aae130af1be91d3e",
+        "GUID:b0e35a96248c822439516674013b2a83",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:8be61bd8c3afed7428ce68c400f161ea",
+        "GUID:22648ecef770ef348adbeda03bf1170d",
+        "GUID:4db2d224174e4854946b74235a056aa3",
+        "GUID:728bc9a507710ea45a39668667f530ad"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

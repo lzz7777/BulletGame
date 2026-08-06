@@ -1,0 +1,4 @@
+{
+	"name": "ByteDance.CloudSync.Match",
+	"references":[ "com.bytedance.stark-network" ]
+}

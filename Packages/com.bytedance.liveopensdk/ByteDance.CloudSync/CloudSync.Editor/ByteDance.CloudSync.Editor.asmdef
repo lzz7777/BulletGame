@@ -1,0 +1,23 @@
+{
+    "name": "ByteDance.CloudSync.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8be61bd8c3afed7428ce68c400f161ea",
+        "GUID:aeb55f843d2ca6e4aae130af1be91d3e",
+        "GUID:b0e35a96248c822439516674013b2a83",
+        "GUID:97ee86ed6c6512b4899b0783662f6ed2",
+        "GUID:9b9dfddc0b5b9bf42945a070c7526931",
+        "GUID:6ebafc184f55b6f4395baeb8ff965e9a"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

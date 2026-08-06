@@ -1,0 +1,1349 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ByteDance.LiveOpenSdk.Api</name>
+    </assembly>
+    <members>
+        <member name="T:ByteDance.LiveOpenSdk.AudienceLinkmic.IAudienceLinkmicService">
+            <summary>
+            直播间信息服务的接口。
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.AudienceLinkmic.IAudienceLinkmicService.QueryLinkmicInfoAsync">
+            <summary>
+            获取直播间麦位信息
+            </summary>
+            <returns>麦位信息，包括基本信息和麦位列表</returns>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.AudienceLinkmic.IAudienceLinkmicService.InviteAudienceJoinGameAsync(System.String)">
+            <summary>
+            邀请连麦的嘉宾同玩
+            </summary>
+            <param name="openId">嘉宾的openId</param>
+            <returns></returns>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.AudienceLinkmic.IAudienceLinkmicService.RequestAudienceLeaveGameAsync(System.String)">
+            <summary>
+            停止嘉宾的玩法
+            </summary>
+            <param name="openId">嘉宾的openId</param>
+            <returns></returns>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkInfo">
+            <summary>
+            麦位基本信息及麦上用户基本信息列表
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkInfo.BaseInfo">
+            <summary>
+            麦位基本信息
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkInfo.UserList">
+            <summary>
+            麦上用户基本信息列表
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkBaseInfo">
+            <summary>
+            麦位基本信息
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkBaseInfo.LinkerId">
+            <summary>
+            本次连麦唯一ID
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkBaseInfo.TotalCount">
+            <summary>
+            麦位总数
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkBaseInfo.FreeCount">
+            <summary>
+            麦位剩余数量
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo">
+            <summary>
+            麦上用户基本信息列表
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.OpenId">
+            <summary>
+            麦上用户的openId
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.AvatarUrl">
+            <summary>
+            麦上用户的头像
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.NickName">
+            <summary>
+            麦上用户的昵称
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.LinkState">
+            <summary>
+            连麦状态；1-已在麦上；2-已禁用
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.LinkPosition">
+            <summary>
+            麦上用户的麦位位置
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.DisableMicrophone">
+            <summary>
+            麦上用户是否禁用麦克风；1-未金庸；2-已禁用。已经在麦上的用户，这个值才有效
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.MicrophoneState">
+            <summary>
+            麦上用户麦克风打开/关闭状态；1-已打开；2-已关闭。已经在麦上的用户，这个值才有效
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.DisableCamera">
+            <summary>
+            麦上用户是否禁用摄像头；1-未禁用；2-已禁用。已经在麦上的用户，这个值才有效
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.CameraState">
+            <summary>
+            麦上用户摄像头打开/关闭状态；1-已打开；2-已关闭。已经在麦上的用户，这个值才有效
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkUserInfo.AppInfo">
+            <summary>
+            麦上用户玩法相关信息
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkAppInfo">
+            <summary>
+            麦上用户玩法相关信息
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.AudienceLinkmic.ILinkAppInfo.HostAppStartAppAvailable">
+            <summary>
+            麦上用户宿主是否支持云启动玩法
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.CloudSync.ICloudSyncApi">
+            <summary>
+            云同步支持
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.CloudSync.ICloudSyncApi.Create(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="roomToken"></param>
+            <param name="appId">玩法的appId</param>
+            <returns></returns>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.CloudSync.IGuestLiveOpenSdk">
+            <summary>
+            云同步非 Host 主播对应的 LiveOpenSdk
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DebugUtils.IDebugUtilsService">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.DebugUtils.IDebugUtilsService.UploadLog(ByteDance.LiveOpenSdk.DebugUtils.UploadLogLevel,System.String,System.String)">
+            <summary>
+            上报日志
+            上报前将先对入参进行格式化，包括以下各参数，总字符数不允许超过25600，请注意使用合适的字符数的内容
+            如果总字符数超过规定值，将进行截断
+            </summary>
+            <param name="logLevel">日志等级，在控制台检索日志时，可以根据日志等级进行检索</param>
+            <param name="content">日志内容，如果有换行回车将被替换为空格</param>
+            <param name="traceId">自定义traceId。若包含空格回车将被去除，字符上限32，超过会被截断。在控制台检索日志时，日志会根据traceId进行聚合</param>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.DebugUtils.IDebugUtilsService.UploadLogWithTag(ByteDance.LiveOpenSdk.DebugUtils.UploadLogLevel,System.String,System.String,System.String)">
+            <summary>
+            上报日志
+            上报前将先对入参进行格式化，包括以下各参数，总字符数不允许超过25600，请注意使用合适的字符数的内容
+            如果总字符数超过规定值，将进行截断
+            </summary>
+            <param name="logLevel">日志等级，在控制台检索日志时，可以根据日志等级进行检索</param>
+            <param name="tag">自定义tag，若包含空格回车将被去除，字符上限32，超过会被截断。在控制台检索日志时，可以在FilterMsg中输入tag进行检索</param>
+            <param name="content">日志内容，如果有换行回车将被替换为空格</param>
+            <param name="traceId">自定义traceId。若包含空格回车将被去除，字符上限32，超过会被截断。在控制台检索日志时，日志会根据traceId进行聚合</param>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.DebugUtils.IDebugUtilsService.UploadLogWithTags(ByteDance.LiveOpenSdk.DebugUtils.UploadLogLevel,System.String[],System.String,System.String)">
+            <summary>
+            上报日志
+            上报前将先对入参进行格式化，包括以下各参数，总字符数不允许超过25600，请注意使用合适的字符数的内容
+            如果总字符数超过规定值，将进行截断
+            </summary>
+            <param name="logLevel">日志等级，在控制台检索日志时，可以根据日志等级进行检索</param>
+            <param name="tags">允许配置多个tag，每个tag若包含空格回车将被去除，每个tag长度上限32，超过会被截断，限制最多5个tag，超过会被截断。在控制台检索日志时，可以在FilterMsg中输入tag进行检索</param>
+            <param name="content">日志内容，如果有换行回车将被替换为空格</param>
+            <param name="traceId">自定义traceId。若包含空格回车将被去除，字符上限32，超过会被截断。在控制台检索日志时，日志会根据traceId进行聚合</param>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.IDyCloudApi">
+            <summary>
+            抖音云功能的接口。<br/>
+            详细信息可参阅抖音云 SDK 的文档。
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.DyCloud.IDyCloudApi.InitializeAsync(ByteDance.LiveOpenSdk.DyCloud.DyCloudInitParams)">
+            <summary>
+            初始化抖音云实例。
+            </summary>
+            <param name="initParams">抖音云的初始化参数</param>
+            <returns>对应的可等待 Task</returns>
+            <remarks>
+            必须等待初始化成功后才能调用其他方法。<br/>
+            调用该方法时，若 <paramref name="initParams">initParams</paramref> 中的某些属性为空，则会用从 SDK 的公共参数当中读取到的值填充。
+            </remarks>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.DyCloud.IDyCloudApi.CallContainerAsync(System.String,System.String,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            发起 HTTP 请求。
+            </summary>
+            <param name="path">请求路径</param>
+            <param name="serviceId">服务 ID，若为空则使用抖音云初始化时提供的默认服务 ID。</param>
+            <param name="method">HTTP 方法，支持 GET/POST/OPTIONS/PUT/DELETE/TRACE/PATCH</param>
+            <param name="body">HTTP 请求体，大小上限为 1MB</param>
+            <param name="headers">HTTP 请求标头</param>
+            <returns>HTTP 请求的结果</returns>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudApi.WebSocket">
+            <summary>
+            获取抖音云长连接 WebSocket 的单例。
+            </summary>
+            <remarks>
+            抖音云内部只支持一个 WebSocket 连接，因此暂不提供创建新的 <see cref="T:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket"/> 实例的方法。
+            </remarks>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.DyCloudInitParams">
+            <summary>
+            抖音云初始化参数。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.DyCloudInitParams.Token">
+            <summary>
+            直播伴侣启动或云启动时提供的访问令牌。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.DyCloudInitParams.AppId">
+            <summary>
+            小玩法的 AppId。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.DyCloudInitParams.EnvId">
+            <summary>
+            云环境 ID。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.DyCloudInitParams.DefaultServiceId">
+            <summary>
+            发起请求时使用的默认云服务 ID。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.DyCloudInitParams.IsDebug">
+            <summary>
+            是否设置为调试模式。<br/>
+            调试模式时可以使用空的 <see cref="P:ByteDance.LiveOpenSdk.DyCloud.DyCloudInitParams.Token"/>。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.DyCloudInitParams.DebugIpAddress">
+            <summary>
+            本地调试时使用的IP地址。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket">
+            <summary>
+            抖音云 WebSocket 的接口。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.Options">
+            <summary>
+            WebSocket 的连接选项。
+            </summary>
+            <remarks>
+            若在发起连接后修改这个属性，可能不生效。
+            </remarks>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.ConnectContainerAsync(System.String)">
+            <summary>
+            对指定的路径发起长连接，使用默认的服务 ID。
+            </summary>
+            <param name="path">接口地址</param>
+            <returns>对应的可等待 Task</returns>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.ConnectContainerAsync(System.String,System.String)">
+            <summary>
+            对指定的路径发起长连接。
+            </summary>
+            <param name="path">接口地址</param>
+            <param name="serviceId">云服务 ID</param>
+            <returns>对应的可等待 Task</returns>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.SendMessage(System.String)">
+            <summary>
+            向远端发送数据。
+            </summary>
+            <param name="message">文本形式的消息内容</param>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.Close">
+            <summary>
+            主动关闭连接。
+            </summary>
+        </member>
+        <member name="E:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.OnOpen">
+            <summary>
+            连接建立时的事件。
+            </summary>
+        </member>
+        <member name="E:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.OnClose">
+            <summary>
+            连接关闭时的事件。
+            </summary>
+            <remarks>无论主动还是被动关闭连接，都会触发这个事件。</remarks>
+        </member>
+        <member name="E:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.OnMessage">
+            <summary>
+            收到远端消息时的事件。
+            </summary>
+        </member>
+        <member name="E:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.OnError">
+            <summary>
+            发生错误时的事件。
+            </summary>
+            <remarks>发生错误时，连接可能会被关闭。若 <see cref="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocketError.WillReconnect"/> 为 true，会自动重新连接。</remarks>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.IDyCloudHttpResponse">
+            <summary>
+            HTTP 请求的结果。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudHttpResponse.StatusCode">
+            <summary>
+            HTTP 状态码。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudHttpResponse.Body">
+            <summary>
+            HTTP 响应体。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudHttpResponse.Headers">
+            <summary>
+            HTTP 响应标头。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.DyCloudWebSocketOptions">
+            <summary>
+            抖音云 WebSocket 连接选项。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.DyCloudWebSocketOptions.AutoReconnect">
+            <summary>
+            遇到错误时，是否按照特定的规则重新连接。默认为 true。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocketError">
+            <summary>
+            抖音云 WebSocket 错误信息。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocketError.RawMessage">
+            <summary>
+            原始的字符串形式的错误信息。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocketError.Code">
+            <summary>
+            错误代码。
+            </summary>
+            <remarks>该属性从 <see cref="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocketError.RawMessage"/> 解析而来，若不存在对应字段则为 null。</remarks>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocketError.Message">
+            <summary>
+            错误消息。
+            </summary>
+            <remarks>该属性从 <see cref="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocketError.RawMessage"/> 解析而来，若不存在对应字段则为 null。</remarks>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocketError.WillReconnect">
+            <summary>
+            是否会尝试自动重新连接。
+            <remarks>该属性从 <see cref="P:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocketError.RawMessage"/> 解析而来，若不存在对应字段则为 null。</remarks>
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.OnOpenCallback">
+            <seealso cref="E:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.OnOpen"/>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.OnCloseCallback">
+            <seealso cref="E:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.OnClose"/>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.OnMessageCallback">
+            <seealso cref="E:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.OnMessage"/>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.DyCloud.OnErrorCallback">
+            <seealso cref="E:ByteDance.LiveOpenSdk.DyCloud.IDyCloudWebSocket.OnError"/>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.ILiveOpenSdk">
+            <summary>
+            直播开放 SDK 的顶层接口。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.ILiveOpenSdk.Version">
+            <summary>
+            获取 SDK 的版本号。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.ILiveOpenSdk.LogSource">
+            <summary>
+            SDK 的日志输出。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.ILiveOpenSdk.Env">
+            <summary>
+            环境公共参数。
+            </summary>
+            <remarks>
+            请在初始化 SDK 之前设置好相关参数。
+            </remarks>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.ILiveOpenSdk.DefaultSynchronizationContext">
+            <summary>
+            回调事件的同步上下文。<br/>
+            若希望事件在特定的线程触发，可以设置这个属性。
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.Initialize">
+            <summary>
+            初始化 SDK。<br/>
+            在初始化成功后才能调用 SDK 内部的服务。
+            </summary>
+            <remarks>
+            重复初始化没有效果。<br/>
+            初始化过程中若发生错误，会抛出异常。
+            </remarks>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.Initialize(System.String)">
+            <summary>
+            初始化 SDK。<br/>
+            在初始化成功后才能调用 SDK 内部的服务。
+            </summary>
+            <param name="appId">玩法的appId</param>
+            <remarks>
+            重复初始化没有效果。<br/>
+            初始化过程中若发生错误，会抛出异常。
+            </remarks>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.Uninitialize">
+            <summary>
+            反初始化 SDK，停止并销毁内部运行的服务。
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.GetService``1">
+            <summary>
+            获取 SDK 内的服务。<br/>
+            可获取的服务的接口上带有 <see cref="T:ByteDance.LiveOpenSdk.ServiceApiAttribute"/> 特性。
+            </summary>
+            <typeparam name="T">服务的接口类型</typeparam>
+            <returns>服务的实例</returns>
+            <exception cref="T:System.InvalidOperationException">SDK 尚未初始化</exception>
+            <exception cref="T:System.NotSupportedException">不支持此类型的服务</exception>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.LiveOpenSdkEnv">
+            <summary>
+            直播开放 SDK 的环境公共参数。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.LiveOpenSdkEnv.AppId">
+            <summary>
+            小玩法的 AppId。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.LiveOpenSdkEnv.Token">
+            <summary>
+            直播伴侣启动或云启动时提供的访问令牌。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.LiveOpenSdkEnv.ImUrl">
+            <summary>
+            IM Url：使用压测工具，需要修改这个值；不修改则正常使用sdk
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.LiveStream.CustomMessageState">
+            <summary>
+            引导流推流时机，用于给移动端上传递当前玩法中的状态时机来开启引导流
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.LiveStream.CustomMessageState.StartGame">
+            <summary>
+            启动玩法
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.LiveStream.CustomMessageState.FirstStartRound">
+            <summary>
+            首次开启对局
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.LiveStream.CustomMessageState.FirstUserJoin">
+            <summary>
+            首个用户参与
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.LiveStream.ILiveStreamApi">
+            <summary>
+            云启动推流功能 <br/>
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.LiveStream.ILiveStreamApi.InitLiveStreamAsync(ByteDance.LiveOpenSdk.LiveStream.ILiveStreamMsgCallbacks)">
+            <summary>
+            初始化云启动推流
+            </summary>
+            <param name="callbacks">初始化云启动推流的回调</param>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.LiveStream.ILiveStreamApi.SendVideoFrame(System.Int64)">
+            <summary>
+            调用 sdk 内接口推流，发送 videoFrame
+            </summary>
+            <param name="handle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.LiveStream.ILiveStreamApi.SendCustomMessageAsync(ByteDance.LiveOpenSdk.LiveStream.CustomMessageState)">
+            <summary>
+            调用 sdk 内接口推流，给房间发送当前游戏玩法状态
+            </summary>
+            <param name="state">发送给房间的游戏玩法状态</param>
+            <returns></returns>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.LiveStream.ILiveStreamMsgCallbacks">
+            <summary>
+            推流初始化回调内容，此处仅作名称空间的定义和各个回调接口的注释。更多细节可参考 IMessageChannelCallbacks 内部定义
+            void OnGameStart(string[] cloudRoomList); 初始化多人模块后回调
+            void OnPlayerJoin(int roomIndex, JoinRoomParam param); 玩家进入后的回调
+            void OnPlayerExit(int roomIndex, ExitRoomParam param); 玩家退出后的回调
+            void OnQueryRoomInfo(int roomIndex, JoinRoomParam param); 查询房间信息回调，引导流功能中可以不用关心
+            void OnPlayerOperate(int roomIndex, string opData);  房间操作回调
+            void OnTexturePush(long shareHandle); 推流回调
+            void OnPlayerInput(InputEventResponse res); 房间输入法，暂不支持输入法
+            void OnCustomMessage(int roomIndex, string msg); 端上发来的自定义消息
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Perf.IPerfReportService">
+            <summary>
+            性能问题上报
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Perf.IPerfReportService.ReportJank(System.Int32,System.Int32)">
+            <summary>
+            上报 Jank 问题
+            </summary>
+            <param name="issueLevel"></param>
+            <param name="issueCount"></param>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Perf.IPerfReportService.ReportMemory(System.Int32)">
+            <summary>
+            上报内存问题
+            </summary>
+            <param name="issueMemPercent"></param>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Perf.IPerfReportService.ReportFPS(System.Int32)">
+            <summary>
+            上报 FPS 问题
+            </summary>
+            <param name="issueFps"></param>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.ConnectionState">
+            <summary>
+            指令推送的连接状态，用于判断当前是否准备好接收互动指令。
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.ConnectionState.Disconnected">
+            <summary>
+            未连接
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.ConnectionState.Connected">
+            <summary>
+            已连接
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.ICommentMessage">
+            <summary>
+            评论消息的数据结构。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.ICommentMessage.Sender">
+            <summary>
+            评论用户的信息。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.ICommentMessage.Content">
+            <summary>
+            评论内容。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage">
+            <summary>
+            观众进出房消息
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage.SecOpenId">
+            <summary>
+            用户加密ID
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage.AvatarUrl">
+            <summary>
+            // 用户头像
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage.NickName">
+            <summary>
+            用户昵称(不加密)
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage.IsOldPlayer">
+            <summary>
+            是否是弹幕玩法老玩家
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage.GradeLevel">
+            <summary>
+            荣誉等级
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage.InviterGatherOpenid">
+            <summary>
+            邀请集结的用户openid
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage.EnterRoomType">
+            <summary>
+            进房类型
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage.InviterGatherNickname">
+            <summary>
+            发起召集的用户昵称
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IEnterRoomMessage.InviterGatherAvatarUrl">
+            <summary>
+            发起召集的用户头像
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.IFansClubMessage">
+            <summary>
+            粉丝团消息的数据结构。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IFansClubMessage.Sender">
+            <summary>
+            粉丝团用户的信息。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IFansClubMessage.FansClubMessageType">
+            <summary>
+            粉丝团消息的类型。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IFansClubMessage.FansClubLevel">
+            <summary>
+            用户的粉丝团等级，加团时为1。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.IFansClubMessage.MessageType">
+            <summary>
+            粉丝团消息的类型枚举。
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.IFansClubMessage.MessageType.LevelUp">
+            <summary>
+            用户粉丝团等级提升。
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.IFansClubMessage.MessageType.Join">
+            <summary>
+            用户加入粉丝团。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.IGiftMessage">
+            <summary>
+            送礼消息的数据结构。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IGiftMessage.Sender">
+            <summary>
+            送礼用户的信息。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IGiftMessage.SecGiftId">
+            <summary>
+            加密的礼物 ID。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IGiftMessage.SecMagicGiftId">
+            <summary>
+            幸运魔方的加密礼物ID
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IGiftMessage.GiftCount">
+            <summary>
+            送出的礼物数量。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IGiftMessage.GiftValue">
+            <summary>
+            礼物总价值，单位是分。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IGiftMessage.IsTestData">
+            <summary>
+            是否为测试数据。
+            </summary>
+            <remarks>
+            已报备完成兼容的玩法，对于非真实的测试数据，会下发该字段。
+            </remarks>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IGiftMessage.AudienceSecOpenId">
+            <summary>
+            如果被送礼的是嘉宾，则此处为嘉宾的openid
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.ILikeMessage">
+            <summary>
+            点赞消息的数据结构。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.ILikeMessage.Sender">
+            <summary>
+            点赞用户的信息。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.ILikeMessage.LikeCount">
+            <summary>
+            点赞次数，服务端会聚合一段时间内的操作。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.IMessagePushService">
+            <summary>
+            直播间互动指令推送服务的接口。<br/>
+            该服务可以直接接收直播间内的送礼、点赞、评论等互动指令，不再需要开发者部署抖音云的服务做中转。
+            </summary>
+            <remarks>
+            <para>
+            要接收某个类型的推送消息，必须先在开放平台申请对应类型的直播间数据权限。
+            </para>
+            <para>
+            必须先调用 <see cref="M:ByteDance.LiveOpenSdk.Push.IMessagePushService.StartPushTaskAsync(System.String,ByteDance.LiveOpenSdk.Push.MultiPushType)"/> 方法启动指定类型的推送任务，确认返回结果成功后才能正式开启玩法对局，否则会导致指令丢失。
+            </para>
+            </remarks>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IMessagePushService.ConnectionState">
+            <summary>
+            获取当前的连接状态。
+            </summary>
+        </member>
+        <member name="E:ByteDance.LiveOpenSdk.Push.IMessagePushService.OnConnectionStateChanged">
+            <summary>
+            连接状态变化时触发的事件。
+            </summary>
+        </member>
+        <member name="E:ByteDance.LiveOpenSdk.Push.IMessagePushService.OnMessage">
+            <summary>
+            收到推送消息时触发的事件。
+            </summary>
+            <seealso cref="T:ByteDance.LiveOpenSdk.Push.IPushMessage"/>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Push.IMessagePushService.StartPushTaskAsync(System.String,ByteDance.LiveOpenSdk.Push.MultiPushType)">
+            <summary>
+            启动服务端的推送任务，开始向本地推送指定类型的消息。<br/>
+            订阅 <see cref="E:ByteDance.LiveOpenSdk.Push.IMessagePushService.OnMessage"/> 事件以消费消息。
+            </summary>
+            <remarks>
+            <para>
+            必须在获取到直播间信息后才能调用此方法。
+            参见 <see cref="M:ByteDance.LiveOpenSdk.Room.IRoomInfoService.WaitForRoomInfoAsync"/>。
+            </para>
+            <para>
+            必须等待所有欲消费的指令的推送任务启动成功后，才能开启玩法对局，否则会导致指令丢失。
+            </para>
+            </remarks>
+            <param name="msgType">要启动推送的消息类型的字符串，见 <see cref="T:ByteDance.LiveOpenSdk.Push.PushMessageTypes"/></param>
+            <param name="pushType">设置指令推送模式，见 <see cref="T:ByteDance.LiveOpenSdk.Push.MultiPushType"/>，默认为原生SDK单推模式</param>
+            <returns>代表操作结果的 Task</returns>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Push.IMessagePushService.StopPushTaskAsync(System.String)">
+            <summary>
+            停止服务端的推送任务，停止向本地推送指定类型的消息。<br/>
+            在玩法处于不需要处理互动指令的状态时，请调用此方法。
+            </summary>
+            <remarks>
+            <para>
+            必须在获取到直播间信息后才能调用此方法。
+            参见 <see cref="M:ByteDance.LiveOpenSdk.Room.IRoomInfoService.WaitForRoomInfoAsync"/>。
+            </para>
+            <para>
+            停止推送任务后不保证 <see cref="E:ByteDance.LiveOpenSdk.Push.IMessagePushService.OnMessage"/> 一定不会触发，因此请在不需要处理指令时取消事件订阅。
+            </para>
+            </remarks>
+            <param name="msgType">要停止推送的消息类型的字符串，见 <see cref="T:ByteDance.LiveOpenSdk.Push.PushMessageTypes"/></param>
+            <returns>代表操作结果的 Task</returns>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.OnPushMessageCallback">
+            <summary>
+            推送消息回调的委托类型。
+            </summary>
+            <param name="message">推送消息对象</param>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.IPushMessage">
+            <summary>
+            推送消息的公共数据结构。<br/>
+            </summary>
+            <seealso cref="T:ByteDance.LiveOpenSdk.Push.IGiftMessage"/>
+            <seealso cref="T:ByteDance.LiveOpenSdk.Push.ICommentMessage"/>
+            <seealso cref="T:ByteDance.LiveOpenSdk.Push.ILikeMessage"/>
+            <seealso cref="T:ByteDance.LiveOpenSdk.Push.IFansClubMessage"/>
+            <seealso cref="T:ByteDance.LiveOpenSdk.Push.ITeamMessage"/>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IPushMessage.MsgId">
+            <summary>
+            消息 ID。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IPushMessage.MsgType">
+            <summary>
+            推送消息的类型。
+            </summary>
+            <seealso cref="T:ByteDance.LiveOpenSdk.Push.PushMessageTypes"/>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.IPushMessage.Timestamp">
+            <summary>
+            消息的 UNIX 时间戳，单位是毫秒。
+            </summary>
+            <example>
+            可以使用 <see cref="M:System.DateTimeOffset.FromUnixTimeMilliseconds(System.Int64)"/> 方法转换为 <see cref="T:System.DateTimeOffset"/> 对象。
+            <code>
+            var localTime = DateTimeOffset.FromUnixTimeMilliseconds(message.Timestamp).ToLocalTime();
+            </code>
+            </example>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.ITeamMessage">
+            <summary>
+            快捷选队消息的数据结构。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.ITeamMessage.Sender">
+            <summary>
+            送礼用户的信息。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.ITeamMessage.AppId">
+            <summary>
+            appId
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.ITeamMessage.RoomId">
+            <summary>
+            直播间Id
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Push.ITeamMessage.GroupId">
+            <summary>
+            阵营Id
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.MultiPushType">
+            <summary>
+            指令推送模式，默认为SDK单推模式。
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.MultiPushType.SinglePush">
+            <summary>
+            SDK 单推模式
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.MultiPushType.HTTPWithSDK">
+            <summary>
+            HTTP 和 SDK 双推模式
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.MultiPushType.DyCloudWithSDK">
+            <summary>
+            抖音云 和 SDK 双推模式
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Push.PushMessageTypes">
+            <summary>
+            直播互动数据的类型常量定义。
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.PushMessageTypes.LiveGift">
+            <summary>
+            送礼数据。
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.PushMessageTypes.LiveComment">
+            <summary>
+            评论数据。
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.PushMessageTypes.LiveLike">
+            <summary>
+            点赞数据。
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.PushMessageTypes.LiveFansClub">
+            <summary>
+            粉丝团数据。
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.PushMessageTypes.LiveTeam">
+            <summary>
+            快捷选队（从小摇杆中选择加入队伍）
+            </summary>
+        </member>
+        <member name="F:ByteDance.LiveOpenSdk.Push.PushMessageTypes.LiveEnterRoom">
+            <summary>
+            直播间进出房消息
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Report.IMessageAckService">
+            <summary>
+            消息履约上报服务的接口。
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Report.IMessageAckService.ReportAck(System.String,System.String)">
+            <summary>
+            上报互动消息在小玩法内的展现。
+            </summary>
+            <param name="msgId">要上报的消息 ID</param>
+            <param name="msgType">要上报的消息的类型</param>
+            <seealso cref="T:ByteDance.LiveOpenSdk.Push.PushMessageTypes"/>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Report.IMessageAckService.ReportAck(ByteDance.LiveOpenSdk.Push.IPushMessage)">
+            <summary>
+            上报互动消息在小玩法内的展现。
+            </summary>
+            <param name="message">要上报的消息</param>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Room.IRoomInfo">
+            <summary>
+            房间信息的数据结构。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Room.IRoomInfo.RoomId">
+            <summary>
+            房间ID。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Room.IRoomInfo.Anchor">
+            <summary>
+            主播信息。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Room.IRoomInfoService">
+            <summary>
+            直播间信息服务的接口。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Room.IRoomInfoService.RoomInfo">
+            <summary>
+            当前的房间信息。<br/>
+            若获取房间信息失败，所有属性的值是默认值。
+            </summary>
+        </member>
+        <member name="E:ByteDance.LiveOpenSdk.Room.IRoomInfoService.OnRoomInfoChanged">
+            <summary>
+            房间消息有变化时触发的事件。
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Room.IRoomInfoService.UpdateRoomInfoAsync">
+            <summary>
+            手动触发房间信息更新。
+            </summary>
+            <remarks>
+            在该服务处于房间信息获取失败的重试间隔中，或者超过重试次数后，可以调用此方法立即获取房间信息。
+            </remarks>
+            <returns>最新的房间信息</returns>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Room.IRoomInfoService.WaitForRoomInfoAsync">
+            <summary>
+            等待成功获取有效的房间信息。
+            </summary>
+            <exception cref="T:System.OperationCanceledException">由于超过重试次数或 SDK 被销毁导致不再能自动获取房间信息</exception>
+            <remarks>
+            SDK 初始化以后，该服务会自动尝试获取直播间的信息，若遇到错误会自动重试。<br/>
+            返回的 <see cref="T:System.Threading.Tasks.Task"/> 对象会在首次成功获取到房间信息以后进入完成状态。<br/>
+            建议在玩法初始化阶段或者进入对局之前调用此方法，以确保房间信息的有效性。
+            </remarks>
+            <returns>可等待的 Task 对象</returns>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Room.IUserInfo">
+            <summary>
+            用户信息的数据结构。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Room.IUserInfo.OpenId">
+            <summary>
+            用户的 OpenID。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Room.IUserInfo.AvatarUrl">
+            <summary>
+            用户的头像 URL。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Room.IUserInfo.Nickname">
+            <summary>
+            用户的昵称。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IGroupResultInfo">
+            <summary>
+            对局阵营的结果数据
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IGroupResultInfo.GroupId">
+            <summary>
+            阵营 ID，取值来源来自开发者平台「进阶礼物配置」的 group_id，如：red
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IGroupResultInfo.Result">
+            <summary>
+            对局结果（1=胜利、2=失败、3=平局）
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IRoundAnchorInfo">
+            <summary>
+            对局关联的直播房间信息
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundAnchorInfo.OpenId">
+            <summary>
+            主播的OpenId
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundAnchorInfo.RoomId">
+            <summary>
+            房间id
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IRoundApi">
+            <summary>
+            对局上报的接口。<br/>
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Round.IRoundApi.UpdateRoundStatusInfoAsync(ByteDance.LiveOpenSdk.Round.IRoundStatusInfo)">
+            <summary>
+            同步对局状态
+            开发者在对局开始时调用，同步对局开始事件；在对局结束时再次调用，同步对局结束事件。
+            </summary>
+            <param name="roundStatusInfo">对局状态的参数</param>
+            <returns>同步对局状态的结果</returns>
+            <remarks>
+            必须等待初始化成功、直播间信息更新成功后，才能调用该方法<br/>
+            </remarks>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Round.IRoundApi.UpdateUserGroupInfoAsync(ByteDance.LiveOpenSdk.Round.IRoundUserGroupInfo)">
+            <summary>
+            上报用户阵营数据
+            观众通过评论、点赞、送礼等方式加入玩法时，调用该接口上报当前观众的阵营数据。
+            </summary>
+            <param name="roundUserGroupInfo">用户阵营数据的参数</param>
+            <returns>上报阵营数据的结果</returns>
+            <remarks>
+            必须等待初始化成功、直播间信息更新成功后，才能调用该方法<br/>
+            </remarks>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Round.IRoundApi.UpdateUserRoundListInfoAsync(ByteDance.LiveOpenSdk.Round.IUserRoundData)">
+            <summary>
+            上报用户对局数据
+            对局结束后，上报用户对局数据，分批次上报，单批次最多上报 50 个用户对局数据
+            上传所有参与本局玩法并且有战绩的用户数据，不要求排序、批量上报，底层是以 用户id+room_id+round_id 为维度存储、重复上报会覆盖
+            </summary>
+            <param name="userRoundData">用户对局数据的参数</param>
+            <returns>上报对局数据的结果</returns>
+            <remarks>
+            必须等待初始化成功、直播间信息更新成功后，才能调用该方法<br/>
+            </remarks>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Round.IRoundApi.UpdateRoundRankListInfoAsync(ByteDance.LiveOpenSdk.Round.IRoundRankData)">
+            <summary>
+            上报对局榜单列表
+            对局结束后，上报对局榜单列表，榜单列表是指 Top 150 的用户数据。如果接口调用的列表长度为 20，则表示榜单列表只展示 Top 20 的用户数据。
+            一次性上传排好序的榜单 Top 150 的用户数据，数据直接展示在小摇杆的「对局榜」的榜单中，平台不做特殊处理，直接展示；
+            底层是以 room_id + round_id 为维度存储，room_id + round_id 维度重复上报，是覆盖写的逻辑；
+            </summary>
+            <param name="roundRankData">榜单数据的参数</param>
+            <returns>上报对局榜单的结果</returns>
+            <remarks>
+            必须等待初始化成功、直播间信息更新成功后，才能调用该方法<br/>
+            </remarks>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Round.IRoundApi.UpdateRoundResultInfoAsync(ByteDance.LiveOpenSdk.Round.IRoundResultInfo)">
+            <summary>
+            完成对局上报
+            当完成用户对局数据上报后，调用本接口，标记对局数据上报已完成，小摇杆的「本局榜」将展示本局榜单数据。
+            未标记完成，本轮对局数据在小摇杆的「本局榜」中不展示
+            </summary>
+            <param name="roundResultInfo">对局的参数</param>
+            <returns>完成对局上报的结果</returns>
+            <remarks>
+            必须等待初始化成功、直播间信息更新成功后，才能调用该方法<br/>
+            </remarks>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Round.IRoundApi.UpdateRoundUserDataAsync(ByteDance.LiveOpenSdk.Round.IRoundUserData)">
+            <summary>
+            上报连麦对局内用户积分
+            </summary>
+            <param name="roundUserData">对局积分数据</param>
+            <returns>上报的结果</returns>
+            <remarks>
+            必须等待初始化成功、直播间信息更新成功后，才能调用该方法<br/>
+            </remarks>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IRoundDataRes">
+            <summary>
+            对局返回数据
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundDataRes.ErrMsg">
+            <summary>
+            错误描述
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundDataRes.ErrCode">
+            <summary>
+            错误码，0 代表成功
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IRoundRankData">
+            <summary>
+            对局榜单列表
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundRankData.RoundId">
+            <summary>
+            对局 ID，同一个直播间 RoomID 下，RoundId 需要是递增的
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundRankData.RankInfos">
+            <summary>
+            对局榜单列表，内容同用户对局数据列表，不过是按照 Score 排序的
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IRoundResultInfo">
+            <summary>
+            对局结果数据
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundResultInfo.RoundId">
+            <summary>
+            对局 ID，同一个直播间 RoomID 下，RoundId 需要是递增的
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundResultInfo.CompleteTime">
+            <summary>
+            完成时间，秒级时间戳
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IRoundStatusInfo">
+            <summary>
+            对局状态的数据结构
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundStatusInfo.RoundId">
+            <summary>
+            对局 ID，同一个直播间 RoomID 下，RoundId 需要是递增的
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundStatusInfo.StartTime">
+            <summary>
+            本局开始时间，秒级时间戳
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundStatusInfo.EndTime">
+            <summary>
+            本局结束时间，秒级时间戳。同步的对局状态为对局结束时，该字段必传。
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundStatusInfo.Status">
+            <summary>
+            当前房间的游戏对局状态（1=已开始、2=已结束）
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundStatusInfo.GroupResultList">
+            <summary>
+            对局结束时，阵型的结果数据。同步的对局状态为[已结束]时，该字段必传。"
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IRoundUserData">
+            <summary>
+            对局状态的数据结构
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundUserData.RoundId">
+            <summary>
+            对局 ID，同一个直播间 RoomID 下，RoundId 需要是递增的
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundUserData.RoundStatus">
+            <summary>
+            对局状态，1开始，2结束，3进行中
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundUserData.RoundAnchorInfos">
+            <summary>
+            对局关联的直播房间列表，目前仅支持传入1个
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundUserData.UserList">
+            <summary>
+            用户对局数据列表
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IRoundUserGroupInfo">
+            <summary>
+            用户阵营数据结构
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundUserGroupInfo.GroupId">
+            <summary>
+            阵营 ID，取值来源来自开发者平台「进阶礼物配置」的 group_id，如：red
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundUserGroupInfo.OpenId">
+            <summary>
+            用户open_id
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IRoundUserGroupInfo.RoundId">
+            <summary>
+            对局 ID，同一个直播间 RoomID 下，RoundId 需要是递增的
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IUserRoundData">
+            <summary>
+            用户对局信息
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IUserRoundData.RoundId">
+            <summary>
+            对局 ID，同一个直播间 RoomID 下，RoundId 需要是递增的
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IUserRoundData.RoundInfos">
+            <summary>
+            用户对局数据列表
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Round.IUserRoundInfo">
+            <summary>
+            用户对局数据列表内容
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IUserRoundInfo.OpenId">
+            <summary>
+            用户 OpenId
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IUserRoundInfo.Rank">
+            <summary>
+            "用户排名; 超过1000的，可以固定传递1000，抖音端会展示为 ""999+"""
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IUserRoundInfo.RoundResult">
+            <summary>
+            对局结果（1=胜利、2=失败、3=平局）
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IUserRoundInfo.Score">
+            <summary>
+            核心数值,用户排名的依据
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IUserRoundInfo.WinPoints">
+            <summary>
+            用户的胜点，如果没有胜点记录传 0
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IUserRoundInfo.WinStreakCount">
+            <summary>
+            用户的连胜次数，如果没有连胜记录传0
+            </summary>
+        </member>
+        <member name="P:ByteDance.LiveOpenSdk.Round.IUserRoundInfo.GroupId">
+            <summary>
+            阵营 ID，取值来源来自开发者平台「进阶礼物配置」的 group_id，如：red
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.ServiceApiAttribute">
+            <summary>
+            用于标注直播开放 SDK 对外提供的服务接口。
+            </summary>
+        </member>
+        <member name="T:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions">
+            <summary>
+            <see cref="T:ByteDance.LiveOpenSdk.ILiveOpenSdk"/> 的扩展方法。
+            </summary>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions.GetDyCloudApi(ByteDance.LiveOpenSdk.ILiveOpenSdk)">
+            <summary>
+            从 SDK 当中获取 <see cref="T:ByteDance.LiveOpenSdk.DyCloud.IDyCloudApi"/> 的实例。
+            </summary>
+            <seealso cref="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.GetService``1"/>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions.GetRoomInfoService(ByteDance.LiveOpenSdk.ILiveOpenSdk)">
+            <summary>
+            从 SDK 当中获取 <see cref="T:ByteDance.LiveOpenSdk.Room.IRoomInfoService"/> 的实例。
+            </summary>
+            <seealso cref="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.GetService``1"/>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions.GetAudienceLinkmicService(ByteDance.LiveOpenSdk.ILiveOpenSdk)">
+            <summary>
+            从 SDK 当中获取 <see cref="T:ByteDance.LiveOpenSdk.AudienceLinkmic.IAudienceLinkmicService"/> 的实例。
+            </summary>
+            <seealso cref="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.GetService``1"/>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions.GetMessageAckService(ByteDance.LiveOpenSdk.ILiveOpenSdk)">
+            <summary>
+            从 SDK 当中获取 <see cref="T:ByteDance.LiveOpenSdk.Report.IMessageAckService"/> 的实例。
+            </summary>
+            <seealso cref="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.GetService``1"/>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions.GetMessagePushService(ByteDance.LiveOpenSdk.ILiveOpenSdk)">
+            <summary>
+            从 SDK 当中获取 <see cref="T:ByteDance.LiveOpenSdk.Push.IMessagePushService"/> 的实例。
+            </summary>
+            <seealso cref="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.GetService``1"/>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions.GetRoundApi(ByteDance.LiveOpenSdk.ILiveOpenSdk)">
+            <summary>
+            从 SDK 当中获取 <see cref="T:ByteDance.LiveOpenSdk.Round.IRoundApi"/> 的实例。
+            </summary>
+            <seealso cref="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.GetService``1"/>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions.GetLiveStreamApi(ByteDance.LiveOpenSdk.ILiveOpenSdk)">
+            <summary>
+            从 SDk 当中获取<see cref="T:ByteDance.LiveOpenSdk.LiveStream.ILiveStreamApi"/> 的实例。
+            </summary>
+            <seealso cref="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.GetService``1"/>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions.GetPerfReportService(ByteDance.LiveOpenSdk.ILiveOpenSdk)">
+            <summary>
+            从 SDK 当中获取 <see cref="T:ByteDance.LiveOpenSdk.Perf.IPerfReportService"/> 的实例。
+            </summary>
+            <param name="sdk"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ByteDance.LiveOpenSdk.Utilities.LiveOpenSdkExtensions.GetDebugUtilsService(ByteDance.LiveOpenSdk.ILiveOpenSdk)">
+            <summary>
+            从 SDK 当中获取 <see cref="T:ByteDance.LiveOpenSdk.DebugUtils.IDebugUtilsService"/> 的实例。
+            </summary>
+            <seealso cref="M:ByteDance.LiveOpenSdk.ILiveOpenSdk.GetService``1"/>
+        </member>
+    </members>
+</doc>

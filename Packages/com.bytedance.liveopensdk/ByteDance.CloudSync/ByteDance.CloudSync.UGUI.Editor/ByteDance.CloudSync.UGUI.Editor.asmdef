@@ -1,0 +1,19 @@
+{
+    "name": "ByteDance.CloudSync.UGUI.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c2e7aa23ef05e364c8a0f8e0eac62c7c",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

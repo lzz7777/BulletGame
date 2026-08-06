@@ -1,0 +1,14 @@
+{
+    "name": "ByteDance.CloudSync.Utils",
+    "rootNamespace": "",
+  "references": ["GUID:54f18e310621da44bb34883bb50879bc"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

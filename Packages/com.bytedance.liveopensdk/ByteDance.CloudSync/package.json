@@ -1,0 +1,17 @@
+{
+    "displayName": "CloudGame - UnitySdk",
+    "name": "com.bytedance.cloudgame",
+    "version": "%VER%",
+    "description": "CloudGame - UnitySdk",
+    "keywords"    : [
+    ],
+    "category"    : "",
+    "links"       : [
+    ],
+    "unitySinceBuild" : "*",
+    "unityUntilBuild" : "*",
+    "upmDependencies": {
+        "com.unity.webrtc": "3.0.0-pre.7",
+        "com.unity.inputsystem": "1.7.0"
+    }
+}

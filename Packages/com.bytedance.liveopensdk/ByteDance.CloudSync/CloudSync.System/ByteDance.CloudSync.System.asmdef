@@ -1,0 +1,28 @@
+{
+    "name": "ByteDance.CloudSync.System",
+    "rootNamespace": "CloudGame",
+    "references": [
+        "GUID:8be61bd8c3afed7428ce68c400f161ea",
+        "GUID:9b9dfddc0b5b9bf42945a070c7526931",
+        "GUID:b0e35a96248c822439516674013b2a83",
+        "GUID:728bc9a507710ea45a39668667f530ad",
+        "GUID:54f18e310621da44bb34883bb50879bc",
+    "GUID:4db2d224174e4854946b74235a056aa3",
+    "GUID:b301300547906f640981e5ab5b944070"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.bytedance.starklogs",
+            "expression": "",
+            "define": "CLOUDGAME_ENABLE_STARKLOGS"
+        }
+    ],
+    "noEngineReferences": false
+}
