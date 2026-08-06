@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: fx_wlzf_fuwen_01
+  m_Shader: {fileID: 4800000, guid: 7143b055fcca8534da9eb71d8fdf3a2e, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _FDISSOLVETEX_ON
+  m_InvalidKeywords:
+  - _CUSTOMDISSOLVE_ON
+  - _DISSOLVETEXAR_ON
+  - _DISTORTTEXAR_ON
+  - _DOUBLESIDED_ON
+  - _MASKTEXAR_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap:
+    DebugOverDraw: Off
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DissolveTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 0.25}
+        m_Offset: {x: 0, y: 0.14}
+    - _DistortTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 5, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 0.47}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - CustomUV: 0
+    - _Alpha: 1
+    - _AlphaClip: 0
+    - _AlphaCutoff: 0.5
+    - _Blend: 2
+    - _BlendMode: 0
+    - _ColorMask: 15
+    - _Cull: 0
+    - _CullMode: 0
+    - _CustomDissolve: 1
+    - _CustomMainTex: 0
+    - _Cutoff: 0.5
+    - _DepthFade: 1
+    - _DepthOffset: 0
+    - _DissolveFactor: 0
+    - _DissolveSoft: 0.258
+    - _DissolveTexAR: 1
+    - _DissolveTexUSpeed: 0.4
+    - _DissolveTexVSpeed: 0
+    - _DissolveWide: 0.05
+    - _Distance: 0
+    - _DistortDissolveTex: 0
+    - _DistortFactor: 0
+    - _DistortMainTex: 0
+    - _DistortMaskTex: 0
+    - _DistortTexAR: 1
+    - _DistortTexUSpeed: 0
+    - _DistortTexVSpeed: 0
+    - _Dst: 10
+    - _DstBlend: 1
+    - _FDepth: 0
+    - _FDissolveTex: 1
+    - _FDistortTex: 0
+    - _FFnl: 0
+    - _FMaskTex: 0
+    - _FnlPower: 1
+    - _FnlScale: 0
+    - _InvFade: 1
+    - _MainAlpha: 1
+    - _MainTexAR: 0
+    - _MainTexUSpeed: 0
+    - _MainTexVSpeed: 0
+    - _MaskTexAR: 1
+    - _MaskTexUSpeed: 0.3
+    - _MaskTexVSpeed: 0
+    - _MaxX: 1000000
+    - _MaxX2: 1000000
+    - _MaxY: 1000000
+    - _MaxY2: 1000000
+    - _MinX: -1000000
+    - _MinX2: -1000000
+    - _MinY: -1000000
+    - _MinY2: -1000000
+    - _QueueOffset: 0
+    - _ReFnl: 0
+    - _Render: 0
+    - _Scr: 5
+    - _SrcBlend: 5
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _SurfaceType: 1
+    - _VertexColorOff: 0
+    - _ZTest: 4
+    - _ZWrite: 0
+    - _soft_Value: 0
+    m_Colors:
+    - BaseColor: {r: 51.377876, g: 51.377876, b: 51.377876, a: 1}
+    - UVSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - UVTillingAndOffset: {r: -1, g: 1, b: 0, a: 0}
+    - _DissolveColor: {r: 1, g: 1, b: 1, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FinalColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FnlColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MainColor: {r: 2, g: 2, b: 2, a: 1}
+    - _TintColor: {r: 1, g: 1, b: 1, a: 1}
+    - _color: {r: 1.53, g: 1.53, b: 1.53, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

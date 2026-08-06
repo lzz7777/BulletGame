@@ -1,0 +1,20 @@
+#
+# Sprite sheet data for Unity.
+#
+# To import these sprites into your Unity project, download "TexturePackerImporter":
+# https://www.codeandweb.com/texturepacker/unity
+#
+# $TexturePacker:SmartUpdate:2ab7f47bab1d20203d910965c3a21ab6:41f06098158adb04960b9aa54e568b70:8a659f5274c631fe906829f785f0f39e$
+#
+:format=40300
+:texture=emoji.png
+:size=64x128
+:pivotpoints=enabled
+:borders=disabled
+:alphahandling=ClearTransparentPixels
+
+mrt_rwxj1;0;7;29;27; 0.5;0.5; 0;0;0;0; 4;29;0;0;0;0;27;29;27; 2;1;2;3;0;1;3
+mrt_rwxj2;29;7;29;27; 0.5;0.5; 0;0;0;0; 4;29;0;0;0;0;27;29;27; 2;1;2;3;0;1;3
+none;51;127;1;1; 2;-1; 0;0;0;0; 4;0;1;1;1;1;0;0;0; 2;0;1;2;0;2;3
+star;0;34;36;35; 0.5;0.5; 0;0;0;0; 4;36;0;0;0;0;35;36;35; 2;1;2;3;0;1;3
+youtong;0;69;51;59; 0.5;0.5; 0;0;0;0; 5;51;23;51;0;0;0;0;59;37;59; 3;0;3;4;0;1;2;0;2;3

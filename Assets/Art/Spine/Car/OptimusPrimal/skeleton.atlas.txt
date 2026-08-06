@@ -1,0 +1,153 @@
+
+skeleton.png
+size: 776,1036
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: false
+  xy: 682, 55
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+2
+  rotate: false
+  xy: 724, 55
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+3
+  rotate: false
+  xy: 682, 13
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+4
+  rotate: false
+  xy: 724, 13
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Core01
+  rotate: false
+  xy: 651, 429
+  size: 112, 84
+  orig: 112, 84
+  offset: 0, 0
+  index: -1
+Core02
+  rotate: true
+  xy: 690, 809
+  size: 111, 84
+  orig: 111, 84
+  offset: 0, 0
+  index: -1
+Core03
+  rotate: true
+  xy: 641, 97
+  size: 112, 84
+  orig: 112, 84
+  offset: 0, 0
+  index: -1
+Core04
+  rotate: true
+  xy: 690, 922
+  size: 112, 84
+  orig: 112, 84
+  offset: 0, 0
+  index: -1
+glow_013
+  rotate: false
+  xy: 536, 400
+  size: 113, 113
+  orig: 128, 128
+  offset: 8, 7
+  index: -1
+shadow_02
+  rotate: false
+  xy: 536, 515
+  size: 212, 62
+  orig: 230, 84
+  offset: 9, 11
+  index: -1
+transform00
+  rotate: true
+  xy: 2, 397
+  size: 637, 176
+  orig: 1500, 1500
+  offset: 216, 711
+  index: -1
+transform01
+  rotate: false
+  xy: 2, 219
+  size: 637, 176
+  orig: 1500, 1500
+  offset: 216, 711
+  index: -1
+transform02
+  rotate: false
+  xy: 2, 41
+  size: 637, 176
+  orig: 1500, 1500
+  offset: 216, 711
+  index: -1
+transform03
+  rotate: true
+  xy: 180, 397
+  size: 637, 176
+  orig: 1500, 1500
+  offset: 216, 711
+  index: -1
+transform04
+  rotate: true
+  xy: 358, 397
+  size: 637, 176
+  orig: 1500, 1500
+  offset: 216, 711
+  index: -1
+truck_01
+  rotate: true
+  xy: 641, 211
+  size: 187, 125
+  orig: 187, 125
+  offset: 0, 0
+  index: -1
+truck_02
+  rotate: true
+  xy: 536, 579
+  size: 455, 152
+  orig: 455, 152
+  offset: 0, 0
+  index: -1
+truck_03
+  rotate: false
+  xy: 2, 6
+  size: 585, 33
+  orig: 585, 33
+  offset: 0, 0
+  index: -1
+yan01
+  rotate: true
+  xy: 651, 413
+  size: 14, 61
+  orig: 14, 61
+  offset: 0, 0
+  index: -1
+yan02
+  rotate: true
+  xy: 589, 2
+  size: 11, 91
+  orig: 11, 91
+  offset: 0, 0
+  index: -1
+youxiang
+  rotate: false
+  xy: 589, 15
+  size: 73, 24
+  orig: 73, 24
+  offset: 0, 0
+  index: -1

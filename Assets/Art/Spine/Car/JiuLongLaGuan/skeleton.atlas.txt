@@ -1,0 +1,40 @@
+
+skeleton.png
+size: 1604,1176
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+GuanCai
+  rotate: false
+  xy: 2, 2
+  size: 1598, 731
+  orig: 2048, 819
+  offset: 264, 43
+  index: -1
+foot1
+  rotate: true
+  xy: 438, 735
+  size: 439, 459
+  orig: 439, 459
+  offset: 0, 0
+  index: -1
+foot3
+  rotate: true
+  xy: 2, 865
+  size: 309, 434
+  orig: 309, 434
+  offset: 0, 0
+  index: -1
+
+skeleton2.png
+size: 1820,1060
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: false
+  xy: 2, 2
+  size: 1816, 1056
+  orig: 1816, 1206
+  offset: 0, 150
+  index: -1

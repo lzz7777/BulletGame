@@ -1,0 +1,146 @@
+
+skeleton.png
+size: 848,272
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Bot
+  rotate: false
+  xy: 436, 5
+  size: 209, 35
+  orig: 209, 35
+  offset: 0, 0
+  index: -1
+GTR01
+  rotate: false
+  xy: 436, 42
+  size: 203, 94
+  orig: 203, 94
+  offset: 0, 0
+  index: -1
+arm
+  rotate: false
+  xy: 720, 33
+  size: 47, 18
+  orig: 47, 18
+  offset: 0, 0
+  index: -1
+flower
+  rotate: true
+  xy: 720, 2
+  size: 29, 30
+  orig: 29, 30
+  offset: 0, 0
+  index: -1
+gif01
+  rotate: true
+  xy: 647, 10
+  size: 44, 50
+  orig: 44, 50
+  offset: 0, 0
+  index: -1
+gif02
+  rotate: true
+  xy: 781, 41
+  size: 23, 26
+  orig: 23, 26
+  offset: 0, 0
+  index: -1
+gif03
+  rotate: false
+  xy: 752, 3
+  size: 24, 28
+  orig: 24, 28
+  offset: 0, 0
+  index: -1
+git_kuang_01
+  rotate: true
+  xy: 699, 2
+  size: 52, 19
+  orig: 52, 19
+  offset: 0, 0
+  index: -1
+git_kuang_02
+  rotate: false
+  xy: 723, 53
+  size: 56, 31
+  orig: 56, 31
+  offset: 0, 0
+  index: -1
+glow
+  rotate: false
+  xy: 653, 140
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+glow_red
+  rotate: false
+  xy: 641, 56
+  size: 80, 80
+  orig: 101, 101
+  offset: 10, 11
+  index: -1
+head
+  rotate: false
+  xy: 723, 86
+  size: 55, 52
+  orig: 55, 52
+  offset: 0, 0
+  index: -1
+lightbulb01
+  rotate: false
+  xy: 809, 50
+  size: 12, 14
+  orig: 12, 14
+  offset: 0, 0
+  index: -1
+lightbulb02
+  rotate: false
+  xy: 823, 50
+  size: 12, 14
+  orig: 12, 14
+  offset: 0, 0
+  index: -1
+shadow_01
+  rotate: true
+  xy: 783, 66
+  size: 202, 62
+  orig: 230, 84
+  offset: 16, 11
+  index: -1
+transform00
+  rotate: false
+  xy: 2, 138
+  size: 215, 130
+  orig: 500, 500
+  offset: 140, 211
+  index: -1
+transform01
+  rotate: false
+  xy: 2, 6
+  size: 215, 130
+  orig: 500, 500
+  offset: 140, 211
+  index: -1
+transform02
+  rotate: false
+  xy: 219, 138
+  size: 215, 130
+  orig: 500, 500
+  offset: 140, 211
+  index: -1
+transform03
+  rotate: false
+  xy: 219, 6
+  size: 215, 130
+  orig: 500, 500
+  offset: 140, 211
+  index: -1
+transform04
+  rotate: false
+  xy: 436, 138
+  size: 215, 130
+  orig: 500, 500
+  offset: 140, 211
+  index: -1

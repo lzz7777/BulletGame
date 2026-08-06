@@ -1,0 +1,90 @@
+
+skeleton.png
+size: 1176,208
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+PropellerHead
+  rotate: false
+  xy: 1111, 26
+  size: 62, 18
+  orig: 62, 18
+  offset: 0, 0
+  index: -1
+glow
+  rotate: false
+  xy: 666, 50
+  size: 118, 118
+  orig: 128, 128
+  offset: 5, 5
+  index: -1
+helicopter01
+  rotate: false
+  xy: 222, 58
+  size: 442, 147
+  orig: 442, 147
+  offset: 0, 0
+  index: -1
+helicopter02
+  rotate: false
+  xy: 2, 12
+  size: 218, 193
+  orig: 220, 193
+  offset: 0, 0
+  index: -1
+missile
+  rotate: false
+  xy: 1020, 22
+  size: 89, 22
+  orig: 89, 22
+  offset: 0, 0
+  index: -1
+smoketrail01
+  rotate: false
+  xy: 1161, 46
+  size: 11, 159
+  orig: 73, 512
+  offset: 33, 11
+  index: -1
+smoketrail02
+  rotate: true
+  xy: 786, 148
+  size: 20, 359
+  orig: 73, 512
+  offset: 28, 5
+  index: -1
+smoketrail03
+  rotate: true
+  xy: 666, 170
+  size: 35, 493
+  orig: 73, 512
+  offset: 21, 16
+  index: -1
+smoketrail04
+  rotate: true
+  xy: 222, 8
+  size: 48, 395
+  orig: 74, 512
+  offset: 13, 79
+  index: -1
+smoketrail05
+  rotate: true
+  xy: 619, 2
+  size: 46, 399
+  orig: 73, 512
+  offset: 16, 62
+  index: -1
+smoketrail06
+  rotate: true
+  xy: 786, 101
+  size: 45, 245
+  orig: 73, 512
+  offset: 17, 185
+  index: -1
+smoketrail07
+  rotate: true
+  xy: 786, 58
+  size: 41, 214
+  orig: 73, 512
+  offset: 21, 189
+  index: -1

@@ -1,0 +1,75 @@
+
+skeleton.png
+size: 1488,2036
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01
+  rotate: true
+  xy: 866, 1227
+  size: 805, 619
+  orig: 1200, 1124
+  offset: 135, 284
+  index: -1
+02
+  rotate: true
+  xy: 2, 576
+  size: 848, 614
+  orig: 1200, 1124
+  offset: 143, 283
+  index: -1
+03
+  rotate: false
+  xy: 2, 1426
+  size: 862, 606
+  orig: 1200, 1124
+  offset: 136, 285
+  index: -1
+07
+  rotate: false
+  xy: 618, 614
+  size: 859, 611
+  orig: 1200, 1124
+  offset: 81, 299
+  index: -1
+09
+  rotate: false
+  xy: 618, 2
+  size: 828, 610
+  orig: 1200, 1124
+  offset: 116, 300
+  index: -1
+
+skeleton2.png
+size: 1660,1196
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+04
+  rotate: false
+  xy: 852, 2
+  size: 804, 588
+  orig: 1200, 1124
+  offset: 127, 302
+  index: -1
+05
+  rotate: false
+  xy: 829, 592
+  size: 806, 601
+  orig: 1200, 1124
+  offset: 115, 294
+  index: -1
+06
+  rotate: false
+  xy: 2, 585
+  size: 825, 608
+  orig: 1200, 1124
+  offset: 105, 294
+  index: -1
+08
+  rotate: false
+  xy: 2, 2
+  size: 848, 581
+  orig: 1200, 1124
+  offset: 100, 331
+  index: -1

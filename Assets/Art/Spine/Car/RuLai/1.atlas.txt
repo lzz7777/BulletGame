@@ -1,0 +1,34 @@
+
+1.png
+size: 1480,336
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: true
+  xy: 740, 2
+  size: 331, 503
+  orig: 331, 503
+  offset: 0, 0
+  index: -1
+12
+  rotate: false
+  xy: 2, 3
+  size: 736, 330
+  orig: 744, 336
+  offset: 3, 3
+  index: -1
+2
+  rotate: true
+  xy: 1245, 67
+  size: 266, 170
+  orig: 409, 208
+  offset: 0, 38
+  index: -1
+3
+  rotate: true
+  xy: 1417, 56
+  size: 277, 60
+  orig: 279, 62
+  offset: 1, 1
+  index: -1
