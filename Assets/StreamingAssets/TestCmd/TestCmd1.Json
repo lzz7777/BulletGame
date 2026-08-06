@@ -1,0 +1,19 @@
+{
+    "Datas": [
+        {
+            "Delay": 1,
+            "PlayerId": "lzz1",
+            "Content": "10"
+        },
+        {
+            "Delay": 2,
+            "PlayerId": "lzz2",
+            "Content": "11"
+        },
+        {
+            "Delay": 3,
+            "PlayerId": "lzz3",
+            "Content": "12"
+        }
+    ]
+}
