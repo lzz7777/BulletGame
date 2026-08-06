@@ -1,0 +1,28 @@
+namespace XN
+{
+    public static class #CLASS_NAME#
+    {
+        #region CircleLife
+        
+        public static void OnOpenSystem(this #VIEW_NAME# self, UIWindowData uIWindowData = null)
+        {
+            
+        }
+        
+        public static void OnCloseSystem(this #VIEW_NAME# self)
+        {
+            
+        }
+        
+        #endregion
+        
+        #region UIEvents
+        #endregion
+        
+        #region GlobalEvents
+        #endregion
+        
+        #region Logics
+        #endregion
+    }
+}

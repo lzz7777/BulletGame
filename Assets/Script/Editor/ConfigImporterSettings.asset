@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 1
+  m_Script: {fileID: 11500000, guid: def534c1dfd6b1549955d652075719b2, type: 3}
+  m_Name: ConfigImporterSettings
+  m_EditorClassIdentifier: 
+  svnPath: D:/WorkProject/BSGame/SVN
+  svnExePath: C:/Program Files/TortoiseSVN/bin
+  branchLastCommitList:
+  - branchName: main2025
+    commitHash: b4cfef00e27a7c57fb7c3ceb129ad4dd73f25ac1
+  - branchName: svn
+    commitHash: 309

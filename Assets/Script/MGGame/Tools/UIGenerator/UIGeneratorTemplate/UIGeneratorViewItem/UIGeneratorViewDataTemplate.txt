@@ -1,0 +1,6 @@
+namespace XN
+{
+    public class #CLASS_NAME# : UIItemDataBase
+    {
+    }
+}

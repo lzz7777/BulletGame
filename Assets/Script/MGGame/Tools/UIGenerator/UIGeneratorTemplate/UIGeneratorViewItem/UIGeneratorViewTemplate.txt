@@ -1,0 +1,13 @@
+#USING_NAMESPACES#
+
+namespace XN
+{
+    public class #CLASS_NAME# : UIItemBase
+    {
+#FIELDS#
+        
+        #region CustomFields
+        #CUSTOM_FIELDS#
+        #endregion
+    }
+}

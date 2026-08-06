@@ -1,0 +1,22 @@
+namespace XN
+{
+    public static class #CLASS_NAME#
+    {
+        #region CircleLife
+
+        public static void OnRefresh(this #VIEW_NAME# self, #VIEW_NAME#Data data)
+        {
+        }
+
+        #endregion
+
+        #region UIEvents
+        #endregion
+        
+        #region GlobalEvents
+        #endregion
+        
+        #region Logics
+        #endregion
+    }
+}

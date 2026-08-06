@@ -1,0 +1,27 @@
+﻿//====================================================
+//Author:Makka Pakka
+//Time  :2023-02-17 18:06:05
+//Desc  :
+//====================================================
+using System;
+
+namespace XN.Tools
+{
+    [AttributeUsage(AttributeTargets.Class)]
+    public class FilePathAttribute : Attribute
+    {
+        public string FilePath;
+
+        /// <summary>
+        /// 单例存放路径
+        /// </summary>
+        /// <param name="path">相对 Project 路径</param>
+        public FilePathAttribute(string path)
+        {
+            if (string.IsNullOrEmpty(path)) throw new ArgumentException("Invalid relative path (it is empty)");
+            if (path[0] == '/') path = path[1..];
+            FilePath = path;
+        }
+    }
+
+}

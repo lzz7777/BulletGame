@@ -1,0 +1,8 @@
+version: 2
+tpsheetFileNames:
+- Assets/Bundle/Atlas/emoji.tpsheet
+textureFileNames:
+- Assets/Bundle/Atlas/emoji.png
+normalmapFileNames:
+- 
+enableDebugOutput: 0

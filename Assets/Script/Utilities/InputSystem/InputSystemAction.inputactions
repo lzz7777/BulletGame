@@ -1,0 +1,841 @@
+{
+    "name": "InputSystemAction",
+    "maps": [
+        {
+            "name": "用户",
+            "id": "d848074d-0148-4eb9-bb20-4b3bdb94eaf0",
+            "actions": [
+                {
+                    "name": "ADD",
+                    "type": "Button",
+                    "id": "d23ad1c8-dac9-4177-b6b4-607f3eb86ecd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "36055fb4-8252-47d3-a2e0-03cd4b063e2f",
+                    "path": "<Keyboard>/leftBracket",
+                    "interactions": "",
+                    "processors": "Scale",
+                    "groups": "",
+                    "action": "ADD",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "道具",
+            "id": "51b81cf2-b4d7-43e6-9725-ffbe9f234959",
+            "actions": [
+                {
+                    "name": "Freed",
+                    "type": "Button",
+                    "id": "940adcba-06da-45c8-a1dd-20753526faca",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "道具10",
+                    "id": "1324e250-1a96-4ca3-b68c-5d3e6edba600",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale(factor=10)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "c823c84e-b412-4788-b8a1-53b8a82e9e42",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "7e7ec7e9-a8fc-473d-8f18-8949a9a2aeec",
+                    "path": "<Keyboard>/numpad9",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "道具9",
+                    "id": "b4849fc8-38e5-4a6b-bff8-f6cacf6bbf7b",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale(factor=9)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "4e4f2b9b-f04b-4f96-9ae9-e5d9e9ac8ed2",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "d2beec2a-fdad-4328-853e-6cfea816373b",
+                    "path": "<Keyboard>/numpad8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "道具8",
+                    "id": "3124db4c-3b98-40c5-a26c-9d5bf1770c2f",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale(factor=8)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "c6944af8-1dfc-4f6b-a1aa-c37e82904a9e",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "1f4eb6dd-1610-4ed3-ada5-d9def29631ec",
+                    "path": "<Keyboard>/numpad7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "道具7",
+                    "id": "83a3f6d0-e7ed-44f3-afc9-f801f2ee9474",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale(factor=7)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "88cda8ae-e4ad-44a2-853e-3634c203d364",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "60122596-0fa5-484c-9b24-cf87a0b5cad8",
+                    "path": "<Keyboard>/numpad6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "道具6",
+                    "id": "1e6f1b70-9521-4d30-ae78-09b26a0e830d",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale(factor=6)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "73eebab8-e249-462c-9b6f-6061498ac7e1",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "fcd6df83-8d70-4537-8eb9-820e5633140e",
+                    "path": "<Keyboard>/numpad5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "道具5",
+                    "id": "e5e1a728-fd2d-4b6b-9303-81572915f2c1",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale(factor=5)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "135ca15c-d018-41e7-bb3a-6b39ac24e63f",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "965af42f-adc2-43be-8a15-6fb8196be03a",
+                    "path": "<Keyboard>/numpad4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "道具4",
+                    "id": "9d2a1a32-9bfb-4071-9b98-46265b8cb383",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale(factor=4)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "6a603953-4bfb-4fc1-8223-5bf37f08d3d4",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "44ddc283-b3f6-43ed-bc7a-21561cf218e1",
+                    "path": "<Keyboard>/numpad3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "道具3",
+                    "id": "36e05099-7dfe-4f2e-bc50-94fdaf2935d1",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale(factor=3)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "f037e855-0ffc-4674-9d8f-8d372586682c",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "8e06f8bd-9fcc-4835-aeea-7dcc54233ae2",
+                    "path": "<Keyboard>/numpad2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "道具2",
+                    "id": "86970125-f3a7-4565-9729-90cfadbdf329",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale(factor=2)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "eda24aa7-91d4-4b1d-a86f-7586fa03e9fb",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "70877f42-060a-4041-9d1c-45c6a34cfb7f",
+                    "path": "<Keyboard>/numpad1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "道具1",
+                    "id": "e6e9e691-1d88-4a74-a59b-63b6c973facd",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "Scale",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "36b411c7-a10f-4607-967b-7d8e42017da5",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "1184377c-0984-4d01-9683-6ce28cfcdbe1",
+                    "path": "<Keyboard>/numpad0",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "4c4b044e-31de-4ac5-bbaa-f16b0852e042",
+                    "path": "<Keyboard>/numpad0",
+                    "interactions": "",
+                    "processors": "Scale(factor=501)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "136e3250-0310-4c34-9e0b-c8de232dbec6",
+                    "path": "<Keyboard>/numpad1",
+                    "interactions": "",
+                    "processors": "Scale(factor=502)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd0f1d3b-e4fc-4c87-8890-ab90cd0cdc62",
+                    "path": "<Keyboard>/numpad2",
+                    "interactions": "",
+                    "processors": "Scale(factor=503)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7df3766-54e2-4e51-8a32-7e1d3f964ffc",
+                    "path": "<Keyboard>/numpad3",
+                    "interactions": "",
+                    "processors": "Scale(factor=504)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23a35494-a352-4ca6-9638-df54ca9c25eb",
+                    "path": "<Keyboard>/numpad4",
+                    "interactions": "",
+                    "processors": "Scale(factor=505)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b706e95f-adda-479e-9d62-1be0c3563763",
+                    "path": "<Keyboard>/numpad5",
+                    "interactions": "",
+                    "processors": "Scale(factor=506)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5594fe6a-3363-4486-8d61-45f845a657e0",
+                    "path": "<Keyboard>/numpad6",
+                    "interactions": "",
+                    "processors": "Scale(factor=507)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bbabd4af-5174-4cc7-8c8e-c1c7acb391ec",
+                    "path": "<Keyboard>/numpad7",
+                    "interactions": "",
+                    "processors": "Scale(factor=508)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "63fb3263-2fb6-4f59-9e9a-db1ff14cfb42",
+                    "path": "<Keyboard>/numpad8",
+                    "interactions": "",
+                    "processors": "Scale(factor=509)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5dffb4a0-6663-4ac1-aec2-e70951cc4a95",
+                    "path": "<Keyboard>/numpad9",
+                    "interactions": "",
+                    "processors": "Scale(factor=510)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d201f58-2818-46d1-9190-083a5a9a042c",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "Scale(factor=500)",
+                    "groups": "",
+                    "action": "Freed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "镜头",
+            "id": "8dfd1319-0d95-4cae-8151-73615dab50bc",
+            "actions": [
+                {
+                    "name": "CameraRoller",
+                    "type": "PassThrough",
+                    "id": "9e9efbcf-78f6-4fac-8454-111f1324f9b1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "CameraRollerReduction",
+                    "type": "Button",
+                    "id": "8db16173-e486-421c-bef4-6b25670eee6f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchCameras",
+                    "type": "Button",
+                    "id": "ac5b49c7-571f-4696-ba56-3ad8176b0a63",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectPlayer",
+                    "type": "Button",
+                    "id": "4cea5e09-b2ee-4e54-a8d0-1fb2592a6a5b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchCameraSelect",
+                    "type": "Button",
+                    "id": "3d763ff3-45f8-46c8-ac54-33152af72e56",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8b143fc0-2ceb-4961-9926-7c764358ac8e",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRoller",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f66a444f-8895-40f7-b91c-145bf0568ba6",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "Scale(factor=0)",
+                    "groups": "",
+                    "action": "CameraRollerReduction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3f5aaa60-5114-47df-a387-20cafbc05533",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "Scale(factor=2)",
+                    "groups": "",
+                    "action": "SwitchCameras",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d2aaef94-2af0-4fc9-8bb2-8a9de795c19c",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "Scale(factor=3)",
+                    "groups": "",
+                    "action": "SwitchCameras",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73418e30-5807-46c2-bf5a-1676b6623fed",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "Scale(factor=4)",
+                    "groups": "",
+                    "action": "SwitchCameras",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "29f03f65-50db-4616-bd11-e2343c445142",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "Scale(factor=6)",
+                    "groups": "",
+                    "action": "SwitchCameras",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e99aa828-11d6-472f-ae89-f646546ee76c",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "Scale(factor=5)",
+                    "groups": "",
+                    "action": "SwitchCameras",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5eb87dc2-a7f7-4845-a13a-0ba723b0c049",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "Scale(factor=7)",
+                    "groups": "",
+                    "action": "SwitchCameras",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "88102dd4-a661-4602-aafd-e0578b32d007",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "Scale",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "16a1f854-e9bf-4f7e-b750-82a829191d62",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "Scale(factor=2)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "77e151b9-169a-4628-bb40-f2750b8f8171",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "Scale(factor=3)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "207354f6-495a-4fd1-a34f-559f790fdf04",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "Scale(factor=4)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "af3a8469-c7b9-4b83-91ee-f5e06610b152",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "Scale(factor=5)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2b700e78-3f34-4bae-b187-7cdff7468bc9",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "Scale(factor=6)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0b4d5c7c-44ae-4a29-86a1-02c4d3a5fe5e",
+                    "path": "<Keyboard>/7",
+                    "interactions": "",
+                    "processors": "Scale(factor=7)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e231b495-db73-4a2d-8a1e-f24cffa5e131",
+                    "path": "<Keyboard>/8",
+                    "interactions": "",
+                    "processors": "Scale(factor=8)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c18be5fa-3a0d-4ba9-b736-210d809d32f8",
+                    "path": "<Keyboard>/9",
+                    "interactions": "",
+                    "processors": "Scale(factor=9)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "106f338c-c24d-4096-b6a4-4d181b5ade5b",
+                    "path": "<Keyboard>/0",
+                    "interactions": "",
+                    "processors": "Scale(factor=10)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b5faca7a-15bf-4548-8400-3f9fe7fa5258",
+                    "path": "<Keyboard>/minus",
+                    "interactions": "",
+                    "processors": "Scale(factor=11)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c6e4747d-1044-4e0d-83f9-928a241edb86",
+                    "path": "<Keyboard>/equals",
+                    "interactions": "",
+                    "processors": "Scale(factor=12)",
+                    "groups": "",
+                    "action": "SelectPlayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0ac353ea-9b03-4cea-8fa8-5c0438e6e3e2",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "Scale(factor=0)",
+                    "groups": "",
+                    "action": "SwitchCameraSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "60444503-03dd-4026-88e1-be559f2f7e95",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "Scale",
+                    "groups": "",
+                    "action": "SwitchCameraSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "48843715-f10f-4ed4-820a-39f6aea3922b",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "Scale(factor=2)",
+                    "groups": "",
+                    "action": "SwitchCameraSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "24e99a79-0409-4b43-bd46-b72cfd72d1ef",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "Scale(factor=3)",
+                    "groups": "",
+                    "action": "SwitchCameraSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "113de699-de72-4203-87e3-08053e6fe403",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "Scale(factor=4)",
+                    "groups": "",
+                    "action": "SwitchCameraSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3e2e7515-2812-4756-adc7-c7d026726e08",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "Scale(factor=5)",
+                    "groups": "",
+                    "action": "SwitchCameraSelect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
