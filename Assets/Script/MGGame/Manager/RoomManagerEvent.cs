@@ -36,7 +36,7 @@ namespace XN
                     sceneInfoComp.SavePoolData();
 
                     //上报池子数据
-                    PlayerMessage.SendSetPrizePool(sceneInfoComp.AnchorOpenId, sceneInfoComp.LastScorePool, sceneInfoComp.LastFansPool);
+                    // PlayerMessage.SendSetPrizePool(sceneInfoComp.AnchorOpenId, sceneInfoComp.LastScorePool, sceneInfoComp.LastFansPool);
                     
                     // 播放视频
                     SoundManager.Instance.PauseMusic();
@@ -47,13 +47,17 @@ namespace XN
                     }).ToCoroutine();
 
                     // 上报数据
-                    DataManager.SendRoomData((cbStr) =>
-                    {
-                        Debug.Log("上报完毕...回调回来...打开结算界面");
-                        SampleMessagePushManager.UploadLog(new[] { "Battle", "End" }, cbStr);
-                        // ver1.打开局内结算
-                        UIManager.Instance.OpenWindow<ViewBattleMVP>().ToCoroutine();
-                    }).ToCoroutine();
+                    // DataManager.SendRoomData((cbStr) =>
+                    // {
+                    //     Debug.Log("上报完毕...回调回来...打开结算界面");
+                    //     SampleMessagePushManager.UploadLog(new[] { "Battle", "End" }, cbStr);
+                    //     // ver1.打开局内结算
+                    //     UIManager.Instance.OpenWindow<ViewBattleMVP>().ToCoroutine();
+                    // }).ToCoroutine();
+                    
+                    Debug.Log("上报完毕...回调回来...打开结算界面");
+                    // ver1.打开局内结算
+                    UIManager.Instance.OpenWindow<ViewBattleMVP>().ToCoroutine();
                     break;
                 default:
                     Debug.LogWarning($" TODO ..... {GameStateCtrl.State}");
