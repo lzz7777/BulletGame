@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using YooAsset;
 using UnityEngine.Networking;
 using System.Linq;
+using UnityEngine.U2D;
 
 namespace XN
 {
@@ -58,11 +59,35 @@ namespace XN
         protected override void OnInit()
         {
             InitPackage();
+            XN.AOT.AtlasEventWrapper.RemoveListener(OnAtlasRequested);
+            XN.AOT.AtlasEventWrapper.AddListener(OnAtlasRequested);
         }
 
         protected override void OnRemove()
         {
-            
+            XN.AOT.AtlasEventWrapper.RemoveListener(OnAtlasRequested);
+        }
+
+        [UnityEngine.Scripting.Preserve]
+        private void OnAtlasRequested(string atlasName, System.Action<UnityEngine.U2D.SpriteAtlas> callback)
+        {
+            LoadAtlasForUGUIAsync(atlasName, callback).Forget();
+        }
+
+        private async UniTaskVoid LoadAtlasForUGUIAsync(string atlasName, System.Action<UnityEngine.U2D.SpriteAtlas> callback)
+        {
+            await EnsureInitialized();
+            var handle = DefaultPackage.LoadAssetAsync<UnityEngine.U2D.SpriteAtlas>(atlasName);
+            await handle.Task;
+            if (handle.Status == EOperationStatus.Succeed)
+            {
+                callback(handle.AssetObject as UnityEngine.U2D.SpriteAtlas);
+                Debug.Log($"[SpriteAtlas] UI图集延迟绑定成功: {atlasName}");
+            }
+            else
+            {
+                Debug.LogError($"[SpriteAtlas] UI图集延迟绑定失败: {atlasName} | {handle.LastError}");
+            }
         }
         
         /// <summary>
@@ -365,6 +390,30 @@ namespace XN
             if (sprite == null) return null;
             spriteRand.sprite = sprite;
             return sprite;
+        }
+        
+        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, SpriteRenderer spriteRand)
+        {
+            var sprite = await GetSpriteFromAtlas(atlasName, location);
+            if (sprite == null) return null;
+            spriteRand.sprite = sprite;
+            return sprite;
+        }
+        
+        public async UniTask<Sprite> GetSpriteFromAtlas(string atlasName, string spriteName)
+        {
+            // 1. 先通过 YooAsset 加载图集资产
+            var handle = YooAssetManager.DefaultPackage.LoadAssetAsync<SpriteAtlas>(atlasName);
+            await handle.Task;
+
+            if (handle.Status == EOperationStatus.Succeed)
+            {
+                var atlas = handle.AssetObject as SpriteAtlas;
+                // 2. 从图集中提取具体的 Sprite
+                return atlas.GetSprite(spriteName);
+            }
+    
+            return null;
         }
         
         public UniTask<Texture2D> LoadTextureAsync(string location, bool autoRelease = false, CancellationToken token = default) => LoadAssetAsync<Texture2D>(location, autoRelease, token);

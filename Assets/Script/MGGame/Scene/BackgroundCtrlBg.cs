@@ -35,7 +35,7 @@ namespace XN
             var curSpriteRand = _goList[0].GetComponent<SpriteRenderer>();
             curSpriteRand.color = Color.white;
             string str = SceneHelper.GetLayerInfoRandomResName(_layerInfo);
-            YooAssetManager.Instance.LoadSpriteAsync(str, curSpriteRand);
+            YooAssetManager.Instance.LoadSpriteAsync("Scene",str, curSpriteRand);
             
             var nextSpriteRand = _goList[1].GetComponent<SpriteRenderer>();
             nextSpriteRand.color = new Color(1, 1, 1, 0);
@@ -57,7 +57,7 @@ namespace XN
             //下个背景透明的0->1
             var nextSpriteRand = _goList[1].GetComponent<SpriteRenderer>();
             string str = SceneHelper.GetLayerInfoRandomResName(_layerInfo);
-            YooAssetManager.Instance.LoadSpriteAsync(str, nextSpriteRand);
+            YooAssetManager.Instance.LoadSpriteAsync("Scene",str, nextSpriteRand);
             nextSpriteRand.DOFade(1, fadeDuration).SetEase(Ease.OutQuad).OnComplete(() =>
             {
                 (_goList[0], _goList[1]) = (_goList[1], _goList[0]);

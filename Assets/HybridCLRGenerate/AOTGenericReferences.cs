@@ -38,6 +38,8 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<System.ValueTuple<object,byte>>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<byte>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<object>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<object>
 	// Cysharp.Threading.Tasks.CompilerServices.IStateMachineRunnerPromise<System.ValueTuple<object,byte>>
 	// Cysharp.Threading.Tasks.CompilerServices.IStateMachineRunnerPromise<byte>
 	// Cysharp.Threading.Tasks.CompilerServices.IStateMachineRunnerPromise<object>
@@ -221,6 +223,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Action<System.ValueTuple<object,object>>
 	// System.Action<UnityEngine.InputSystem.InputAction.CallbackContext>
 	// System.Action<UnityEngine.Vector2>
+	// System.Action<XN.UILoopList.ItemInfo>
 	// System.Action<byte>
 	// System.Action<double>
 	// System.Action<float>
@@ -247,6 +250,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.ArraySortHelper<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.ArraySortHelper<System.ValueTuple<object,object>>
 	// System.Collections.Generic.ArraySortHelper<UnityEngine.Vector2>
+	// System.Collections.Generic.ArraySortHelper<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.ArraySortHelper<byte>
 	// System.Collections.Generic.ArraySortHelper<double>
 	// System.Collections.Generic.ArraySortHelper<float>
@@ -286,6 +290,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.Comparer<System.ValueTuple<object,object>>
 	// System.Collections.Generic.Comparer<UnityEngine.Vector2>
 	// System.Collections.Generic.Comparer<UnityEngine.Vector3>
+	// System.Collections.Generic.Comparer<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.Comparer<byte>
 	// System.Collections.Generic.Comparer<double>
 	// System.Collections.Generic.Comparer<float>
@@ -455,6 +460,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.ICollection<System.ValueTuple<object,object>>
 	// System.Collections.Generic.ICollection<UnityEngine.Vector2>
 	// System.Collections.Generic.ICollection<XN.LogManager.LogData>
+	// System.Collections.Generic.ICollection<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.ICollection<byte>
 	// System.Collections.Generic.ICollection<double>
 	// System.Collections.Generic.ICollection<float>
@@ -468,6 +474,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IComparer<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.IComparer<System.ValueTuple<object,object>>
 	// System.Collections.Generic.IComparer<UnityEngine.Vector2>
+	// System.Collections.Generic.IComparer<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.IComparer<byte>
 	// System.Collections.Generic.IComparer<double>
 	// System.Collections.Generic.IComparer<float>
@@ -502,6 +509,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IEnumerable<System.ValueTuple<object,object>>
 	// System.Collections.Generic.IEnumerable<UnityEngine.Vector2>
 	// System.Collections.Generic.IEnumerable<XN.LogManager.LogData>
+	// System.Collections.Generic.IEnumerable<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.IEnumerable<byte>
 	// System.Collections.Generic.IEnumerable<double>
 	// System.Collections.Generic.IEnumerable<float>
@@ -532,6 +540,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IEnumerator<System.ValueTuple<object,object>>
 	// System.Collections.Generic.IEnumerator<UnityEngine.Vector2>
 	// System.Collections.Generic.IEnumerator<XN.LogManager.LogData>
+	// System.Collections.Generic.IEnumerator<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.IEnumerator<byte>
 	// System.Collections.Generic.IEnumerator<double>
 	// System.Collections.Generic.IEnumerator<float>
@@ -552,6 +561,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IList<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.IList<System.ValueTuple<object,object>>
 	// System.Collections.Generic.IList<UnityEngine.Vector2>
+	// System.Collections.Generic.IList<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.IList<byte>
 	// System.Collections.Generic.IList<double>
 	// System.Collections.Generic.IList<float>
@@ -582,6 +592,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.List.Enumerator<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.List.Enumerator<System.ValueTuple<object,object>>
 	// System.Collections.Generic.List.Enumerator<UnityEngine.Vector2>
+	// System.Collections.Generic.List.Enumerator<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.List.Enumerator<byte>
 	// System.Collections.Generic.List.Enumerator<double>
 	// System.Collections.Generic.List.Enumerator<float>
@@ -595,6 +606,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.List<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.List<System.ValueTuple<object,object>>
 	// System.Collections.Generic.List<UnityEngine.Vector2>
+	// System.Collections.Generic.List<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.List<byte>
 	// System.Collections.Generic.List<double>
 	// System.Collections.Generic.List<float>
@@ -631,6 +643,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.ObjectComparer<System.ValueTuple<object,object>>
 	// System.Collections.Generic.ObjectComparer<UnityEngine.Vector2>
 	// System.Collections.Generic.ObjectComparer<UnityEngine.Vector3>
+	// System.Collections.Generic.ObjectComparer<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.ObjectComparer<byte>
 	// System.Collections.Generic.ObjectComparer<double>
 	// System.Collections.Generic.ObjectComparer<float>
@@ -709,6 +722,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.ObjectModel.ReadOnlyCollection<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.ObjectModel.ReadOnlyCollection<System.ValueTuple<object,object>>
 	// System.Collections.ObjectModel.ReadOnlyCollection<UnityEngine.Vector2>
+	// System.Collections.ObjectModel.ReadOnlyCollection<XN.UILoopList.ItemInfo>
 	// System.Collections.ObjectModel.ReadOnlyCollection<byte>
 	// System.Collections.ObjectModel.ReadOnlyCollection<double>
 	// System.Collections.ObjectModel.ReadOnlyCollection<float>
@@ -722,6 +736,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Comparison<System.ValueTuple<int,object,object,float,object>>
 	// System.Comparison<System.ValueTuple<object,object>>
 	// System.Comparison<UnityEngine.Vector2>
+	// System.Comparison<XN.UILoopList.ItemInfo>
 	// System.Comparison<byte>
 	// System.Comparison<double>
 	// System.Comparison<float>
@@ -823,6 +838,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Predicate<System.ValueTuple<int,object,object,float,object>>
 	// System.Predicate<System.ValueTuple<object,object>>
 	// System.Predicate<UnityEngine.Vector2>
+	// System.Predicate<XN.UILoopList.ItemInfo>
 	// System.Predicate<byte>
 	// System.Predicate<double>
 	// System.Predicate<float>
@@ -1262,8 +1278,10 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.ValueTuple<object,byte>
 	// System.ValueTuple<object,int>
 	// System.ValueTuple<object,object>
+	// UnityEngine.Events.InvokableCall<UnityEngine.Vector2>
 	// UnityEngine.Events.InvokableCall<byte>
 	// UnityEngine.Events.InvokableCall<float>
+	// UnityEngine.Events.UnityAction<UnityEngine.Vector2>
 	// UnityEngine.Events.UnityAction<byte>
 	// UnityEngine.Events.UnityAction<float>
 	// UnityEngine.Events.UnityAction<int>
@@ -1275,6 +1293,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// UnityEngine.Events.UnityAction<object,object,object>
 	// UnityEngine.Events.UnityAction<object,object>
 	// UnityEngine.Events.UnityAction<object>
+	// UnityEngine.Events.UnityEvent<UnityEngine.Vector2>
 	// UnityEngine.Events.UnityEvent<byte>
 	// UnityEngine.Events.UnityEvent<float>
 	// UnityEngine.InputSystem.InputBindingComposite<float>
@@ -1357,6 +1376,9 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<System.ValueTuple<object,byte>>.Start<object>(object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<byte>.Start<object>(object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.Start<object>(object&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,object>(Cysharp.Threading.Tasks.UniTask.Awaiter&,object&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,object>(System.Runtime.CompilerServices.TaskAwaiter&,object&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<object>(object&)
 		// Cysharp.Threading.Tasks.UniTask.Awaiter Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter<object>(object)
 		// System.Void Cysharp.Threading.Tasks.Internal.ArrayPoolUtil.EnsureCapacity<Cysharp.Threading.Tasks.UniTask<byte>>(Cysharp.Threading.Tasks.UniTask<byte>[]&,int,Cysharp.Threading.Tasks.Internal.ArrayPool<Cysharp.Threading.Tasks.UniTask<byte>>)
 		// System.Void Cysharp.Threading.Tasks.Internal.ArrayPoolUtil.EnsureCapacityCore<Cysharp.Threading.Tasks.UniTask<byte>>(Cysharp.Threading.Tasks.UniTask<byte>[]&,int,Cysharp.Threading.Tasks.Internal.ArrayPool<Cysharp.Threading.Tasks.UniTask<byte>>)
@@ -1389,7 +1411,6 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// object System.Linq.Enumerable.Aggregate<Aliyun.Editor.OssManager.PutObjetKeyData,object>(System.Collections.Generic.IEnumerable<Aliyun.Editor.OssManager.PutObjetKeyData>,object,System.Func<object,Aliyun.Editor.OssManager.PutObjetKeyData,object>)
 		// bool System.Linq.Enumerable.All<InfoStruct.DyStruct>(System.Collections.Generic.IEnumerable<InfoStruct.DyStruct>,System.Func<InfoStruct.DyStruct,bool>)
 		// bool System.Linq.Enumerable.All<byte>(System.Collections.Generic.IEnumerable<byte>,System.Func<byte,bool>)
-		// bool System.Linq.Enumerable.All<object>(System.Collections.Generic.IEnumerable<object>,System.Func<object,bool>)
 		// bool System.Linq.Enumerable.Any<object>(System.Collections.Generic.IEnumerable<object>)
 		// bool System.Linq.Enumerable.Any<object>(System.Collections.Generic.IEnumerable<object>,System.Func<object,bool>)
 		// System.Collections.Generic.IEnumerable<object> System.Linq.Enumerable.Cast<object>(System.Collections.IEnumerable)
@@ -1450,14 +1471,12 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// object UnityEngine.Component.GetComponent<object>()
 		// object UnityEngine.Component.GetComponentInChildren<object>()
 		// object UnityEngine.Component.GetComponentInParent<object>()
-		// object[] UnityEngine.Component.GetComponents<object>()
 		// object[] UnityEngine.Component.GetComponentsInChildren<object>()
 		// object[] UnityEngine.Component.GetComponentsInChildren<object>(bool)
 		// object UnityEngine.GameObject.AddComponent<object>()
 		// object UnityEngine.GameObject.GetComponent<object>()
 		// object UnityEngine.GameObject.GetComponentInChildren<object>()
 		// object UnityEngine.GameObject.GetComponentInChildren<object>(bool)
-		// object[] UnityEngine.GameObject.GetComponents<object>()
 		// object[] UnityEngine.GameObject.GetComponentsInChildren<object>()
 		// object[] UnityEngine.GameObject.GetComponentsInChildren<object>(bool)
 		// bool UnityEngine.GameObject.TryGetComponent<object>(object&)

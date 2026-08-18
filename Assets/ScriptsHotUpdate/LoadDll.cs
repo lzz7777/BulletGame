@@ -29,6 +29,9 @@ namespace XN
 
         void Start()
         {
+            // 强行在AOT主工程中调用，彻底断绝IL2CPP剥离此类的念想
+            XN.AOT.AtlasEventWrapper.Preserve();
+
             Init();
         }
 
@@ -37,7 +40,8 @@ namespace XN
         private async UniTask Init()
         {
             // 1. 初始化在线配置（获取最新版本号）
-            await OnlineConfigHelper.Init(OnlineConfigName);
+            if (playMode == EPlayMode.HostPlayMode)
+                await OnlineConfigHelper.Init(OnlineConfigName);
             // 2. 启动核心热更流程
             InitYooAssets();
         }
@@ -67,7 +71,7 @@ namespace XN
                     break;
             }
 
-            
+
             // 3. 校验初始化结果
             if (initializationOperation?.Status == EOperationStatus.Succeed)
             {
@@ -134,7 +138,7 @@ namespace XN
         private async UniTask UpdatePackageHostPlayMode(ResourcePackage package)
         {
             string packageVersion = string.Empty;
-            
+
             // [状态1] 获取资源版本号
             bool requestVersionSuccess = false;
             while (!requestVersionSuccess)
@@ -178,8 +182,8 @@ namespace XN
             bool downloadSuccess = false;
             while (!downloadSuccess)
             {
-                downloadSuccess = await Download(package); 
-                
+                downloadSuccess = await Download(package);
+
                 if (!downloadSuccess)
                 {
                     Debug.LogError("下载热更包失败，准备弹出重试UI");
@@ -195,7 +199,8 @@ namespace XN
         {
             // 编辑器模拟：直接使用项目绝对路径读取Asset，无需打AB包
             var buildResult = EditorSimulateModeHelper.SimulateBuild(CodesPackageName);
-            var fileSystemParams = FileSystemParameters.CreateDefaultEditorFileSystemParameters(buildResult.PackageRootDirectory);
+            var fileSystemParams =
+                FileSystemParameters.CreateDefaultEditorFileSystemParameters(buildResult.PackageRootDirectory);
             var createParameters = new EditorSimulateModeParameters { EditorFileSystemParameters = fileSystemParams };
 
             var initOperation = package.InitializeAsync(createParameters);
@@ -225,7 +230,7 @@ namespace XN
             // 单机模式：只读取内置首包目录(StreamingAssets)，无网络请求
             var fileSystemParams = FileSystemParameters.CreateDefaultBuildinFileSystemParameters();
             var createParameters = new OfflinePlayModeParameters { BuildinFileSystemParameters = fileSystemParams };
-    
+
             var initOperation = package.InitializeAsync(createParameters);
             await initOperation;
             return initOperation;
@@ -260,7 +265,7 @@ namespace XN
         async UniTask<bool> Download(ResourcePackage package)
         {
             int downloadingMaxNum = 10; // 最大并发下载数
-            int failedTryAgain = 3;     // 失败自动重试次数
+            int failedTryAgain = 3; // 失败自动重试次数
 
             var downloader = package.CreateResourceDownloader(downloadingMaxNum, failedTryAgain);
 
@@ -296,10 +301,15 @@ namespace XN
             }
         }
 
-        private void OnStartDownloadFileFunction(DownloadFileData data) => Debug.Log($"开始下载：{data.FileName}，大小：{data.FileSize}");
-        private void OnDownloadOverFunction(DownloaderFinishData data) => Debug.Log("下载" + (data.Succeed ? "成功" : "失败"));
-        private void OnDownloadErrorFunction(DownloadErrorData data) => Debug.Log($"下载出错：{data.FileName}，错误：{data.ErrorInfo}");
-        
+        private void OnStartDownloadFileFunction(DownloadFileData data) =>
+            Debug.Log($"开始下载：{data.FileName}，大小：{data.FileSize}");
+
+        private void OnDownloadOverFunction(DownloaderFinishData data) =>
+            Debug.Log("下载" + (data.Succeed ? "成功" : "失败"));
+
+        private void OnDownloadErrorFunction(DownloadErrorData data) =>
+            Debug.Log($"下载出错：{data.FileName}，错误：{data.ErrorInfo}");
+
         private void OnDownloadProgressUpdateFunction(DownloadUpdateData data)
         {
             // TODO: 发送给UI层更新 Slider 进度条
@@ -317,6 +327,7 @@ namespace XN
 
         // 缓存 DLL 字节码
         private static Dictionary<string, TextAsset> s_assetDatas = new();
+
         // 热更主程序集对象
         private static Assembly _hotUpdateAss;
 
@@ -338,7 +349,7 @@ namespace XN
             foreach (var aotDllName in AOTMetaAssemblyFiles)
             {
                 byte[] dllBytes = ReadBytesFromStreamingAssets(aotDllName);
-                
+
                 // 将 AOT 的二进制数据交由 HybridCLR 接管泛型分发
                 LoadImageErrorCode err = RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, mode);
                 Debug.Log($"LoadMetadataForAOTAssembly:{aotDllName}. mode:{mode} ret:{err}");
@@ -383,12 +394,12 @@ namespace XN
             Type mainType = _hotUpdateAss.GetType("XN.HotUpdateAsset");
 
             // 严谨查找：带有一个 EPlayMode 参数的 StartLoadAssets 方法（防止重载混淆）
-            MethodInfo startMethod = mainType.GetMethod("StartLoadAssets", new Type[] { typeof(YooAsset.EPlayMode) }); 
+            MethodInfo startMethod = mainType.GetMethod("StartLoadAssets", new Type[] { typeof(YooAsset.EPlayMode) });
 
             if (startMethod != null)
             {
                 // 触发方法执行，将当前 AOT 层的运行模式传递给热更层
-                startMethod.Invoke(null, new object[] { this.playMode }); 
+                startMethod.Invoke(null, new object[] { this.playMode });
             }
             else
             {

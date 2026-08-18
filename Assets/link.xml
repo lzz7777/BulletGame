@@ -1,0 +1,7 @@
+<linker>
+    <!-- 保留你自己的 Common 程序集 -->
+    <assembly fullname="Common" preserve="all"/>
+
+    <!-- 保留图集相关的 U2D 程序集 -->
+    <assembly fullname="UnityEngine.U2D" preserve="all"/>
+</linker>

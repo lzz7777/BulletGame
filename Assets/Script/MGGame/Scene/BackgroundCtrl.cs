@@ -76,7 +76,7 @@ namespace XN
                         str += "B";
                     }
 
-                    YooAssetManager.Instance.LoadSpriteAsync(str, spriteRand);
+                    YooAssetManager.Instance.LoadSpriteAsync("Scene",str, spriteRand);
 
                     //位置放最后一个
                     tf.SetAsLastSibling();
@@ -108,7 +108,7 @@ namespace XN
                     str += "A";
                 }
 
-                YooAssetManager.Instance.LoadSpriteAsync(str, spriteRand);
+                YooAssetManager.Instance.LoadSpriteAsync("Scene",str, spriteRand);
             }
         }
 
