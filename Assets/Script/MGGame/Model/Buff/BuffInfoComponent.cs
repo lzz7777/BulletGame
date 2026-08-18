@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using cfg;
-using UnityEngine;
 
 namespace XN
 {
@@ -46,6 +45,15 @@ namespace XN
         public override void OnDestroy()
         {
             this.OnDestroySystem();
+            
+            BuffId = default;
+            EndTime = default;
+            Time = default;
+            PlayerId = default;
+            IsDiscard = default;
+            Functions.Clear();
+            Mutexes.Clear();
+            EffectDeviceGroup.Clear();
         }
     }
 }

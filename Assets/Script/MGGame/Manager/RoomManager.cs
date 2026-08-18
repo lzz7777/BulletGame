@@ -11,21 +11,21 @@ namespace XN
     {
         public GameObject UnitRoot;
         public GameObject CanvasRoleUI;
-        
+
         public List<List<Vector2>> GroupLinePos = new();
         private List<List<float>> _groupData = new();
         private List<BackgroundCtrlBase> _backgroundCtrls = new();
-        
+
         public long RoomUnitId;
 
         protected override async void OnInit()
         {
             await UniTask.WaitUntil(() => YooAssetManager.Instance.IsInitialized);
             await UniTask.WaitUntil(() => TotalConfigManager.Instance.IsLoadOver);
-            
+
             InitLinePos();
             InitScene();
-            
+
             EventsManager.AddListener(GameEnum.UpdateGameState, UpdateGameState);
             EventsManager.AddListener<int>(GameEnum.EnterRoom, EnterRoom);
             EventsManager.AddListener(GameEnum.EndRoom, EndRoom);
@@ -66,64 +66,47 @@ namespace XN
         private void UpdateCarsMileage()
         {
             RoomHelper.CarsSort();
-            
+
             var roomInfoComp = RoomHelper.GetRoomInfoComponent();
             var carIds = roomInfoComp.CarIds;
-            
-            _groupData.Clear();
-            float targetMileage = EntityManager.Instance.GetEntityById(carIds[0]).GetComponent<CarInfoComponent>()
-                .Mileage;
-            float targetDis = targetMileage * TotalConfigManager.ConfigManager.ConstConfigCategory.TierStandard;
-            
-            if (GameConst.CarAniType == 1)
-            {
-                var firstTarget = TotalConfigManager.ConfigManager.ConstConfigCategory.FirstTarget;
-                var lastTarget = TotalConfigManager.ConfigManager.ConstConfigCategory.LastTarget;
-                float max = CarHelper.GetXByPct(1-firstTarget);
-                float min = CarHelper.GetXByPct(lastTarget);
-                var maxMileage = EntityManager.Instance.GetEntityById(carIds[0]).GetComponent<CarInfoComponent>().Mileage;
-                var minMileage = EntityManager.Instance.GetEntityById(carIds[6]).GetComponent<CarInfoComponent>().Mileage;
-                float teamDiff = 0.2f; //队列内错开距离
-                for (int i = 0; i < carIds.Count; i++)
-                {
-                    if (Mathf.Approximately(minMileage, maxMileage))
-                    {
-                        EntityManager.Instance.GetEntityById(carIds[i]).GetComponent<CarPositionComponent>().SetPosX(max - (i * teamDiff));
-                    }
-                    else
-                    {
-                        float mileage = EntityManager.Instance.GetEntityById(carIds[i]).GetComponent<CarInfoComponent>().Mileage;
-                        float pro = (mileage - minMileage) / (maxMileage - minMileage);
-                        float targetX = pro * (max - min) + min - (i * teamDiff);
-                        EntityManager.Instance.GetEntityById(carIds[i]).GetComponent<CarPositionComponent>().SetPosX(targetX);
-                    }
-                
-                }
-            }
-            else
-            {
-                for (int i = 0; i < carIds.Count; i++)
-                {
-                    long carId = carIds[i];
-                    long lastCarId = carIds[Math.Max(0, i - 1)];
-                    float targetX = CarHelper.GetXByMileage(lastCarId, carId, i, targetDis, _groupData);
 
-                    EntityManager.Instance.GetEntityById(carId).GetComponent<CarPositionComponent>().SetPosX(targetX);
+            _groupData.Clear();
+
+            var firstTarget = TotalConfigManager.ConfigManager.ConstConfigCategory.FirstTarget;
+            var lastTarget = TotalConfigManager.ConfigManager.ConstConfigCategory.LastTarget;
+            float max = CarHelper.GetXByPct(1 - firstTarget);
+            float min = CarHelper.GetXByPct(lastTarget);
+            var maxMileage = EntityManager.Instance.GetEntityById(carIds[0]).GetComponent<CarInfoComponent>().Mileage;
+            var minMileage = EntityManager.Instance.GetEntityById(carIds[6]).GetComponent<CarInfoComponent>().Mileage;
+            float teamDiff = 0.2f; //队列内错开距离
+            for (int i = 0; i < carIds.Count; i++)
+            {
+                if (Mathf.Approximately(minMileage, maxMileage))
+                {
+                    EntityManager.Instance.GetEntityById(carIds[i]).GetComponent<CarPositionComponent>()
+                        .SetPosX(max - (i * teamDiff));
+                }
+                else
+                {
+                    float mileage = EntityManager.Instance.GetEntityById(carIds[i]).GetComponent<CarInfoComponent>()
+                        .Mileage;
+                    float pro = (mileage - minMileage) / (maxMileage - minMileage);
+                    float targetX = pro * (max - min) + min - (i * teamDiff);
+                    EntityManager.Instance.GetEntityById(carIds[i]).GetComponent<CarPositionComponent>()
+                        .SetPosX(targetX);
                 }
             }
-            
-            
         }
 
         private void InitLinePos()
         {
             float startPosX = -1.8f;
-            float startPosY = 1.75f;// 4.25f;
+            float startPosY = 1.75f; // 4.25f;
             float intervalY = 0.75f;
-            
+
             //从第八名开始，放屏幕下面，不入屏幕
             float tempIntervalY = 4.5f;
-            
+
             int maxCarNum = TotalConfigManager.ConfigManager.ConstConfigCategory.MaxPlayer;
             for (int i = 0; i < maxCarNum; i++)
             {
@@ -131,7 +114,7 @@ namespace XN
                 {
                     startPosY -= tempIntervalY;
                 }
-                
+
                 List<Vector2> linePos = new();
                 for (int j = 0; j < 2; j++)
                 {
@@ -170,7 +153,7 @@ namespace XN
                 backgroundCtrl.UpdateScene();
             }
         }
-        
+
         /// <summary>
         /// 初始化房间数据
         /// </summary>
@@ -181,21 +164,21 @@ namespace XN
 
             var roomUnit = SceneHelper.Scene().AddChild(EntityType.Room);
             RoomUnitId = roomUnit.Id;
-            
+
             var roomInfoComp = roomUnit.AddComponent<RoomInfoComponent>();
             roomInfoComp.RoomID = roomId;
             roomInfoComp.EndTime = roomConf.GameTime;
             roomInfoComp.SetTimeSceneInfo(0);
-            
+
             //继承上一局积分逻辑
             var sceneInfoComp = SceneHelper.GetSceneInfoComponent();
             var pointStartAdd = TotalConfigManager.ConfigManager.ConstConfigCategory.PointStartAdd;
             roomInfoComp.ScorePool = sceneInfoComp.LastScorePool * pointStartAdd;
             roomInfoComp.FansPool = sceneInfoComp.LastFansPool;
             sceneInfoComp.ClearPoolData();
-                
+
             CreateCars();
-            
+
             EventsManager.BroadCast(GameEnum.ViewBattleMainRefreshEvent);
         }
 
@@ -206,9 +189,9 @@ namespace XN
         {
             EntityManager.Instance.RemoveEntity(RoomUnitId);
             RoomUnitId = 0;
-            
+
             GC.Collect();
-            
+
             // 模拟 Main.cs 加入强切充值状态
             GameStateCtrl.UpdateState(MGGameState.未进入游戏, true);
 
@@ -236,14 +219,13 @@ namespace XN
                     {
                         nameList.Add(zodiacName.ToString());
                     }
-                    
+
                     break;
                 case FightRoomType.FreeRoom:
                     nameList = new List<string> { "逮虾户", "86上山", "奔驰上树", "藤原豆坊", "F1", "钣金王", "GTR" };
                     break;
-                
             }
-            
+
             for (int i = 0; i < 7; i++)
             {
                 Vector2 startPos = GroupLinePos[i][1];
@@ -251,13 +233,13 @@ namespace XN
                 RoomHelper.CreateCar(startPos, i, nameList[i]);
             }
         }
-        
+
         /// <summary>
         /// 更新一个人 初始加入游戏玩法的各排行信息， 辅助后续对比排名
         /// </summary>
         /// <param name="playerId"></param>
         /// <param name="ranks"></param>
-         public void UpdatePlayerRank(string playerId, List<RankNode> ranks)
+        public void UpdatePlayerRank(string playerId, List<RankNode> ranks)
         {
             var roomInfoComp = RoomHelper.GetRoomInfoComponent();
 
@@ -265,7 +247,8 @@ namespace XN
 
             foreach (RankNode oneRank in ranks)
             {
-                if (!rankTypeDic.TryGetValue((RankType)oneRank.RankType, out Dictionary<string, RankNode> oneRankTypeDic))
+                if (!rankTypeDic.TryGetValue((RankType)oneRank.RankType,
+                        out Dictionary<string, RankNode> oneRankTypeDic))
                 {
                     oneRankTypeDic = new Dictionary<string, RankNode>();
                     rankTypeDic[(RankType)oneRank.RankType] = oneRankTypeDic;
@@ -279,13 +262,14 @@ namespace XN
         {
             var roomInfoComp = RoomHelper.GetRoomInfoComponent();
 
-            if(roomInfoComp.RankTypeDic.TryGetValue(rankType, out Dictionary<string, RankNode> rankTypeDic))
+            if (roomInfoComp.RankTypeDic.TryGetValue(rankType, out Dictionary<string, RankNode> rankTypeDic))
             {
                 if (rankTypeDic.TryGetValue(playerId, out RankNode oneRank))
                 {
                     return oneRank;
                 }
             }
+
             return new RankNode
             {
                 RankType = (int)rankType,

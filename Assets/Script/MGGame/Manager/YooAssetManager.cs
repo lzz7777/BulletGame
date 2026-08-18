@@ -384,6 +384,18 @@ namespace XN
             return sprite;
         }
         
+        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, Image image, bool setNative = false)
+        {
+            var sprite = await GetSpriteFromAtlas(atlasName, location);
+            if (sprite == null) return null;
+            image.sprite = sprite;
+            if (setNative)
+            {
+                image.SetNativeSize();
+            }
+            return sprite;
+        }
+        
         public async UniTask<Sprite> LoadSpriteAsync(string location, SpriteRenderer spriteRand)
         {
             var sprite = await LoadSpriteAsync(location);

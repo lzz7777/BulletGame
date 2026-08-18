@@ -12,6 +12,7 @@ namespace XN
 
         public override void OnDestroy()
         {
+            BagDataDict.Clear();
         }
     }
 }

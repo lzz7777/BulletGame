@@ -1,22 +1,31 @@
+using System;
+using UnityEngine;
+
 namespace XN
 {
     public class CarPositionComponent : IComponent
     {
+        [SerializeField]
         public float X { get; set; }
+        [SerializeField]
         public float Y { get; set; }
         
-        public float MoveXTime { get; set; }
-        public float MoveYTime { get; set; }
+        [SerializeField]
+        public Action MoveXEndCb { get; set; }
         
-        public bool InitPos { get; set; }
+        [SerializeField]
+        public Action MoveYEndCb { get; set; }
         
         public override void OnCreate()
         {
-            MoveXTime = 0.4f;
         }
 
         public override void OnDestroy()
         {
+            X = default;
+            Y = default;
+            MoveXEndCb = default;
+            MoveYEndCb = default;
         }
     }
 }

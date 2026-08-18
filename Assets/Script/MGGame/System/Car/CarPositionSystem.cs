@@ -8,59 +8,96 @@ namespace XN
         [UpdateSystem]
         public static void Update(this CarPositionComponent self, float deltaTime)
         {
+            self.UpdatePos(deltaTime);
+            
             if (!GameStateCtrl.IsGaming)
             {
                 return;
             }
-            
+
             self.UpdateChangeGroup(deltaTime);
             self.UpdateChangeLine(deltaTime);
-
-            if (GameConst.CarAniType == 1)
-            {
-                self.UpdatePos(deltaTime);   
-            }
-            else
-            {
-                self.UpdateX(deltaTime);
-                self.UpdateY(deltaTime);
-            }
         }
 
         public static void UpdatePos(this CarPositionComponent self, float deltaTime)
         {
-            CarViewComponent carViewComp = self.Entity.GetComponent<CarViewComponent>();
-            Transform tran = carViewComp.Car.transform;
+            var carViewComp = self.Entity.GetComponent<CarViewComponent>();
+            var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
+
+            var targPos = new Vector3(self.X, self.Y, 0);
+
+            if (carViewComp != null)
+            {
+                targPos = carViewComp.Car.transform.position;
+            }
+            
             float speed = 3;
-            float xPos = tran.position.x + (self.X - tran.position.x) * deltaTime * speed;
-            float yPos = tran.position.y + (self.Y - tran.position.y) * deltaTime * speed;
-            
-            tran.position = new Vector3(xPos, yPos, tran.position.z);
-            
+            float xPos = targPos.x + (self.X - targPos.x) * deltaTime * speed;
+            float yPos = targPos.y + (self.Y - targPos.y) * deltaTime * speed;
+            var newPos = new Vector3(xPos, yPos, targPos.z);
+
+            if (Math.Abs(targPos.x - newPos.x) < 0.1f)
+            {
+                if (self.MoveXEndCb != null)
+                {
+                    self.MoveXEndCb();
+                    self.MoveXEndCb = null;
+                }
+
+                if (!carInfoComp.CanMoveX())
+                    carInfoComp.RemoveMoveType(CarMoveType.MoveX);
+            }
+
+            if (Math.Abs(targPos.y - newPos.y) < 0.1f)
+            {
+                if (self.MoveYEndCb != null)
+                {
+                    self.MoveYEndCb();
+                    self.MoveYEndCb = null;
+                }
+
+                if (!carInfoComp.CanMoveY())
+                {
+                    carInfoComp.RemoveMoveType(CarMoveType.MoveY);
+                }
+            }
+
+            if (carViewComp?.Car != null)
+                carViewComp.Car.transform.position = newPos;
         }
 
-        public static void SetPosX(this CarPositionComponent self, float x, float moveTime = 0)
+        public static void SetPosX(this CarPositionComponent self, float x, Action onFinish = null)
         {
+            var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
+            if (!carInfoComp.CanMoveX())
+                return;
+
             self.X = x;
-            self.InitPos = true;
 
-            if (moveTime != 0)
+            if (onFinish != null)
             {
-                self.MoveXTime = moveTime;
+                self.MoveXEndCb = onFinish;
             }
+
+            carInfoComp.AddMoveType(CarMoveType.MoveX);
         }
 
-        public static void SetPosY(this CarPositionComponent self, float y, float moveTime = 0)
+        public static void SetPosY(this CarPositionComponent self, float y, Action onFinish = null)
         {
+            var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
+            if (!carInfoComp.CanMoveY())
+                return;
+
             self.Y = y;
-            self.InitPos = true;
-            
-            if (moveTime != 0)
+
+            if (onFinish != null)
             {
-                self.MoveYTime = moveTime;
+                self.MoveYEndCb = onFinish;
             }
+
+            carInfoComp.AddMoveType(CarMoveType.MoveY);
         }
-        
+
         /// <summary>
         /// 更新组
         /// </summary>
@@ -69,12 +106,10 @@ namespace XN
         private static void UpdateChangeGroup(this CarPositionComponent self, float deltaTime)
         {
             var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
-            bool canMove = carInfoComp.CanMoveY();
-            if (!canMove)
-            {
+            bool canMove = carInfoComp?.CanMoveY() ?? false;
+            if (!canMove || carInfoComp.IsDiscard)
                 return;
-            }
-            
+
             var rank = RoomHelper.GetCarRank(self.Entity.Id);
             if (carInfoComp.Group == rank)
             {
@@ -82,15 +117,42 @@ namespace XN
             }
 
             carInfoComp.Group = rank;
-            
+
             var groupLinePos = RoomManager.Instance.GroupLinePos;
             var moveY = groupLinePos[rank][carInfoComp.Line].y;
             var carViewComp = self.Entity.GetComponent<CarViewComponent>();
-            self.SetPosY(moveY, 0.5f);
-            carViewComp.RefreshAllOrder();
-            carViewComp.UpdateDeviceScale();
-                
+
+            if (carInfoComp.Group <= 6 && carViewComp == null)
+            {
+                //从屏幕外面冲到屏幕里面
+                carViewComp = self.Entity.AddComponent<CarViewComponent>();
+                carViewComp.InitSystem();
+                //刷新特效
+                carViewComp.RefreshEffect();
+            }
+
+            self.SetPosY(moveY, self.UpdateChangeGroupFinish);
+
+            carViewComp?.RefreshAllOrder();
+            carViewComp?.UpdateDeviceScale();
+
             EventsManager.BroadCast(GameEnum.CarChangeGroup, carInfoComp.Entity.Id);
+        }
+
+        /// <summary>
+        /// 更换组完成事件
+        /// </summary>
+        /// <param name="self"></param>
+        private static void UpdateChangeGroupFinish(this CarPositionComponent self)
+        {
+            var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
+
+            if (carInfoComp.Group >= 7 && self.Entity.GetComponent(out CarViewComponent viewComp))
+            {
+                //从屏幕里面冲到外面
+                //删除view组件
+                self.Entity.RemoveComponent(viewComp);
+            }
         }
 
         /// <summary>
@@ -101,10 +163,14 @@ namespace XN
         private static void UpdateChangeLine(this CarPositionComponent self, float deltaTime)
         {
             var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
+            bool canMove = carInfoComp?.CanMoveY() ?? false;
+            if (!canMove || carInfoComp.IsDiscard)
+                return;
+            
             var changeRoadCD = TotalConfigManager.ConfigManager.ConstConfigCategory.ChangeRoadCD;
             //changeRoadTime ms->s
-            float changeRoadTime = TotalConfigManager.ConfigManager.ConstConfigCategory.ChangeRoadTime / 1000.0f;
-            
+            //float changeRoadTime = TotalConfigManager.ConfigManager.ConstConfigCategory.ChangeRoadTime / 1000.0f;
+
             carInfoComp.ChangeLineTime += deltaTime;
 
             bool canMoveY = false;
@@ -123,66 +189,12 @@ namespace XN
                 {
                     carInfoComp.ChangeLineDelay = 0;
                 }
-                
+
                 carInfoComp.ChangeLineTime = 0;
                 carInfoComp.Line = carInfoComp.Line == 0 ? 1 : 0;
                 float targetY = RoomManager.Instance.GroupLinePos[carInfoComp.Group][carInfoComp.Line].y;
-                self.SetPosY(targetY, changeRoadTime);
+                self.SetPosY(targetY);
             }
-        }
-
-        private static void UpdateX(this CarPositionComponent self, float deltaTime)
-        {
-            var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
-
-            if (!carInfoComp.CanMoveX() || !self.InitPos)
-            {
-                return;
-            }
-
-            var carViewComp = self.Entity.GetComponent<CarViewComponent>();
-            float targetX = self.X;
-            float dis = Math.Abs(targetX - carViewComp.Car.transform.position.x);
-
-            if (dis < 0.001)
-            {
-                return;
-            }
-
-            if (self.MoveXTime == 0)
-            {
-                self.MoveXTime = 0.1f;
-            }
-            
-            carViewComp.DoMoveX(targetX, self.MoveXTime);
-            self.MoveXTime = 0;
-        }
-
-        private static void UpdateY(this CarPositionComponent self, float deltaTime)
-        {
-            var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
-
-            if (!carInfoComp.CanMoveY() || !self.InitPos)
-            {
-                return;
-            }
-            
-            var carViewComp = self.Entity.GetComponent<CarViewComponent>();
-            float targetY = self.Y;
-            float dis = Math.Abs(targetY - carViewComp.Car.transform.position.y);
-
-            if (dis < 0.001)
-            {
-                return;
-            }
-
-            if (self.MoveYTime == 0)
-            {
-                self.MoveYTime = 0.5f;
-            }
-            
-            carViewComp.DoMoveY(targetY, self.MoveYTime);
-            self.MoveYTime = 0;
         }
     }
 }

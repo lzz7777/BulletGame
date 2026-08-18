@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using cfg;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Spine;
-using Spine.Unity;
 using UnityEngine;
 
 namespace XN
@@ -25,7 +22,7 @@ namespace XN
             }
 
             self.Car.transform.DOKill();
-                
+
             ObjectPoolManager.Instance.ReturnToPool(self.TrackLightEffect?.gameObject);
             ObjectPoolManager.Instance.ReturnToPool(self.CarCtrl.gameObject);
             ObjectPoolManager.Instance.ReturnToPool(self.Car);
@@ -33,60 +30,26 @@ namespace XN
             ObjectPoolManager.Instance.ReturnToPool(self.ViewCarTitleItem?.gameObject);
         }
 
-        /// <summary>
-        /// 设置位置x
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="posX"></param>
-        public static void SetPosX(this CarViewComponent self, float posX)
+        public static async UniTask InitSystem(this CarViewComponent self)
         {
-            self.Car.transform.position =
-                new Vector3(posX, self.Car.transform.position.y, self.Car.transform.position.z);
-        }
+            var carPositionComp = self.Entity.GetComponent<CarPositionComponent>();
 
-        /// <summary>
-        /// do动画x
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="x"></param>
-        /// <param name="time"></param>
-        public static void DoMoveX(this CarViewComponent self, float x, float time)
-        {
-            var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
+            var carObj = await ObjectPoolManager.Instance.GetFromPool("Car", RoomManager.Instance.UnitRoot.transform);
+            carObj.transform.position = new Vector3(carPositionComp.X, carPositionComp.Y, 0);
 
-            bool canMove = carInfoComp.CanMoveX();
-            if (!canMove)
-            {
-                return;
-            }
+            var carInfoObj =
+                await ObjectPoolManager.Instance.GetFromPool<ViewCarInfoItem>(RoomManager.Instance.CanvasRoleUI
+                    .transform);
+            var carInfo = carInfoObj.GetComponent<ViewCarInfoItem>();
+            carInfo.TargetEntity = self.Entity.Id;
 
-            carInfoComp.AddMoveType(CarMoveType.MoveX);
-            self.Car.transform.DOMoveX(x, time).OnComplete(() => { carInfoComp.RemoveMoveType(CarMoveType.MoveX); });
-        }
+            self.Car = carObj;
+            self.ViewCarInfoItem = carInfo;
+            await self.RefreshDevice();
 
-        /// <summary>
-        /// do动画y
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="y"></param>
-        /// <param name="time"></param>
-        public static void DoMoveY(this CarViewComponent self, float y, float time, Action onComplete = null)
-        {
-            var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
-
-            bool canMove = carInfoComp.CanMoveY();
-            if (!canMove)
-            {
-                return;
-            }
-
-            carInfoComp.AddMoveType(CarMoveType.MoveY);
-            self.Car.transform.DOMoveY(y, time).OnComplete(() =>
-            {
-                carInfoComp.RemoveMoveType(CarMoveType.MoveY);
-
-                onComplete?.Invoke();
-            });
+            self.ViewCarInfoItem.Init();
+            self.ViewCarInfoItem.RefreshInfo();
+            self.ViewCarInfoItem.RefreshMembers();
         }
 
         /// <summary>
@@ -96,10 +59,13 @@ namespace XN
         /// <param name="scale"></param>
         public static void RefreshCarScaleX(this CarViewComponent self)
         {
+            if (self == null)
+                return;
+
             var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
-            
+
             //有人大小1。1，没人1
-            self.Car.transform.localScale = carInfoComp.PlayerIds.Count > 0 ?  Vector3.one * 1.1f : Vector3.one;
+            self.Car.transform.localScale = carInfoComp.PlayerIds.Count > 0 ? Vector3.one * 1.1f : Vector3.one;
         }
 
         /// <summary>
@@ -128,7 +94,7 @@ namespace XN
                 self.EffectGroup.Clear();
 
                 ObjectPoolManager.Instance.ReturnToPool(self.CarCtrl.gameObject);
-                
+
                 //回收自定义文本
                 ObjectPoolManager.Instance.ReturnToPool(self.ViewCarTitleItem?.gameObject);
                 self.ViewCarTitleItem = null;
@@ -151,13 +117,13 @@ namespace XN
 
             self.CarCtrl = carCtrl;
             self.UpdateDeviceScale();
-            
+
             self.CarCtrl.orderCtrl.RefreshLayerOrder(self.Entity.GetComponent<CarInfoComponent>().GetCarOrder());
 
             self.CarCtrl.skinCtrl.SetSkin(deviceInfoConf.SpineSkin);
-            
+
             self.SwitchSpine(carInfoComp.GetState());
-            
+
             return true;
         }
 
@@ -167,6 +133,9 @@ namespace XN
         /// <param name="self"></param>
         public static void UpdateDeviceScale(this CarViewComponent self)
         {
+            if (self == null)
+                return;
+
             var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
             int deviceId = carInfoComp.GetCarDeviceId();
             var deviceInfoConf = TotalConfigManager.ConfigManager.DeviceInfoConfigCategory.Get(deviceId);
@@ -175,9 +144,9 @@ namespace XN
 
             if (GameStateCtrl.IsGameStart && carInfoComp.Group == 0)
             {
-                extraScale =GameConst.FirstCarScale;
+                extraScale = GameConst.FirstCarScale;
             }
-            
+
             self.CarCtrl.transform.localScale = Vector3.one * deviceInfoConf.Size / 10000f * extraScale;
         }
 
@@ -190,6 +159,9 @@ namespace XN
         /// <returns></returns>
         public static async UniTask<EffectCtrl> AddEffect(this CarViewComponent self, int effectId, int effectSkin)
         {
+            if (self == null)
+                return null;
+
             var effConf = TotalConfigManager.ConfigManager.EffectInfoConfigCategory.Get(effectId, effectSkin);
             Transform effectPoint = null;
 
@@ -232,7 +204,7 @@ namespace XN
             }
 
             var carOrder = self.Entity.GetComponent<CarInfoComponent>().GetCarOrder();
-            
+
             // 先设置位置和层级，再播放动画，防止出现一帧在原点的闪烁
             effectCtrl.RefreshLayerOrder(carOrder);
             effectCtrl.Play(effectId, effectSkin);
@@ -246,7 +218,8 @@ namespace XN
         /// <param name="self"></param>
         public static async UniTask RefreshTrackLight(this CarViewComponent self)
         {
-            await UniTask.CompletedTask;
+            if (self == null)
+                return;
 
             if (!GameStateCtrl.IsGameStart)
             {
@@ -357,6 +330,9 @@ namespace XN
         /// <param name="self"></param>
         public static async UniTask RefreshAllOrder(this CarViewComponent self)
         {
+            if (self == null)
+                return;
+
             var carOrder = self.Entity.GetComponent<CarInfoComponent>().GetCarOrder();
 
             foreach (var effectViewData in self.EffectGroup.Values)
@@ -368,7 +344,7 @@ namespace XN
 
             self.CarCtrl?.orderCtrl.RefreshLayerOrder(carOrder);
         }
-        
+
         public static void PlayCarTint(this CarViewComponent self)
         {
             self?.CarCtrl?.tintCtrl.Play();
@@ -382,16 +358,16 @@ namespace XN
         {
             var carInfoComp = self.Entity.GetComponent<CarInfoComponent>();
 
-            if (!carInfoComp.CanMoveX())
-            {
+            if (!carInfoComp.CanMoveX() || !carInfoComp.CanMoveY())
                 return;
-            }
 
             carInfoComp.AddMoveType(CarMoveType.MoveX);
+            carInfoComp.AddMoveType(CarMoveType.MoveY);
             float targetX = self.Car.transform.position.x - 1;
             self.Car.transform.DOMoveX(targetX, 0.1f).SetEase(Ease.OutSine).OnComplete(() =>
             {
                 carInfoComp.RemoveMoveType(CarMoveType.MoveX);
+                carInfoComp.RemoveMoveType(CarMoveType.MoveY);
             });
         }
 
@@ -409,7 +385,7 @@ namespace XN
                 self.ViewCarTitleItem = null;
                 return;
             }
-            
+
             var targetPlayerId = playerIds[0];
             var playerInfoComp = RoomHelper.GetRoomInfoComponent().GetPlayerInfoComponent(targetPlayerId);
             string title = playerInfoComp.Title;
@@ -438,6 +414,7 @@ namespace XN
             {
                 localPos = Vector3.zero;
             }
+
             self.ViewCarTitleItem.OnRefresh(new ViewCarTitleItemData()
             {
                 Title = title,

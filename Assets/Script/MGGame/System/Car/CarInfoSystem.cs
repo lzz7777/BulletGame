@@ -13,7 +13,8 @@ namespace XN
         {
             if (self.IsDiscard && self.CanMoveY())
             {
-                self.Entity.GetComponent<CarViewComponent>().DoMoveY(-10, 2, () => { EntityManager.Instance.RemoveEntity(self.Entity); });
+                //self.Entity.GetComponent<CarViewComponent>().DoMoveY(-10, 2, () => { EntityManager.Instance.RemoveEntity(self.Entity); });
+                self.Entity.GetComponent<CarPositionComponent>().SetPosY(-10, () => { EntityManager.Instance.RemoveEntity(self.Entity); });
             }
 
             self.UpdateState(deltaTime);
@@ -106,7 +107,7 @@ namespace XN
         {
             self.Speed = value;
         }
-
+        
         /// <summary>
         /// 判断是否可以移动X
         /// </summary>

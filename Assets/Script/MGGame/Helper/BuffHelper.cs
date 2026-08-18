@@ -67,11 +67,11 @@ namespace XN
             if (fristPid != carInfoComp.PlayerIds[0])
             {
                 //第一位变动
-                carViewComp.SwitchSkin();
+                carViewComp?.SwitchSkin();
             }
             
-            carViewComp.ViewCarInfoItem.RefreshMembers();
-            carViewComp.RefreshCarTitle();
+            carViewComp?.ViewCarInfoItem.RefreshMembers();
+            carViewComp?.RefreshCarTitle();
             
             EventsManager.BroadCast(GameEnum.ViewMatchRankNodeRefreshEvent);
             EventsManager.BroadCast(GameEnum.ViewBattleMainRefreshEvent);

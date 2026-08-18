@@ -214,7 +214,7 @@ namespace XN
             _entitiesDic[entity.Id] = entity;
 
 #if UNITY_EDITOR
-            var go = new GameObject($"Entity_{entity.Id}");
+            var go = new GameObject($"Entity_{entity.Tag}_{entity.Id}");
             var viewer = go.AddComponent<EntityViewer>();
             viewer.Entity = entity;
             viewer.transform.SetParent(_entityRoot);

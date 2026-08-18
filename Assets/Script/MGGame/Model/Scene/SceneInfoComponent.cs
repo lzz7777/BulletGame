@@ -9,7 +9,7 @@ namespace XN
         /// 场景组id
         /// </summary>
         public int SceneId { get; set; }
-        
+
         /// <summary>
         /// 上吧积分池
         /// </summary>
@@ -19,7 +19,7 @@ namespace XN
         /// 上吧粉丝池
         /// </summary>
         public double LastFansPool { get; set; }
-        
+
         public override void OnCreate()
         {
             SceneId = 1;
@@ -27,6 +27,11 @@ namespace XN
 
         public override void OnDestroy()
         {
+            AnchorOpenId = default;
+            RoomId = default;
+            SceneId = default;
+            LastScorePool = default;
+            LastFansPool = default;
         }
     }
 }

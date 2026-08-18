@@ -47,8 +47,12 @@ namespace XN
         /// <param name="carId"></param>
         public static async UniTask DoCarHelp(string playerId, long carId)
         {
+            var carViewComp = EntityManager.Instance.GetEntityById(carId).GetComponent<CarViewComponent>();
+            if (carViewComp == null)
+                return;
+
             var targetRt =
-                EntityManager.Instance.GetEntityById(carId).GetComponent<CarViewComponent>().ViewCarInfoItem
+                carViewComp.ViewCarInfoItem
                     .transform as RectTransform;
             var go = await ObjectPoolManager.Instance.GetFromPool<ViewCarHelpItem>(targetRt);
             var item = go.GetComponent<ViewCarHelpItem>();
@@ -76,7 +80,7 @@ namespace XN
                     break;
                 case ChangeType.ShieldAdd:
                 case ChangeType.ShieldDel:
-                    EntityManager.Instance.GetEntityById(carId).GetComponent<CarViewComponent>().ViewCarInfoItem
+                    EntityManager.Instance.GetEntityById(carId).GetComponent<CarViewComponent>()?.ViewCarInfoItem
                         .RefreshShield();
                     break;
             }
@@ -90,8 +94,12 @@ namespace XN
         /// <param name="changeValue"></param>
         public static async UniTask DoAttributeFloat(long carId, ChangeType changeType, int changeValue)
         {
+            var carViewComp = EntityManager.Instance.GetEntityById(carId).GetComponent<CarViewComponent>();
+            if (carViewComp == null)
+                return;
+
             var targetRt =
-                EntityManager.Instance.GetEntityById(carId).GetComponent<CarViewComponent>().ViewCarInfoItem
+                carViewComp.ViewCarInfoItem
                     .transform as RectTransform;
             var go = await ObjectPoolManager.Instance.GetFromPool<ViewAttributeFloatItem>(targetRt);
             if (!go)
@@ -164,23 +172,11 @@ namespace XN
             carPositionComp.Y = startPos.y;
 
             //view层
-            var carObj = await ObjectPoolManager.Instance.GetFromPool("Car", RoomManager.Instance.UnitRoot.transform);
-            carObj.transform.position = startPos;
-
-            var carInfoObj =
-                await ObjectPoolManager.Instance.GetFromPool<ViewCarInfoItem>(RoomManager.Instance.CanvasRoleUI
-                    .transform);
-            var carInfo = carInfoObj.GetComponent<ViewCarInfoItem>();
-            carInfo.TargetEntity = carEntity.Id;
-
-            var carViewComp = carEntity.AddComponent<CarViewComponent>();
-            carViewComp.Car = carObj;
-            carViewComp.ViewCarInfoItem = carInfo;
-            await carViewComp.RefreshDevice();
-
-            carViewComp.ViewCarInfoItem.Init();
-            carViewComp.ViewCarInfoItem.RefreshInfo();
-            carViewComp.ViewCarInfoItem.RefreshMembers();
+            if (group <= 6)
+            {
+                var carViewComp = carEntity.AddComponent<CarViewComponent>();
+                await carViewComp.InitSystem();
+            }
 
             return carEntity;
         }
@@ -210,12 +206,19 @@ namespace XN
             }
 
             var carUnit = EntityManager.Instance.GetEntityById(playerInfoComp.CarId);
-            var carViewComp = carUnit.GetComponent<CarViewComponent>();
-            carViewComp.ViewCarInfoItem.DoTakeSeatView(playerId);
-            await UniTask.Delay(1200);
-            carViewComp.PlayCarTint();
-            playerInfoComp.FinishTakeSeat();
-            carViewComp.ViewCarInfoItem?.RefreshMembers();
+
+            if (carUnit.GetComponent(out CarViewComponent carViewComp))
+            {
+                carViewComp.ViewCarInfoItem.DoTakeSeatView(playerId);
+                await UniTask.Delay(1200);
+                carViewComp.PlayCarTint();
+                playerInfoComp.FinishTakeSeat();
+                carViewComp.ViewCarInfoItem?.RefreshMembers();
+            }
+            else
+            {
+                playerInfoComp.FinishTakeSeat();
+            }
         }
 
         /// <summary>
@@ -282,7 +285,7 @@ namespace XN
             }
 
             long targetCarId;
-            
+
             if (nobodyCars.Count > 0)
             {
                 targetCarId = nobodyCars[Random.Range(0, nobodyCars.Count)];
@@ -291,7 +294,7 @@ namespace XN
             {
                 targetCarId = carIds[Random.Range(0, carIds.Count)];
             }
-            
+
             return targetCarId;
         }
 
@@ -307,13 +310,13 @@ namespace XN
             {
                 if (EntityManager.Instance.GetEntityById(carId).GetComponent<CarInfoComponent>().PlayerIds.Count == 0)
                     continue;
-               
+
                 carIds.Add(carId);
             }
 
             return carIds;
         }
-        
+
         #region UserInfo
 
         public static void UpdateUserInfo(string playerId, string nickname, string avatarUrl)

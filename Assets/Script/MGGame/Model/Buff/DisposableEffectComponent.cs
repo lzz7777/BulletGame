@@ -18,6 +18,12 @@ namespace XN
         public override void OnDestroy()
         {
             this.OnDestroySystem();
+            
+            CarId = default;
+            EffectId = default;
+            EffectSkin = default;
+            EffectCtrl = default;
+            Offset = default;
         }
     }
 }

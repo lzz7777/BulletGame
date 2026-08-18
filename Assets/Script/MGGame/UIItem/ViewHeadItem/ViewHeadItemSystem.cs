@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Data;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -29,7 +27,7 @@ namespace XN
                 (self.transform as RectTransform).sizeDelta = data.SizeData;
             }
 
-            await YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetAvatarUrl(avatarUrl), self.UIHeadIconImage);
+            await YooAssetManager.Instance.LoadSpriteAsync("Head",ResHelper.GetAvatarUrl(avatarUrl), self.UIHeadIconImage);
             self.UIHeadFrameImage.gameObject.SetActive(!string.IsNullOrEmpty(data.Frame));
 
             if (self.FrameEffect != null)
@@ -43,21 +41,12 @@ namespace XN
                 YooAssetManager.Instance.LoadSpriteAsync(data.Frame, self.UIHeadFrameImage).ToCoroutine();
                 string frameEffectId = data.Frame.Replace("mrt_txk_", "fx_ui_UIHeadFrame_");
                 if (data.Frame == "none") return;
-                    
-                // self.FrameEffect = await YooAssetManager.Instance.InstantiateAsync(frameEffectId, self.UIHeadFrameImage.transform);
+
                 self.FrameEffect =
                     await EffectHelper.GetEffect(frameEffectId,
                         self.UIHeadFrameImage
-                            .transform); // ObjectPoolManager.Instance.GetFromPool(frameEffectId, self.UIHeadFrameImage.transform);
+                            .transform);
                 self.FrameEffect?.RefreshLayerOrder(data.SortingOrder);
-                // if (data.SortingOrder != 0)
-                // {
-                // 	var renderers = self.FrameEffect?.GetComponentsInChildren<Renderer>();
-                // 	foreach (var oneRender in renderers)
-                // 	{
-                // 		oneRender.sortingOrder += data.SortingOrder;
-                // 	}
-                // }
             }
         }
 

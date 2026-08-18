@@ -17,6 +17,7 @@ namespace XN
 
         public override void OnDestroy()
         {
+            RankInfo.Clear();
         }
     }
 }

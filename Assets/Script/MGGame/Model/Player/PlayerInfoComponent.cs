@@ -131,6 +131,27 @@ namespace XN
 
         public override void OnDestroy()
         {
+            PlayerId = default;
+            CarId = default;
+            Name = default;
+            AvatarUrl = default;
+            IsTakeSeat = default;
+            SkinId = default;
+            CustomVideoId = default;
+            Effects.Clear();
+            OrigScore = default;
+            OrigFans = default;
+            Score = default;
+            ScoreTime = default;
+            Mileage = default;
+            WinFans = default;
+            WinScore = default;
+            LoseFans = default;
+            InputSumDic.Clear();
+            InputQuantity.Clear();
+            Title = default;
+            Sex = default;
+            IsBaoDiFans = false;
         }
     }
 }

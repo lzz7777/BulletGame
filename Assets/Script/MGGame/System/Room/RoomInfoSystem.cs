@@ -217,12 +217,14 @@ namespace XN
             playerInfoComp.ScoreTime = TimeHelper.GetTimeStampMs();
 
             //显示层
-            var carViewComp = carUnit.GetComponent<CarViewComponent>();
-            carViewComp.RefreshCarScaleX();
-            carViewComp.ViewCarInfoItem.RefreshInfo();
-            await carViewComp.SwitchSkin();
-            carViewComp.RefreshCarTitle();
-            
+            if (carUnit.GetComponent(out CarViewComponent carViewComp))
+            {
+                carViewComp.RefreshCarScaleX();
+                carViewComp.ViewCarInfoItem.RefreshInfo();
+                await carViewComp.SwitchSkin();
+                carViewComp.RefreshCarTitle();
+            }
+
             //玩家加入车队 
             EventsManager.BroadCast(GameEnum.PlayerJoinCar, playerId, inputId, targetCarId);
         }

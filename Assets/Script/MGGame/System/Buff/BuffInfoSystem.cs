@@ -16,7 +16,7 @@ namespace XN
             {
                 self.IsDiscard = true;
                 self.Entity.GetParent().GetComponent<CarInfoComponent>().RemoveBuff(self.BuffId);
-                
+
                 EntityManager.Instance.RemoveEntity(self.Entity);
                 return;
             }
@@ -33,10 +33,10 @@ namespace XN
         {
             var buffConf = TotalConfigManager.ConfigManager.BuffIndexConfigCategory.Get(self.BuffId);
             var carInfoComp = self.Entity.GetParent().GetComponent<CarInfoComponent>();
-            
+
             //实行状态变化
             carInfoComp.SwitchState(buffConf.StateValue, buffConf);
-            
+
             //添加方法
             self.AddFunction();
         }
@@ -49,7 +49,7 @@ namespace XN
         {
             var buffConf = TotalConfigManager.ConfigManager.BuffIndexConfigCategory.Get(self.BuffId);
             var funcs = TotalConfigManager.ConfigManager.FactionGroupConfigCategory.FactionGroupDic[buffConf.Faction];
-            
+
             foreach (var funcConf in funcs)
             {
                 var startTime = funcConf.StartTime;
@@ -57,7 +57,7 @@ namespace XN
                 FunctionData funcData = new();
                 funcData.FunctionId = funcConf.FactionId;
                 funcData.GroupId = funcConf.GroupId;
-                
+
                 //有时间间隔
                 if (funcConf.Interval != 0)
                 {
@@ -77,7 +77,7 @@ namespace XN
                         funcData.TimeQueue.Enqueue(time);
                     }
                 }
-                
+
                 self.Functions.Add(funcData);
             }
         }
@@ -98,7 +98,7 @@ namespace XN
                 }
             }
         }
-        
+
         /// <summary>
         /// 执行属性方法
         /// </summary>
@@ -119,24 +119,25 @@ namespace XN
 
             float lastMileage = carInfoComp.Mileage;
             float lastShield = carInfoComp.Shield;
-            
+
             foreach (var buffChange in funcConf.ChangeValue)
             {
-                bool canDo = !TotalConfigManager.ConfigManager.BuffMutexConfigCategory.MutexDic[carState][buffChange.Type];
+                bool canDo =
+                    !TotalConfigManager.ConfigManager.BuffMutexConfigCategory.MutexDic[carState][buffChange.Type];
                 if (!canDo)
                 {
                     continue;
                 }
-            
+
                 Debug.Log($"执行 {buffChange.Type} {buffChange.Value}");
 
                 float changeValue = buffChange.Value;
-                
+
                 switch (buffChange.Type)
                 {
                     case ChangeType.SpeedAddPct:
                         // playerInfoComp.AddMileage(buffChange.Value * buffConf.Time);
-                        
+
                         carInfoComp.ExtraSpeedPct += buffChange.Value;
                         break;
                     case ChangeType.SpeedAddValue:
@@ -150,12 +151,12 @@ namespace XN
                         {
                             playerInfoComp.AddMileage(buffChange.Value * buffConf.Time);
                         }
-                        
+
                         carInfoComp.ExtraSpeedVale += buffChange.Value;
                         break;
                     case ChangeType.MileageAddPct:
                         changeValue = carInfoComp.Mileage * buffChange.Value;
-                        
+
                         playerInfoComp.AddMileage(changeValue);
                         carInfoComp.AddMileage(changeValue);
                         break;
@@ -171,14 +172,14 @@ namespace XN
                         break;
                     case ChangeType.MileageDelPct:
                         changeValue = carInfoComp.Mileage * buffChange.Value;
-                        
+
                         carInfoComp.ReduceMileage(changeValue);
-                        
+
                         EventsManager.BroadCast(GameEnum.CarMileageDelEvent, carUnit.Id);
                         break;
                     case ChangeType.MileageDelValue:
                         carInfoComp.ReduceMileage(buffChange.Value);
-                        
+
                         EventsManager.BroadCast(GameEnum.CarMileageDelEvent, carUnit.Id);
                         break;
                     case ChangeType.ShieldAdd:
@@ -188,7 +189,7 @@ namespace XN
                         carInfoComp.ReduceShield(buffChange.Value);
                         break;
                 }
-                
+
                 self.Mutexes.Add(buffChange);
             }
 
@@ -198,7 +199,7 @@ namespace XN
                 ChangeType changeType = changeMileage > 0 ? ChangeType.MileageAddValue : ChangeType.MileageDelValue;
                 RoomHelper.DoBuffChangeUI(carInfoComp.Entity.Id, changeType, changeMileage);
             }
-            
+
             if (!Mathf.Approximately(carInfoComp.Shield, lastShield))
             {
                 ChangeType changeType = changeMileage > 0 ? ChangeType.ShieldAdd : ChangeType.ShieldDel;
@@ -245,7 +246,7 @@ namespace XN
                 }
             }
         }
-        
+
         /// <summary>
         /// 执行特效
         /// </summary>
@@ -255,9 +256,9 @@ namespace XN
         public static async UniTask DoEffect(this BuffInfoComponent self, int funcId, int groupId)
         {
             await UniTask.CompletedTask;
-            
+
             var funcConf = TotalConfigManager.ConfigManager.FactionGroupConfigCategory.Get(funcId, groupId);
-            
+
             if (funcConf.BuffEffect.Count == 0)
             {
                 return;
@@ -275,15 +276,15 @@ namespace XN
                 {
                     continue;
                 }
-                
+
                 //可替换特效
                 self.EffectDeviceGroup.TryAdd(buffEffect.DeviceId, new());
                 self.EffectDeviceGroup.TryGetValue(buffEffect.DeviceId, out var effectGroup);
-                
+
                 effectGroup.TryGetValue(buffEffect.EffectId, out var effectSkin);
                 effectGroup[buffEffect.EffectId] = Mathf.Max(effectSkin, buffEffect.EffectSkin);
             }
-            
+
             //特效生成
             var effects = BuffHelper.GetBuffEffects(funcId, carInfoComp.GetCarDeviceId());
             foreach (var effect in effects)
@@ -294,13 +295,19 @@ namespace XN
                     self.AddDisposableEffect(effect.EffectId, effect.EffectSkin);
                     continue;
                 }
-                
+
                 carInfoComp.AddEffectData(effect);
             }
-            
+
             carViewComp.RefreshEffect();
         }
 
+        /// <summary>
+        /// 一次性特效
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="effectId"></param>
+        /// <param name="effectSkin"></param>
         private static async UniTask AddDisposableEffect(this BuffInfoComponent self, int effectId, int effectSkin)
         {
             var effConf = TotalConfigManager.ConfigManager.EffectInfoConfigCategory.Get(effectId, effectSkin);
@@ -311,6 +318,11 @@ namespace XN
                 Debug.LogError($"effectId:{effectId} effectSkin:{effectSkin}");
                 return;
             }
+
+            var carUnit = self.Entity.GetParent();
+
+            if (effConf.EffectPoint != PointType.A0 && !carUnit.GetComponent(out CarViewComponent carViewComp))
+                return;
 
             //一次性特效也放外面
             effectPoint = RoomManager.Instance.UnitRoot.transform;
@@ -326,11 +338,10 @@ namespace XN
             if (effConf.RandArea != null)
             {
                 var randArea = effConf.RandArea;
-                offset = new Vector3(UnityEngine.Random.Range(-randArea.X, randArea.X), UnityEngine.Random.Range(-randArea.Y, randArea.Y));
+                offset = new Vector3(UnityEngine.Random.Range(-randArea.X, randArea.X),
+                    UnityEngine.Random.Range(-randArea.Y, randArea.Y));
             }
 
-            var carUnit = self.Entity.GetParent();
-            
             long carId = carUnit.Id;
             var pos = Vector3.zero;
             if (effConf.EffectPoint == PointType.A0)
@@ -340,13 +351,13 @@ namespace XN
             }
             else
             {
-                var carViewComp = carUnit.GetComponent<CarViewComponent>();
+                carViewComp = carUnit.GetComponent<CarViewComponent>();
                 if (carViewComp.CarCtrl.effectPoints.TryGetValue(effConf.EffectPoint.ToString(), out effectPoint))
                 {
                     pos = effectPoint.position;
                 }
             }
-            
+
             // 先设置位置，再播放动画和刷新层级，防止出现一帧在原点的闪烁
             effectCtrl.gameObject.transform.position = pos + offset;
             effectCtrl.RefreshLayerOrder(2000);

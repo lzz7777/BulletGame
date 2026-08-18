@@ -103,7 +103,7 @@ public partial class ConstConfigCategory
     /// <summary>
     /// 游戏最大车队数
     /// </summary>
-     public int MaxPlayer => _data.MaxPlayer;
+     public int MaxPlayer => 1000;
     /// <summary>
     /// 保底粉丝
     /// </summary>

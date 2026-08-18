@@ -50,6 +50,20 @@ namespace XN
 
         public override void OnDestroy()
         {
+            RoomID = default;
+            Time = default;
+            EndTime = default;
+            CarIds.Clear();
+            CarRankDic.Clear();
+            PlayerIds.Clear();
+            UserInfos.Clear();
+            RankTypeDic.Clear();
+            ScorePool = default;
+            FansPool = default;
+            TimeSceneInfoIndex = default;
+            ScenePlanning = default;
+            NextTimePlanning = default;
+            IsShowMaximumRange = default;
         }
     }
 }

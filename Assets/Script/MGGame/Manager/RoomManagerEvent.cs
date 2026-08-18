@@ -132,10 +132,10 @@ namespace XN
             EventsManager.BroadCast(GameEnum.ViewMatchRankNodeRefreshEvent);
             
             var carViewComponent = EntityManager.Instance.GetEntityById(carId).GetComponent<CarViewComponent>();
-            carViewComponent.ViewCarInfoItem.RefreshInfo();
+            carViewComponent?.ViewCarInfoItem.RefreshInfo();
 
             //更换灯带
-            carViewComponent.RefreshTrackLight();
+            carViewComponent?.RefreshTrackLight();
         }
 
         /// <summary>
@@ -146,8 +146,8 @@ namespace XN
             var carUnit = EntityManager.Instance.GetEntityById(carId);
             var carViewComp = carUnit.GetComponent<CarViewComponent>();
             
-            carViewComp.ViewCarInfoItem.DoPlayViewCarAnimation("fx_ui_ViewCarInfoItem_Hit");
-            carViewComp.DoCarHitAnimation();
+            carViewComp?.ViewCarInfoItem.DoPlayViewCarAnimation("fx_ui_ViewCarInfoItem_Hit");
+            carViewComp?.DoCarHitAnimation();
             CameraHelper.DoCameraShake();
         }
 

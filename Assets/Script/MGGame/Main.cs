@@ -198,7 +198,7 @@ namespace XN
 
         [BoxGroup("GM")]
         [Button("GM")]
-        public async UniTask GM(string playerId = "lzz", string content = "10")
+        public async UniTask GM(string playerId = "lzz1", string content = "121")
         {
             CmdManager.Instance.GMCmd(playerId, content);
         }
@@ -214,7 +214,7 @@ namespace XN
 
         [BoxGroup("GM")]
         [Button("GM测试所有指令")]
-        public static async UniTask GmTestAll(int maxNum = 10, int cmd1 = 100, int cmd2 = 200)
+        public static async UniTask GmTestAll(int maxNum = 8, int cmd1 = 111, int cmd2 = 111)
         {
             if (UIManager.Instance.GameModel == GameModel.Release) return;
 
@@ -237,7 +237,8 @@ namespace XN
             {
                 string name = "lzz" + i;
 
-                CmdManager.Instance.GMCmd(name, $"加入{textNames[Random.Range(0, textNames.Count)]}");
+                // CmdManager.Instance.GMCmd(name, $"加入{textNames[Random.Range(0, textNames.Count)]}");
+                CmdManager.Instance.GMCmd(name, $"加入{textNames[Math.Clamp(i, 0, textNames.Count)]}");
                 for (int j = cmd1; j <= cmd2; j++)
                 {
                     CmdManager.Instance.GMCmd(name, j.ToString());
