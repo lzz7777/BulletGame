@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -77,8 +77,8 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             var pos = startPosition + newPos - offset;
 
             var clamped = pos;
-            clamped.x = Math.Clamp(clamped.x, minX, maxX);
-            clamped.y = Math.Clamp(clamped.y, minY, maxY);
+            clamped.x = Mathf.Clamp(clamped.x, Mathf.Min(minX, maxX), Mathf.Max(minX, maxX));
+            clamped.y = Mathf.Clamp(clamped.y, Mathf.Min(minY, maxY), Mathf.Max(minY, maxY));
             if (clamped != pos) { startPosition = clamped; offset = newPos; }
 
             rectTransform.localPosition = clamped;
@@ -135,7 +135,7 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
                 ? -halfCanvasW + leftExtent + btnmargin
                 : halfCanvasW - rightExtent - btnmargin;
         }
-        float targetY = Math.Clamp(rectTransform.localPosition.y, minY, maxY);
+        float targetY = Mathf.Clamp(rectTransform.localPosition.y, Mathf.Min(minY, maxY), Mathf.Max(minY, maxY));
         var target = new Vector3(targetX, targetY, rectTransform.localPosition.z);
         rectTransform.DOLocalMove(target, 0.25f).SetEase(Ease.OutCubic);
         startPosition = target;
@@ -163,10 +163,10 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             float targetX = preferLeft
                 ? -halfCanvasW + margin + leftExtent
                 : halfCanvasW - margin - rightExtent;
-            float targetY = Math.Clamp(rectTransform.localPosition.y, minY, maxY);
+            float targetY = Mathf.Clamp(rectTransform.localPosition.y, Mathf.Min(minY, maxY), Mathf.Max(minY, maxY));
             target = new Vector3(targetX, targetY, rectTransform.localPosition.z);
         }
-        target.y = Math.Clamp(target.y, minY, maxY);
+        target.y = Mathf.Clamp(target.y, Mathf.Min(minY, maxY), Mathf.Max(minY, maxY));
         rectTransform.DOLocalMove(target, 0.25f).SetEase(Ease.OutCubic);
         startPosition = target;
         isCollapsed = false;
