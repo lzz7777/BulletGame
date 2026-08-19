@@ -115,7 +115,7 @@ namespace XN
         /// <returns></returns>
         public static bool CanMoveX(this CarInfoComponent self)
         {
-            if (!self.CarMoveType.HasFlag(CarMoveType.MoveX))
+            if ((self.CarMoveType & CarMoveType.MoveX) == 0)
             {
                 return true;
             }
@@ -130,7 +130,7 @@ namespace XN
         /// <returns></returns>
         public static bool CanMoveY(this CarInfoComponent self)
         {
-            if (!self.CarMoveType.Contains(CarMoveType.MoveY))
+            if ((self.CarMoveType & CarMoveType.MoveY) == 0)
             {
                 return true;
             }
@@ -145,7 +145,7 @@ namespace XN
         /// <param name="move"></param>
         public static void AddMoveType(this CarInfoComponent self, CarMoveType move)
         {
-            self.CarMoveType = self.CarMoveType.Add(move);
+            self.CarMoveType |= move;
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace XN
         /// <param name="move"></param>
         public static void RemoveMoveType(this CarInfoComponent self, CarMoveType move)
         {
-            self.CarMoveType = self.CarMoveType.Remove(move);
+            self.CarMoveType &= ~move;
         }
 
         private static readonly State[] _stateValues = (State[])Enum.GetValues(typeof(State));

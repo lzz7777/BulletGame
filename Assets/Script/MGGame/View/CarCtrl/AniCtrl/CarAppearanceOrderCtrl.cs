@@ -15,14 +15,6 @@ namespace XN
 
         public CarAppearanceOrderCtrl Init()
         {
-            // var selfRenderer = GetComponent<Renderer>();
-            // if (selfRenderer != null)
-            // {
-            //     Material newMat = new Material(selfRenderer.material);
-            //     selfRenderer.material = newMat;
-            //     orderDic.Add(selfRenderer, selfRenderer.sortingOrder);
-            // }
-
             var renderers = GetComponentsInChildren<Renderer>();
             if (renderers is { Length: > 0 })
             {

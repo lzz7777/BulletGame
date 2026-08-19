@@ -29,6 +29,13 @@
       "dependencies": {},
       "hash": "bdf102f145383dc6f64479183571a1a59e031bfb"
     },
+    "com.tayx.graphy": {
+      "version": "https://github.com/Tayx94/graphy.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "1cdf31613ea294970560f0bbb2ee2d1f0cd16a22"
+    },
     "com.tuyoogame.yooasset": {
       "version": "2.3.12",
       "depth": 0,

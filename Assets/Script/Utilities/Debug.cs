@@ -34,7 +34,7 @@ public static class Debug
     /// <summary>
     /// 日志等级
     /// </summary>
-    public static ShowLogLevel logLevel = ShowLogLevel.Debug;
+    public static ShowLogLevel logLevel = ShowLogLevel.Error;
 
     public static bool isDebugBuild => UnityEngine.Debug.isDebugBuild;
     public static string getTime => DateTimeHelper.NowServer.ToString("s");

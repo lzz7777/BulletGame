@@ -32,6 +32,15 @@ namespace XN
         //用在树木，开始前用清晰的树，跑起来用模糊的树
         private bool _isBlurry;
 
+        private struct SpriteWeight
+        {
+            public Sprite Sprite;
+            public int Weight;
+        }
+
+        private List<SpriteWeight> _updateSprites = new();
+        private int _totalUpdateWeight = 0;
+
         private void Awake()
         {
             float scenePos = -GameConst.ScreenWidth * 1.0f / 100 / 2;
@@ -69,14 +78,7 @@ namespace XN
                     tf.position = new Vector3(lastChildTf.position.x + width + _interval, lastChildTf.position.y,
                         lastChildTf.position.z);
 
-                    string str = SceneHelper.GetLayerInfoRandomResName(_layerInfo);
-
-                    if (_isBlurry)
-                    {
-                        str += "B";
-                    }
-
-                    YooAssetManager.Instance.LoadSpriteAsync("Scene",str, spriteRand);
+                    spriteRand.sprite = GetRandomUpdateSprite();
 
                     //位置放最后一个
                     tf.SetAsLastSibling();
@@ -98,6 +100,10 @@ namespace XN
 
             gameObject.SetActive(true);
 
+            CacheSprites();
+
+            var atlas = YooAssetManager.Instance.LoadAssetSync<UnityEngine.U2D.SpriteAtlas>("Scene");
+
             foreach (var tf in _goList)
             {
                 var spriteRand = tf.GetComponent<SpriteRenderer>();
@@ -108,8 +114,50 @@ namespace XN
                     str += "A";
                 }
 
-                YooAssetManager.Instance.LoadSpriteAsync("Scene",str, spriteRand);
+                if (atlas != null)
+                {
+                    spriteRand.sprite = atlas.GetSprite(str);
+                }
             }
+        }
+
+        private void CacheSprites()
+        {
+            _updateSprites.Clear();
+            _totalUpdateWeight = 0;
+
+            var atlas = YooAssetManager.Instance.LoadAssetSync<UnityEngine.U2D.SpriteAtlas>("Scene");
+            if (atlas == null) return;
+
+            foreach (var layerWeight in _layerInfo.LayerWeight)
+            {
+                string baseName = layerWeight.LayerRes;
+                string updateName = _isBlurry ? baseName + "B" : baseName;
+                Sprite updateSprite = atlas.GetSprite(updateName);
+
+                if (updateSprite != null)
+                {
+                    _updateSprites.Add(new SpriteWeight { Sprite = updateSprite, Weight = layerWeight.Weight });
+                    _totalUpdateWeight += layerWeight.Weight;
+                }
+            }
+        }
+
+        private Sprite GetRandomUpdateSprite()
+        {
+            if (_totalUpdateWeight == 0 || _updateSprites.Count == 0) return null;
+
+            int randomWeight = UnityEngine.Random.Range(1, _totalUpdateWeight + 1);
+            int tempSum = 0;
+            foreach (var sw in _updateSprites)
+            {
+                tempSum += sw.Weight;
+                if (tempSum >= randomWeight)
+                {
+                    return sw.Sprite;
+                }
+            }
+            return _updateSprites[0].Sprite;
         }
 
         /// <summary>

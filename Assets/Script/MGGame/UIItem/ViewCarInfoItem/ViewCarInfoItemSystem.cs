@@ -12,7 +12,9 @@ namespace XN
     {
         #region CircleLife
 
-        public static void OnRefresh(this ViewCarInfoItem self, ViewCarInfoItemData itemData) { }
+        public static void OnRefresh(this ViewCarInfoItem self, ViewCarInfoItemData itemData)
+        {
+        }
 
         public static void OnUpdateSystem(this ViewCarInfoItem self)
         {
@@ -42,17 +44,34 @@ namespace XN
         {
             self.UIItemProgressBgImage.gameObject.SetActive(false);
             self.DoCloseFastAnim();
-            
+
             self.MemberIds.Clear();
             self.TempMemberIds.Clear();
             ObjectPoolManager.Instance.ReturnToPool(self.MemberPrefabs);
             self.MemberPrefabs.Clear();
-            
+
             self.CloseShield();
+            self.LastMileage = -1;
+            self.MileageUpdateTimer = 0;
         }
 
         private static void UpdateMileage(this ViewCarInfoItem self)
         {
+            long mileage = (long)self.CarInfoComponent.Mileage;
+            if (mileage == self.LastMileage)
+            {
+                return;
+            }
+
+            self.MileageUpdateTimer += Time.deltaTime;
+            if (self.LastMileage != -1 && self.MileageUpdateTimer < 0.1f)
+            {
+                return;
+            }
+
+            self.MileageUpdateTimer = 0f;
+            self.LastMileage = mileage;
+
             //达到7位数百万采用计数法
             string UIMathCeil(long value)
             {
@@ -64,13 +83,12 @@ namespace XN
                 return UIManagerHelper.UIMathCeil(value, 2, true);
             }
 
-            long mileage = (long)self.CarInfoComponent.Mileage;
             switch (self.NameplateType)
             {
                 case ViewCarInfoItemNameplateType.Player:
                     self.UIPlayerMileageText.text = $"{UIMathCeil(mileage)}米";
                     LayoutRebuilder.ForceRebuildLayoutImmediate(self.UIPlayerMileageText.rectTransform);
-                
+
                     float playerNodeWidth = Math.Max(324, self.UIPlayerMileageText.rectTransform.rect.width + 200);
                     var playerRt = self.UIPlayerNodeImage.transform as RectTransform;
                     playerRt.sizeDelta = new Vector2(playerNodeWidth, playerRt.sizeDelta.y);
@@ -78,24 +96,27 @@ namespace XN
                 case ViewCarInfoItemNameplateType.PlayerLong:
                     self.UIPlayerLongMileageText.text = $"{UIMathCeil(mileage)}米";
                     LayoutRebuilder.ForceRebuildLayoutImmediate(self.UIPlayerLongMileageText.rectTransform);
-                
-                    float playerLongNodeWidth = Math.Max(378, self.UIPlayerLongMileageText.rectTransform.rect.width + 240);
+
+                    float playerLongNodeWidth =
+                        Math.Max(378, self.UIPlayerLongMileageText.rectTransform.rect.width + 240);
                     var playerLongRt = self.UIPlayerLongNodeImage.transform as RectTransform;
                     playerLongRt.sizeDelta = new Vector2(playerLongNodeWidth, playerLongRt.sizeDelta.y);
                     break;
                 case ViewCarInfoItemNameplateType.Nobody:
                     self.UINobodyMileageTextMeshProUGUI.text = $"{UIMathCeil(mileage)}米";
                     LayoutRebuilder.ForceRebuildLayoutImmediate(self.UINobodyMileageTextMeshProUGUI.rectTransform);
-                    
-                    float nobodyNodeWidth = Math.Max(304, self.UINobodyMileageTextMeshProUGUI.rectTransform.rect.width + 160);
+
+                    float nobodyNodeWidth = Math.Max(304,
+                        self.UINobodyMileageTextMeshProUGUI.rectTransform.rect.width + 160);
                     var nobodyRt = self.UINobodyNodeImage.transform as RectTransform;
                     nobodyRt.sizeDelta = new Vector2(nobodyNodeWidth, nobodyRt.sizeDelta.y);
                     break;
                 case ViewCarInfoItemNameplateType.NobodyLong:
                     self.UINobodyLongMileageTextMeshProUGUI.text = $"{UIMathCeil(mileage)}米";
                     LayoutRebuilder.ForceRebuildLayoutImmediate(self.UINobodyLongMileageTextMeshProUGUI.rectTransform);
-                    
-                    float nobodyLongNodeWidth = Math.Max(357, self.UINobodyLongMileageTextMeshProUGUI.rectTransform.rect.width + 200);
+
+                    float nobodyLongNodeWidth = Math.Max(357,
+                        self.UINobodyLongMileageTextMeshProUGUI.rectTransform.rect.width + 200);
                     var nobodyLongRt = self.UINobodyLongNodeImage.transform as RectTransform;
                     nobodyLongRt.sizeDelta = new Vector2(nobodyLongNodeWidth, nobodyLongRt.sizeDelta.y);
                     break;
@@ -109,7 +130,7 @@ namespace XN
             var (isfindNode, carPos) = self.GetPosition();
             float x = carPos.x * 100;
             float frameWidth = 0;
-            
+
             switch (self.NameplateType)
             {
                 case ViewCarInfoItemNameplateType.Player:
@@ -129,7 +150,7 @@ namespace XN
             x -= frameWidth / 2;
             float limitWidth = GameConst.ScreenWidth / 2.0f - 100 - frameWidth;
             x = Math.Min(x, limitWidth);
-            
+
             float y;
 
             if (isfindNode)
@@ -140,32 +161,34 @@ namespace XN
             {
                 y = carPos.y * 100 + 80;
             }
-            
+
             if (carInfoComp.Group == 0)
             {
                 y += 20;
             }
-            
+
             ((RectTransform)self.transform).anchoredPosition = new Vector2(x, y);
         }
 
         public static void RefreshInfo(this ViewCarInfoItem self)
         {
             var carInfoComp = self.CarInfoComponent;
-            
+
             //玩家信息
             bool isPlayerFirst = carInfoComp.PlayerIds.Count > 0 && carInfoComp.Group == 0;
             bool isLongName = carInfoComp.Name.Length > 2;
             int longNameSize = carInfoComp.Name.Length == 3 ? 32 : 31;
-            
+
             //车辆铭牌
             if (isPlayerFirst)
             {
-                self.NameplateType = isLongName ? ViewCarInfoItemNameplateType.PlayerLong : ViewCarInfoItemNameplateType.Player;
+                self.NameplateType =
+                    isLongName ? ViewCarInfoItemNameplateType.PlayerLong : ViewCarInfoItemNameplateType.Player;
             }
             else
             {
-                self.NameplateType = isLongName ? ViewCarInfoItemNameplateType.NobodyLong : ViewCarInfoItemNameplateType.Nobody;
+                self.NameplateType =
+                    isLongName ? ViewCarInfoItemNameplateType.NobodyLong : ViewCarInfoItemNameplateType.Nobody;
             }
 
             self.UIPlayerNodeImage.gameObject.SetActive(false);
@@ -178,28 +201,29 @@ namespace XN
                 case ViewCarInfoItemNameplateType.Player:
                     self.UIPlayerNodeImage.gameObject.SetActive(true);
                     self.UIPlayerNameText.text = carInfoComp.Name;
-                    
+
                     break;
                 case ViewCarInfoItemNameplateType.PlayerLong:
                     self.UIPlayerLongNodeImage.gameObject.SetActive(true);
                     self.UIPlayerLongNameText.text = $"<size={longNameSize}>{carInfoComp.Name}</size>";
-                    
+
                     break;
                 case ViewCarInfoItemNameplateType.Nobody:
                     self.UINobodyNodeImage.gameObject.SetActive(true);
                     self.UINobodyNameText.text = carInfoComp.Name;
-                    
+
                     break;
                 case ViewCarInfoItemNameplateType.NobodyLong:
                     self.UINobodyLongNodeImage.gameObject.SetActive(true);
                     self.UINobodyLongNameText.text = $"<size={longNameSize}>{carInfoComp.Name}</size>";
-                    
+
                     break;
             }
 
             if (self.MemberPrefabs.Count > 0 && self.MemberPrefabs[0])
             {
-                var itemRt = self.MemberPrefabs[0].GetComponent<ViewCarInfoPlayerItem>().ViewHeadItem.transform as RectTransform;
+                var itemRt =
+                    self.MemberPrefabs[0].GetComponent<ViewCarInfoPlayerItem>().ViewHeadItem.transform as RectTransform;
                 float size = carInfoComp.Group == 0 ? 52 : 44;
                 itemRt.sizeDelta = new(size, size);
             }
@@ -216,7 +240,7 @@ namespace XN
                 self.RefreshCaptainNode();
                 return;
             }
-            
+
             self.UICaptainNodeRectTransform.SetActiveScale(false);
             self.UIMemberNodeHorizontalLayoutGroup.SetActiveScale(true);
 
@@ -231,7 +255,7 @@ namespace XN
                 {
                     break;
                 }
-                
+
                 var playerId = playerIds[i];
 
                 if (!(RoomHelper.GetRoomInfoComponent()?.GetPlayerInfoComponent(playerId)?.IsTakeSeat ?? false))
@@ -257,7 +281,7 @@ namespace XN
             {
                 return;
             }
-            
+
             self.MemberIds = self.TempMemberIds.ToList();
             ObjectPoolManager.Instance.ReturnToPool(self.MemberPrefabs);
             self.MemberPrefabs.Clear();
@@ -299,13 +323,14 @@ namespace XN
                 self.UICaptainNodeRectTransform.SetActiveScale(false);
                 return;
             }
-            
+
             self.UICaptainNodeRectTransform.SetActiveScale(true);
-            (self.UICaptainNodeRectTransform.transform as RectTransform).anchoredPosition = new Vector2(self.CaptainNodePosXList[(int)self.NameplateType], 0);
-            
+            (self.UICaptainNodeRectTransform.transform as RectTransform).anchoredPosition =
+                new Vector2(self.CaptainNodePosXList[(int)self.NameplateType], 0);
+
             var playerId = playerIds[0];
             var playerInfoComp = RoomHelper.GetRoomInfoComponent().GetPlayerInfoComponent(playerId);
-            
+
             self.HeadItem.OnRefresh(new ViewHeadItemData()
             {
                 PlayerId = playerId
@@ -313,18 +338,19 @@ namespace XN
 
             self.UICaptainNameText.text = playerInfoComp.Name;
         }
-        
+
         /// <summary>
         /// 打开护盾
         /// </summary>
         /// <param name="self"></param>
         public static void OpenShield(this ViewCarInfoItem self) => self.UIShieldNodeRectTransform.SetActiveScale(true);
-        
+
         /// <summary>
         /// 关闭护盾
         /// </summary>
         /// <param name="self"></param>
-        public static void CloseShield(this ViewCarInfoItem self) => self.UIShieldNodeRectTransform.SetActiveScale(false);
+        public static void CloseShield(this ViewCarInfoItem self) =>
+            self.UIShieldNodeRectTransform.SetActiveScale(false);
 
         /// <summary>
         /// 护盾破碎动画
@@ -333,12 +359,12 @@ namespace XN
         public static async UniTask DoPlayShieldBreakAnimation(this ViewCarInfoItem self)
         {
             string name = "fx_ui_ViewCarInfoItem_Shield_Break";
-            
+
             self.ShieldAnimation.Play(name);
 
             int ms = (int)(self.ShieldAnimation.GetAnimationLength(name) * 1000);
             await UniTask.Delay(ms);
-            
+
             var carInfoComp = self.CarInfoComponent;
             if (carInfoComp.GetState() != State.Invincible)
             {
@@ -378,10 +404,10 @@ namespace XN
         public static void DoPlayFastAnim(this ViewCarInfoItem self)
         {
             self.ViewCarAnimation.Play("fx_ui_ViewCarInfoItem_Accelerate");
-            
+
             self.UINobodyNodeImage.transform.DOScale(0.87f, 0.045f).SetLoops(-1, LoopType.Yoyo);
             self.UINobodyLongNodeImage.transform.DOScale(0.87f, 0.045f).SetLoops(-1, LoopType.Yoyo);
-            
+
             self.UIPlayerNodeImage.transform.DOScale(0.92f, 0.05f).SetLoops(-1, LoopType.Yoyo);
             self.UIPlayerLongNodeImage.transform.DOScale(0.915f, 0.05f).SetLoops(-1, LoopType.Yoyo);
         }
@@ -393,16 +419,16 @@ namespace XN
         public static void DoCloseFastAnim(this ViewCarInfoItem self)
         {
             self.ViewCarAnimation.Play("fx_ui_ViewCarInfoItem_Normal");
-            
+
             self.UINobodyNodeImage.transform.DOKill();
             self.UINobodyNodeImage.transform.localScale = Vector3.one * 0.85f;
-            
+
             self.UINobodyLongNodeImage.transform.DOKill();
             self.UINobodyLongNodeImage.transform.localScale = Vector3.one * 0.85f;
-            
+
             self.UIPlayerNodeImage.transform.DOKill();
             self.UIPlayerNodeImage.transform.localScale = Vector3.one * 0.9f;
-            
+
             self.UIPlayerLongNodeImage.transform.DOKill();
             self.UIPlayerLongNodeImage.transform.localScale = Vector3.one * 0.9f;
         }
@@ -431,7 +457,8 @@ namespace XN
         public static async UniTask DoTakeSeatView(this ViewCarInfoItem self, string playerId)
         {
             var obj = await ObjectPoolManager.Instance.GetFromPool<ViewTakeSeatItem>(self.transform);
-            obj.transform.localPosition = new Vector3(obj.transform.localPosition.x, obj.transform.localPosition.y - 80, obj.transform.localPosition.z);
+            obj.transform.localPosition = new Vector3(obj.transform.localPosition.x, obj.transform.localPosition.y - 80,
+                obj.transform.localPosition.z);
             obj.GetComponent<ViewTakeSeatItem>().OnRefresh(new ViewTakeSeatItemData()
             {
                 PlayerId = playerId,
@@ -451,7 +478,7 @@ namespace XN
             {
                 return;
             }
-            
+
             self.ViewCarAnimation.Play(name);
         }
 
@@ -459,13 +486,13 @@ namespace XN
         {
             var pos = self.CarViewComponent.Car.transform.position;
             bool isFindNode = false;
-            
+
             if (self.CarViewComponent.CarCtrl.effectPoints.TryGetValue("Hud", out var effectPoint))
             {
                 pos = effectPoint.position;
                 isFindNode = true;
             }
-            
+
             return (isFindNode, pos);
         }
 

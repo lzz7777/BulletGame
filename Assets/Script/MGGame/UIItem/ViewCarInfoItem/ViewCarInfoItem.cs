@@ -40,6 +40,9 @@ public class ViewCarInfoItem : UIItemBase
 	public List<GameObject> MemberPrefabs { set; get; } = new();
 	public List<float> CaptainNodePosXList { set; get; } = new(){112, 160, 78, 124};
 
+    public long LastMileage { set; get; } = -1;
+    public float MileageUpdateTimer { set; get; } = 0;
+
 	public Entity CarUnit => EntityManager.Instance.GetEntityById(TargetEntity);
 	public CarViewComponent CarViewComponent => CarUnit?.GetComponent<CarViewComponent>();
 	public CarInfoComponent CarInfoComponent => CarUnit?.GetComponent<CarInfoComponent>();
