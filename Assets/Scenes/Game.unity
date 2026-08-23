@@ -5191,6 +5191,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[Graphy]'
       objectReference: {fileID: 0}
+    - target: {fileID: 177638, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 11496292, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_audioModuleState
       value: 4
@@ -5445,6 +5449,7 @@ MonoBehaviour:
   UnitRoot: {fileID: 710164286}
   CanvasRoleUI: {fileID: 1649177693}
   RoomUnitId: 0
+  GlobalChangeGroupNextTime: 0
 --- !u!1 &1510610591
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace XN
@@ -9,7 +9,7 @@ namespace XN
         public static void Update(this CarPositionComponent self, float deltaTime)
         {
             self.UpdatePos(deltaTime);
-            
+
             if (!GameStateCtrl.IsGaming)
             {
                 return;
@@ -30,7 +30,7 @@ namespace XN
             {
                 targPos = carViewComp.Car.transform.position;
             }
-            
+
             float speed = 3;
             float xPos = targPos.x + (self.X - targPos.x) * deltaTime * speed;
             float yPos = targPos.y + (self.Y - targPos.y) * deltaTime * speed;
@@ -110,12 +110,28 @@ namespace XN
             if (!canMove || carInfoComp.IsDiscard)
                 return;
 
+            carInfoComp.ChangeGroupTime += deltaTime;
+
             var rank = RoomHelper.GetCarRank(self.Entity.Id);
             if (carInfoComp.Group == rank)
             {
                 return;
             }
 
+            // 个人冷却锁：防止单位数量多时排名波动导致频繁进出屏幕（频繁加删View组件）
+            if (carInfoComp.ChangeGroupTime < 1.5f)
+            {
+                return;
+            }
+
+            // 全局冷却锁：防止多辆车在同一帧或极短时间内一起换组导致同时加载 View 组件造成卡顿。
+            // 利用“排队”机制错开所有车辆的加载时间，替代目标位置死锁
+            if (!RoomHelper.CanChangeGroup())
+            {
+                return;
+            }
+
+            carInfoComp.ChangeGroupTime = 0;
             carInfoComp.Group = rank;
 
             var groupLinePos = RoomManager.Instance.GroupLinePos;
@@ -166,7 +182,7 @@ namespace XN
             bool canMove = carInfoComp?.CanMoveY() ?? false;
             if (!canMove || carInfoComp.IsDiscard)
                 return;
-            
+
             var changeRoadCD = TotalConfigManager.ConfigManager.ConstConfigCategory.ChangeRoadCD;
             //changeRoadTime ms->s
             //float changeRoadTime = TotalConfigManager.ConfigManager.ConstConfigCategory.ChangeRoadTime / 1000.0f;

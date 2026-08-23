@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -20,6 +21,22 @@ namespace XN
 			self.IconIndex = 0;
 			
 			self.MaxNum = YooAssetManager.Instance.GetGroupTagFileNum("ImageFightSlideShow");
+
+			self.InitCacheAsync().Forget();
+		}
+
+		private static async UniTaskVoid InitCacheAsync(this ViewSlideShowNode self)
+		{
+			if (self.MaxNum <= 0) return;
+
+			if (self.CachedSprites == null || self.CachedSprites.Length != self.MaxNum + 1)
+			{
+				self.CachedSprites = new Sprite[self.MaxNum + 1];
+				for (int i = 1; i <= self.MaxNum; i++)
+				{
+					self.CachedSprites[i] = await YooAssetManager.Instance.LoadSpriteAsync($"gundong_{i}");
+				}
+			}
 
 			self.OnRefresh();
 		}
@@ -62,11 +79,16 @@ namespace XN
 
 		public static void OnRefresh(this ViewSlideShowNode self)
 		{
+			if (self.CachedSprites == null || self.CachedSprites.Length <= self.MaxNum)
+			{
+				return;
+			}
+
 			self.IconIndex = self.IconIndex + 1 > self.MaxNum ? 1 : self.IconIndex + 1;
 			int nextIconIndex = self.IconIndex + 1 > self.MaxNum ? 1 : self.IconIndex + 1;
 			
-			YooAssetManager.Instance.LoadSpriteAsync($"gundong_{nextIconIndex}", self.Icons[0]);
-			YooAssetManager.Instance.LoadSpriteAsync($"gundong_{self.IconIndex}", self.Icons[1]);
+			self.Icons[0].sprite = self.CachedSprites[nextIconIndex];
+			self.Icons[1].sprite = self.CachedSprites[self.IconIndex];
 		}
 		
 		#endregion

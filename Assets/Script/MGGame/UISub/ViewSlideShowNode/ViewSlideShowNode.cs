@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace XN
@@ -27,6 +28,7 @@ namespace XN
         public float Time;
         public int IconIndex;
         public int MaxNum;
+        public Sprite[] CachedSprites;
 
         private void Update()
         {

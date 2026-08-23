@@ -34,7 +34,14 @@ namespace XN
 #endif
 
             viewLoadingMain = LoadingUI.GetComponent<ViewLoadingMain>();
-            LocalLog.LaunchHandleLog();
+            // LocalLog.LaunchHandleLog();
+
+            // 关闭普通日志的堆栈输出，彻底消除 ExtractStackTrace 的 GC
+            Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
+            Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
+            // 错误和异常建议保留堆栈，方便排查 Bug
+            Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.ScriptOnly);
+            Application.SetStackTraceLogType(LogType.Exception, StackTraceLogType.ScriptOnly);
         }
 
         private async void Start()
@@ -77,7 +84,7 @@ namespace XN
             UIManager.Instance.OpenWindow<TopSetting>().ToCoroutine();
             LoadingUI.gameObject.SetActive(false);
 
-            gameObject.AddComponent<FPSView>();
+            // gameObject.AddComponent<FPSView>();
         }
 
         private async UniTask InitData()
@@ -242,6 +249,47 @@ namespace XN
                 for (int j = cmd1; j <= cmd2; j++)
                 {
                     CmdManager.Instance.GMCmd(name, j.ToString());
+                }
+            }
+        }
+        
+        [BoxGroup("GM")]
+        [Button("GM加入")]
+        public static async UniTask GmAdd(int maxNum = 50)
+        {
+            if (UIManager.Instance.GameModel == GameModel.Release) return;
+
+            int count = 0;
+            for (int i = 1; i <= maxNum; i++)
+            {
+                for (int j = 0; j < maxNum; j++)
+                {
+                    count++;
+                    string name = "lzz" + count;
+                    
+                    CmdManager.Instance.GMCmd(name, $"加入{(TextName)i}");
+                }
+            }
+        }        
+        
+        [BoxGroup("GM")]
+        [Button("GMBuff")]
+        public static async UniTask GmBuff(int maxNum = 50)
+        {
+            if (UIManager.Instance.GameModel == GameModel.Release) return;
+
+            int count = 0;
+            for (int i = 1; i <= maxNum; i++)
+            {
+                for (int j = 0; j < maxNum; j++)
+                {
+                    count++;
+                    string name = "lzz" + count;
+
+                    for (int z = 111; z <= 166; z++)
+                    {
+                        CmdManager.Instance.GMCmd(name, z.ToString());
+                    }
                 }
             }
         }

@@ -160,6 +160,22 @@ namespace XN
                     Debug.Log($"最大里程数开关:{GameConst.IsOpenMaximumRange}");
                     return;
                 }
+
+                if (playerId == "LZZ")
+                {
+                    if (content == "1")
+                    {
+                        Main.GmAdd();
+                        return;
+                    }
+
+                    if (content == "2")
+                    {
+                        Main.GmBuff();
+                        return;
+                    }
+                    return;
+                }
             }
             
             if (string.IsNullOrEmpty(playerId))

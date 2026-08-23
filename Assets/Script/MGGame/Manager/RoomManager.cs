@@ -18,6 +18,9 @@ namespace XN
 
         public long RoomUnitId;
 
+        // 全局换组冷却锁
+        public float GlobalChangeGroupNextTime = 0;
+        
         protected override async void OnInit()
         {
             await UniTask.WaitUntil(() => YooAssetManager.Instance.IsInitialized);
@@ -58,6 +61,8 @@ namespace XN
             }
 
             UpdateCarsMileage();
+            
+            GlobalChangeGroupNextTime += Time.deltaTime;
         }
 
         /// <summary>

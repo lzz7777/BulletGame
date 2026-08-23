@@ -13,8 +13,8 @@ namespace XN
         {
             if (self.IsDiscard && self.CanMoveY())
             {
-                //self.Entity.GetComponent<CarViewComponent>().DoMoveY(-10, 2, () => { EntityManager.Instance.RemoveEntity(self.Entity); });
-                self.Entity.GetComponent<CarPositionComponent>().SetPosY(-10, () => { EntityManager.Instance.RemoveEntity(self.Entity); });
+                var entity = self.Entity;
+                self.Entity.GetComponent<CarPositionComponent>().SetPosY(-10, () => { EntityManager.Instance.RemoveEntity(entity); });
             }
 
             self.UpdateState(deltaTime);

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace XN
 {
     public static class ViewCarInfoItemSystem
     {
+        private static readonly StringBuilder _sb = new StringBuilder(32);
+
         #region CircleLife
 
         public static void OnRefresh(this ViewCarInfoItem self, ViewCarInfoItemData itemData)
@@ -72,21 +75,22 @@ namespace XN
             self.MileageUpdateTimer = 0f;
             self.LastMileage = mileage;
 
-            //达到7位数百万采用计数法
-            string UIMathCeil(long value)
+            _sb.Clear();
+            if (mileage < 1000000)
             {
-                if (value < 1000000)
-                {
-                    return value.ToString();
-                }
-
-                return UIManagerHelper.UIMathCeil(value, 2, true);
+                _sb.Append(mileage);
             }
+            else
+            {
+                _sb.Append(UIManagerHelper.UIMathCeil(mileage, 2, true));
+            }
+            _sb.Append("米");
+            string mileageStr = _sb.ToString();
 
             switch (self.NameplateType)
             {
                 case ViewCarInfoItemNameplateType.Player:
-                    self.UIPlayerMileageText.text = $"{UIMathCeil(mileage)}米";
+                    self.UIPlayerMileageText.text = mileageStr;
                     LayoutRebuilder.ForceRebuildLayoutImmediate(self.UIPlayerMileageText.rectTransform);
 
                     float playerNodeWidth = Math.Max(324, self.UIPlayerMileageText.rectTransform.rect.width + 200);
@@ -94,7 +98,7 @@ namespace XN
                     playerRt.sizeDelta = new Vector2(playerNodeWidth, playerRt.sizeDelta.y);
                     break;
                 case ViewCarInfoItemNameplateType.PlayerLong:
-                    self.UIPlayerLongMileageText.text = $"{UIMathCeil(mileage)}米";
+                    self.UIPlayerLongMileageText.text = mileageStr;
                     LayoutRebuilder.ForceRebuildLayoutImmediate(self.UIPlayerLongMileageText.rectTransform);
 
                     float playerLongNodeWidth =
@@ -103,7 +107,7 @@ namespace XN
                     playerLongRt.sizeDelta = new Vector2(playerLongNodeWidth, playerLongRt.sizeDelta.y);
                     break;
                 case ViewCarInfoItemNameplateType.Nobody:
-                    self.UINobodyMileageTextMeshProUGUI.text = $"{UIMathCeil(mileage)}米";
+                    self.UINobodyMileageTextMeshProUGUI.text = mileageStr;
                     LayoutRebuilder.ForceRebuildLayoutImmediate(self.UINobodyMileageTextMeshProUGUI.rectTransform);
 
                     float nobodyNodeWidth = Math.Max(304,
@@ -112,7 +116,7 @@ namespace XN
                     nobodyRt.sizeDelta = new Vector2(nobodyNodeWidth, nobodyRt.sizeDelta.y);
                     break;
                 case ViewCarInfoItemNameplateType.NobodyLong:
-                    self.UINobodyLongMileageTextMeshProUGUI.text = $"{UIMathCeil(mileage)}米";
+                    self.UINobodyLongMileageTextMeshProUGUI.text = mileageStr;
                     LayoutRebuilder.ForceRebuildLayoutImmediate(self.UINobodyLongMileageTextMeshProUGUI.rectTransform);
 
                     float nobodyLongNodeWidth = Math.Max(357,

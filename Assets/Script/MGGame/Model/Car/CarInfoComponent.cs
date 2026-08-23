@@ -13,6 +13,20 @@ namespace XN
         MoveY = 1 << MoveX,
     }
     
+    // 新增：0 GC 的 State 枚举比较器
+    public class StateEqualityComparer : IEqualityComparer<State>
+    {
+        public bool Equals(State x, State y)
+        {
+            return x == y;// 直接按底层 int 值比较
+        }
+
+        public int GetHashCode(State obj)
+        {
+            return (int)obj;// 直接返回底层 int 作为 HashCode
+        }
+    }
+
     public class CarInfoComponent : IComponent
     {
         /// <summary>
@@ -69,6 +83,12 @@ namespace XN
         public float ChangeLineTime { get; set; }
 
         /// <summary>
+        /// 切换组别计时
+        /// </summary>
+        [SerializeField]
+        public float ChangeGroupTime { get; set; }
+
+        /// <summary>
         /// 移动状态
         /// </summary>
         [SerializeField]
@@ -77,8 +97,9 @@ namespace XN
         /// <summary>
         /// 状态组
         /// </summary>
+        // 传入自定义比较器，避免底层默认比较器产生的装箱 GC
         [SerializeField]
-        public Dictionary<State, (float, float)> StateDic { get; set; } = new();
+        public Dictionary<State, (float, float)> StateDic { get; set; } = new(new StateEqualityComparer());
 
         /// <summary>
         /// 临时状态
@@ -131,6 +152,7 @@ namespace XN
             Line = default;
             ChangeLineDelay = default;
             ChangeLineTime = default;
+            ChangeGroupTime = default;
             CarMoveType = default;
             StateDic.Clear();
             CarState = default;

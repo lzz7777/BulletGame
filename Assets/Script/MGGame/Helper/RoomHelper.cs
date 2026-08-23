@@ -222,19 +222,16 @@ namespace XN
         }
 
         /// <summary>
-        /// 车辆里程排序
+        /// 车辆里程排序结构体，0 GC 且优化了浮点比较
         /// </summary>
-        public static void CarsSort()
+        private struct CarMileageComparer : IComparer<long>
         {
-            var roomInfoComp = GetRoomInfoComponent();
-            var carIds = roomInfoComp.CarIds;
-
-            carIds.Sort((a, b) =>
+            public int Compare(long a, long b)
             {
                 var carInfoComp1 = EntityManager.Instance.GetEntityById(a).GetComponent<CarInfoComponent>();
                 var carInfoComp2 = EntityManager.Instance.GetEntityById(b).GetComponent<CarInfoComponent>();
 
-                if (!Mathf.Approximately(carInfoComp1.Mileage, carInfoComp2.Mileage))
+                if (System.Math.Abs(carInfoComp1.Mileage - carInfoComp2.Mileage) > 0.001f)
                 {
                     return carInfoComp2.Mileage.CompareTo(carInfoComp1.Mileage);
                 }
@@ -245,7 +242,20 @@ namespace XN
                 }
 
                 return carInfoComp1.Entity.Id.CompareTo(carInfoComp2.Entity.Id);
-            });
+            }
+        }
+
+        private static readonly CarMileageComparer _carComparer = new CarMileageComparer();
+
+        /// <summary>
+        /// 车辆里程排序
+        /// </summary>
+        public static void CarsSort()
+        {
+            var roomInfoComp = GetRoomInfoComponent();
+            var carIds = roomInfoComp.CarIds;
+
+            carIds.Sort(_carComparer);
 
             for (int i = 0; i < carIds.Count; i++)
             {
@@ -315,6 +325,17 @@ namespace XN
             }
 
             return carIds;
+        }
+
+        public static bool CanChangeGroup()
+        {
+            if (RoomManager.Instance.GlobalChangeGroupNextTime >= 0.2f)
+            {
+                RoomManager.Instance.GlobalChangeGroupNextTime = 0;
+                return true;
+            }
+
+            return false;
         }
 
         #region UserInfo

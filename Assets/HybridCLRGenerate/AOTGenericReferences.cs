@@ -223,6 +223,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Action<System.ValueTuple<object,object>>
 	// System.Action<UnityEngine.InputSystem.InputAction.CallbackContext>
 	// System.Action<UnityEngine.Vector2>
+	// System.Action<XN.BackgroundCtrl.SpriteWeight>
 	// System.Action<XN.UILoopList.ItemInfo>
 	// System.Action<byte>
 	// System.Action<double>
@@ -250,6 +251,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.ArraySortHelper<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.ArraySortHelper<System.ValueTuple<object,object>>
 	// System.Collections.Generic.ArraySortHelper<UnityEngine.Vector2>
+	// System.Collections.Generic.ArraySortHelper<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.ArraySortHelper<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.ArraySortHelper<byte>
 	// System.Collections.Generic.ArraySortHelper<double>
@@ -290,6 +292,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.Comparer<System.ValueTuple<object,object>>
 	// System.Collections.Generic.Comparer<UnityEngine.Vector2>
 	// System.Collections.Generic.Comparer<UnityEngine.Vector3>
+	// System.Collections.Generic.Comparer<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.Comparer<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.Comparer<byte>
 	// System.Collections.Generic.Comparer<double>
@@ -459,6 +462,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.ICollection<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.ICollection<System.ValueTuple<object,object>>
 	// System.Collections.Generic.ICollection<UnityEngine.Vector2>
+	// System.Collections.Generic.ICollection<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.ICollection<XN.LogManager.LogData>
 	// System.Collections.Generic.ICollection<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.ICollection<byte>
@@ -474,6 +478,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IComparer<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.IComparer<System.ValueTuple<object,object>>
 	// System.Collections.Generic.IComparer<UnityEngine.Vector2>
+	// System.Collections.Generic.IComparer<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.IComparer<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.IComparer<byte>
 	// System.Collections.Generic.IComparer<double>
@@ -508,6 +513,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IEnumerable<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.IEnumerable<System.ValueTuple<object,object>>
 	// System.Collections.Generic.IEnumerable<UnityEngine.Vector2>
+	// System.Collections.Generic.IEnumerable<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.IEnumerable<XN.LogManager.LogData>
 	// System.Collections.Generic.IEnumerable<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.IEnumerable<byte>
@@ -539,6 +545,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IEnumerator<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.IEnumerator<System.ValueTuple<object,object>>
 	// System.Collections.Generic.IEnumerator<UnityEngine.Vector2>
+	// System.Collections.Generic.IEnumerator<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.IEnumerator<XN.LogManager.LogData>
 	// System.Collections.Generic.IEnumerator<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.IEnumerator<byte>
@@ -561,6 +568,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IList<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.IList<System.ValueTuple<object,object>>
 	// System.Collections.Generic.IList<UnityEngine.Vector2>
+	// System.Collections.Generic.IList<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.IList<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.IList<byte>
 	// System.Collections.Generic.IList<double>
@@ -592,6 +600,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.List.Enumerator<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.List.Enumerator<System.ValueTuple<object,object>>
 	// System.Collections.Generic.List.Enumerator<UnityEngine.Vector2>
+	// System.Collections.Generic.List.Enumerator<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.List.Enumerator<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.List.Enumerator<byte>
 	// System.Collections.Generic.List.Enumerator<double>
@@ -606,6 +615,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.List<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.Generic.List<System.ValueTuple<object,object>>
 	// System.Collections.Generic.List<UnityEngine.Vector2>
+	// System.Collections.Generic.List<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.List<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.List<byte>
 	// System.Collections.Generic.List<double>
@@ -643,6 +653,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.ObjectComparer<System.ValueTuple<object,object>>
 	// System.Collections.Generic.ObjectComparer<UnityEngine.Vector2>
 	// System.Collections.Generic.ObjectComparer<UnityEngine.Vector3>
+	// System.Collections.Generic.ObjectComparer<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.Generic.ObjectComparer<XN.UILoopList.ItemInfo>
 	// System.Collections.Generic.ObjectComparer<byte>
 	// System.Collections.Generic.ObjectComparer<double>
@@ -722,6 +733,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.ObjectModel.ReadOnlyCollection<System.ValueTuple<int,object,object,float,object>>
 	// System.Collections.ObjectModel.ReadOnlyCollection<System.ValueTuple<object,object>>
 	// System.Collections.ObjectModel.ReadOnlyCollection<UnityEngine.Vector2>
+	// System.Collections.ObjectModel.ReadOnlyCollection<XN.BackgroundCtrl.SpriteWeight>
 	// System.Collections.ObjectModel.ReadOnlyCollection<XN.UILoopList.ItemInfo>
 	// System.Collections.ObjectModel.ReadOnlyCollection<byte>
 	// System.Collections.ObjectModel.ReadOnlyCollection<double>
@@ -736,6 +748,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Comparison<System.ValueTuple<int,object,object,float,object>>
 	// System.Comparison<System.ValueTuple<object,object>>
 	// System.Comparison<UnityEngine.Vector2>
+	// System.Comparison<XN.BackgroundCtrl.SpriteWeight>
 	// System.Comparison<XN.UILoopList.ItemInfo>
 	// System.Comparison<byte>
 	// System.Comparison<double>
@@ -838,6 +851,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Predicate<System.ValueTuple<int,object,object,float,object>>
 	// System.Predicate<System.ValueTuple<object,object>>
 	// System.Predicate<UnityEngine.Vector2>
+	// System.Predicate<XN.BackgroundCtrl.SpriteWeight>
 	// System.Predicate<XN.UILoopList.ItemInfo>
 	// System.Predicate<byte>
 	// System.Predicate<double>
@@ -1368,7 +1382,6 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<byte>.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UnityAsyncExtensions.UnityWebRequestAsyncOperationAwaiter,object>(Cysharp.Threading.Tasks.UnityAsyncExtensions.UnityWebRequestAsyncOperationAwaiter&,object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<byte>.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,object>(System.Runtime.CompilerServices.TaskAwaiter&,object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,object>(Cysharp.Threading.Tasks.UniTask.Awaiter&,object&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<byte>,object>(Cysharp.Threading.Tasks.UniTask.Awaiter<byte>&,object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<object>,object>(Cysharp.Threading.Tasks.UniTask.Awaiter<object>&,object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UnityAsyncExtensions.UnityWebRequestAsyncOperationAwaiter,object>(Cysharp.Threading.Tasks.UnityAsyncExtensions.UnityWebRequestAsyncOperationAwaiter&,object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,object>(System.Runtime.CompilerServices.TaskAwaiter&,object&)
@@ -1377,6 +1390,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<byte>.Start<object>(object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.Start<object>(object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,object>(Cysharp.Threading.Tasks.UniTask.Awaiter&,object&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<object>,object>(Cysharp.Threading.Tasks.UniTask.Awaiter<object>&,object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,object>(System.Runtime.CompilerServices.TaskAwaiter&,object&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<object>(object&)
 		// Cysharp.Threading.Tasks.UniTask.Awaiter Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter<object>(object)

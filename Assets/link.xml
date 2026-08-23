@@ -4,4 +4,8 @@
 
     <!-- 保留图集相关的 U2D 程序集 -->
     <assembly fullname="UnityEngine.U2D" preserve="all"/>
+
+    <assembly fullname="Tayx.Graphy">
+        <type fullname="*" preserve="all"/>
+    </assembly>
 </linker>
