@@ -220,21 +220,21 @@ MonoBehaviour:
     componentDatas:
     - name: TextTMP_UGUI
       transform: {fileID: 6174138297002986375}
-      ComponentEnum: 57
+      ComponentEnum: 55
       suffix: 
   - transform: {fileID: 949199399268588318}
     componentEnum: 0
     componentDatas:
     - name: TitleTMP_UGUI
       transform: {fileID: 949199399268588318}
-      ComponentEnum: 57
+      ComponentEnum: 55
       suffix: 
   - transform: {fileID: 7157453976937321234}
     componentEnum: 0
     componentDatas:
-    - name: ViewLoopListTestItemUILoopListItem
+    - name: ViewLoopListTestItemLoopListItem
       transform: {fileID: 7157453976937321234}
-      ComponentEnum: 65
+      ComponentEnum: 63
       suffix: 
 --- !u!114 &6704317611696797080
 MonoBehaviour:

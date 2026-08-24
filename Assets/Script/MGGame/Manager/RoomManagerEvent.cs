@@ -70,13 +70,16 @@ namespace XN
             foreach (var id in RoomHelper.GetCars())
             {
                 var carEntity = EntityManager.Instance.GetEntityById(id);
-                var carViewComp = carEntity.GetComponent<CarViewComponent>();
-                //刷新特效
-                carViewComp.RefreshEffect();
-                //刷新灯带
-                carViewComp.RefreshTrackLight();
-                carViewComp.ViewCarInfoItem.RefreshMembers();
-                carViewComp.UpdateDeviceScale();
+
+                if (carEntity.GetComponent(out CarViewComponent carViewComp))
+                {
+                    //刷新特效
+                    carViewComp.RefreshEffect();
+                    //刷新灯带
+                    carViewComp.RefreshTrackLight();
+                    carViewComp.ViewCarInfoItem.RefreshMembers();
+                    carViewComp.UpdateDeviceScale();
+                }
             }
 
             SwithGameing();

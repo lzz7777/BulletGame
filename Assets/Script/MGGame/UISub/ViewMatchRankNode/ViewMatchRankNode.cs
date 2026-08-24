@@ -1,13 +1,13 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace XN
 {
     public class ViewMatchRankNode : UISubViewBase
     {
 		public UISubView ViewMatchRankNodeSubView;
-		public VerticalLayoutGroup UILayoutVerticalLayoutGroup;
+		public UILoopList ScrollViewLoopList;
 
         public override void OnOpen(UIWindowData uIWindowData)
         {
@@ -26,6 +26,18 @@ namespace XN
 	    public List<ViewMatchRankNodeData> TempDatas = new();
 	    public List<ViewMatchRankNodeData> Datas = new();
 	    public List<GameObject> Objs = new();
+        public bool IsDirty = false;
+        public float RefreshDt = 0;
+        
+        private void Awake()
+        {
+            ObjectPoolManager.Instance.AdvanceAddRes<ViewMatchRankItem>(10);
+        }
+
+        private void Update()
+        {
+            this.OnUpdateSystem();
+        }
 
         #endregion
     }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace XN
 {
-    public class ViewMatchRankItemData
+    public class ViewMatchRankItemData : UIItemDataBase
     {
         public long CarId { get; set; }
         public int Rank { get; set; }

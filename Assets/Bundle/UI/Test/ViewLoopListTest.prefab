@@ -280,9 +280,9 @@ MonoBehaviour:
   - transform: {fileID: 1041984462130921715}
     componentEnum: 0
     componentDatas:
-    - name: ScrollViewUILoopList
+    - name: ScrollViewLoopList
       transform: {fileID: 1041984462130921715}
-      ComponentEnum: 64
+      ComponentEnum: 62
       suffix: 
   - transform: {fileID: 587309945519216211}
     componentEnum: 0

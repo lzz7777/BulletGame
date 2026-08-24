@@ -297,7 +297,7 @@ namespace XN
             int maxNum = 10;
             foreach (var effectRes in effectRess.Keys)
             {
-                await ObjectPoolManager.Instance.AdvanceAddRes(effectRes, maxNum, PrefabType.Effect);
+                // await ObjectPoolManager.Instance.AdvanceAddRes(effectRes, maxNum, PrefabType.Effect);
             }
         }
     }

@@ -16,6 +16,7 @@ namespace XN
         public static void OnOpenSystem(this ViewMain self, UIWindowData uIWindowData)
         {
             self.currRoomType = (FightRoomType)uIWindowData.IntArgs1;
+            self.currRoomId = 2;
             Debug.Log($"Room OnOpenSystem  --- {self.currRoomType} --- {self.currRoomId}");
             switch (self.currRoomType)
             {
