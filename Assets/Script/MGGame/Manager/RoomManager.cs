@@ -288,16 +288,26 @@ namespace XN
         /// </summary>
         public async UniTask AdvanceAddRoomEffect()
         {
-            Dictionary<string, bool> effectRess = new();
             foreach (var conf in TotalConfigManager.ConfigManager.EffectInfoConfigCategory.DataList)
             {
-                effectRess[conf.EffectRes] = true;
+                if (string.IsNullOrEmpty(conf.EffectRes))
+                    continue;
+                
+                await ObjectPoolManager.Instance.AdvanceAddRes(conf.EffectRes, 50, PrefabType.Effect, obj =>
+                {
+                    obj.AddComponent<EffectCtrl>().InitData();
+                });
             }
 
-            int maxNum = 10;
-            foreach (var effectRes in effectRess.Keys)
+            foreach (var conf in TotalConfigManager.ConfigManager.DeviceInfoConfigCategory.DataList)
             {
-                // await ObjectPoolManager.Instance.AdvanceAddRes(effectRes, maxNum, PrefabType.Effect);
+                if (string.IsNullOrEmpty(conf.DeviceRes))
+                    continue;
+                
+                await ObjectPoolManager.Instance.AdvanceAddRes(conf.DeviceRes, 10, PrefabType.None, obj =>
+                {
+                    obj.AddComponent<CarCtrl>().InitData(conf.DeviceRes);
+                });
             }
         }
     }

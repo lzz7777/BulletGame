@@ -7045,7 +7045,7 @@ MonoBehaviour:
       Data: ViewAttributeFloatItem
     - Name: $v
       Entry: 3
-      Data: -1
+      Data: 100
     - Name: 
       Entry: 8
       Data: 
@@ -7056,7 +7056,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   global: 1
-  commonGoMaxNum: -1
+  commonGoMaxNum: 50
 --- !u!1 &2040462406
 GameObject:
   m_ObjectHideFlags: 0

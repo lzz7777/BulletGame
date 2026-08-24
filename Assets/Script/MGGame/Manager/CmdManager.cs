@@ -20,21 +20,22 @@ namespace XN
         public bool Using;
         public bool IsDone;
     }
-    
+
     public class CmdManager : MonoSingleton<CmdManager>
     {
         private Dictionary<string, Queue<InputCmdData>> _inputData = new();
-        
+
         /// <summary>
         /// 保存开赛前玩家道具指令
         /// </summary>
         private Dictionary<string, Queue<InputCmdData>> _saveInputData = new();
-        
+
         private HashSet<string> _needDequeue = new();
 
         private InputCmdData _tempCmdData;
-        
+
         public bool IsInitialized { get; private set; }
+
         protected override async void OnInit()
         {
             await UniTask.WaitUntil(() => YooAssetManager.Instance.IsInitialized);
@@ -50,14 +51,14 @@ namespace XN
         private void Update()
         {
             if (_inputData.Count <= 0) return;
-            
+
             foreach (var (pid, queue) in _inputData)
             {
                 if (queue.Count <= 0)
                 {
                     continue;
                 }
-                
+
                 _tempCmdData = queue.Peek();
                 if (!_tempCmdData.Using)
                 {
@@ -79,7 +80,7 @@ namespace XN
                     _inputData[pid].Dequeue();
                 }
             }
-            
+
             _needDequeue.Clear();
         }
 
@@ -113,7 +114,7 @@ namespace XN
             {
                 return;
             }
-            
+
             if (UIManager.Instance.GameModel == GameModel.Debug)
             {
                 if (playerId == "测试")
@@ -131,14 +132,14 @@ namespace XN
                         {
                             return;
                         }
-                    
+
                         args.Add(argInt);
                     }
 
                     Main.GmTestAll(args[0], args[1], args[2]);
                     return;
                 }
-                
+
                 if (playerId == "测试脚本")
                 {
                     GmTestCmd(content);
@@ -151,6 +152,7 @@ namespace XN
                     {
                         gameObject.AddComponent<FPSView>();
                     }
+
                     return;
                 }
 
@@ -163,40 +165,45 @@ namespace XN
 
                 if (playerId == "LZZ")
                 {
-                    if (content == "1")
+                    switch (content)
                     {
-                        Main.GmAdd();
-                        return;
+                        case "0":
+                            Main.GmAdd();
+                            Main.GmBuff();
+                            break;
+                        case "1":
+                            Main.GmAdd();
+
+                            break;
+                        case "2":
+                            Main.GmBuff();
+                            break;
                     }
 
-                    if (content == "2")
-                    {
-                        Main.GmBuff();
-                        return;
-                    }
                     return;
                 }
             }
-            
+
             if (string.IsNullOrEmpty(playerId))
             {
                 return;
             }
-            
+
             var inputConf = ParseCmd(content);
             if (inputConf != null)
             {
                 AddCmd(playerId, inputConf.InputId, content);
                 return;
             }
-            
-            if (int.TryParse(content, out int inputId) && TotalConfigManager.ConfigManager.InputIndexConfigCategory.GetOrDefault(inputId) != null)
+
+            if (int.TryParse(content, out int inputId) &&
+                TotalConfigManager.ConfigManager.InputIndexConfigCategory.GetOrDefault(inputId) != null)
             {
                 AddCmd(playerId, inputId);
                 return;
             }
         }
-        
+
         [System.Serializable]
         private class TestCmdData
         {
@@ -204,13 +211,13 @@ namespace XN
             public string PlayerId;
             public string Content;
         }
-        
+
         [System.Serializable]
         private class TestCmdDatas
         {
             public List<TestCmdData> Datas = new();
         }
-        
+
         private async UniTask GmTestCmd(string fileName = "TestCmd1")
         {
             fileName = $"TestCmd/{fileName}.json";
@@ -234,7 +241,7 @@ namespace XN
                 }
             }
         }
-        
+
         /// <summary>
         /// 处理聊天
         /// </summary>
@@ -256,22 +263,24 @@ namespace XN
         /// </summary>
         private InputIndexConfig ParseCmd(string content)
         {
-            foreach (var conf in TotalConfigManager.ConfigManager.InputIndexConfigCategory.InputIndexConfigDic[InteractiveID.弹幕])
+            foreach (var conf in TotalConfigManager.ConfigManager.InputIndexConfigCategory.InputIndexConfigDic[
+                         InteractiveID.弹幕])
             {
                 if (conf.InputStr == content)
                 {
                     return conf;
                 }
             }
-            
-            foreach (var conf in TotalConfigManager.ConfigManager.InputIndexConfigCategory.InputIndexConfigDic[InteractiveID.模糊匹配弹幕])
+
+            foreach (var conf in TotalConfigManager.ConfigManager.InputIndexConfigCategory.InputIndexConfigDic[
+                         InteractiveID.模糊匹配弹幕])
             {
                 if (content.Contains(conf.InputStr))
                 {
                     return conf;
                 }
             }
-            
+
             return null;
         }
 
@@ -282,13 +291,13 @@ namespace XN
                 return;
             }
 
-            
+
             //开赛前保存道具指令
             var inputConf = TotalConfigManager.ConfigManager.InputIndexConfigCategory.GetOrDefault(inputId);
             if (GameStateCtrl.State < MGGameState.游戏开始 && (inputConf?.IsGift ?? false))
             {
                 StartGamePlayerJoin(playerId, inputId);
-                
+
                 _saveInputData.TryAdd(playerId, new Queue<InputCmdData>());
                 _saveInputData[playerId].Enqueue(new InputCmdData()
                 {
@@ -298,7 +307,7 @@ namespace XN
                 });
                 return;
             }
-            
+
             _inputData.TryAdd(playerId, new Queue<InputCmdData>());
             _inputData[playerId].Enqueue(new InputCmdData()
             {
@@ -332,20 +341,20 @@ namespace XN
             {
                 return;
             }
-            
+
             string playerId = inputCmdData.PlayerId;
             int inputId = inputCmdData.InputId;
             string content = inputCmdData.Content;
-            
+
             var roomInfoComp = RoomHelper.GetRoomInfoComponent();
             if (roomInfoComp == null)
             {
                 inputCmdData.IsDone = true;
                 return;
             }
-            
+
             await roomInfoComp.CheckAddPlayer(playerId);
-            
+
             var inputIndexConf = TotalConfigManager.ConfigManager.InputIndexConfigCategory.GetOrDefault(inputId);
             if (inputIndexConf == null)
             {
@@ -361,14 +370,14 @@ namespace XN
                 inputCmdData.IsDone = true;
                 return;
             }
-            
+
             //判断是否自动加入，游戏开始才能生效
             if (inputIndexConf.AutoJoinRoom && GameStateCtrl.IsGameStart)
             {
                 //自动加入逻辑
                 await roomInfoComp.CheckPlayerAddCar(playerId, inputId);
             }
-            
+
             switch (inputIndexConf.Cmd)
             {
                 case ECmd.None:
@@ -396,12 +405,12 @@ namespace XN
                     BuffHelper.DoBuff(inputId, playerId, (int)inputIndexConf.Cmd);
                     break;
             }
-            
+
             if (inputIndexConf.IsGift)
             {
                 BuffHelper.DoBuff(inputId, playerId, (int)inputIndexConf.Cmd);
             }
-            
+
             //道具显示，游戏开始才能生效
             if (inputIndexConf.IsGift && GameStateCtrl.IsGameStart)
             {
@@ -411,7 +420,7 @@ namespace XN
                     InputId = inputId,
                 });
             }
-            
+
             inputCmdData.IsDone = true;
         }
 
@@ -429,7 +438,7 @@ namespace XN
             {
                 return;
             }
-            
+
             string targetName = "";
             var roomConf = RoomHelper.GetFightRoomConfig();
             var roomInfoComp = RoomHelper.GetRoomInfoComponent();
@@ -442,7 +451,7 @@ namespace XN
             {
                 return;
             }
-            
+
             //匹配名字
             string tempName = content.Substring(replaceStr.Length);
             switch (roomConf.RoomType)
@@ -451,31 +460,37 @@ namespace XN
                     if (SensitiveManager.IsWhiteName(tempName))
                     {
                         targetName = tempName;
-                    } else if (Enum.TryParse(tempName, true, out TextName textName) && Enum.IsDefined(typeof(TextName), tempName))
+                    }
+                    else if (Enum.TryParse(tempName, true, out TextName textName) &&
+                             Enum.IsDefined(typeof(TextName), tempName))
                     {
                         targetName = textName.ToString();
                     }
-                    
+
                     break;
                 case FightRoomType.ZodiacRoom:
-                    if (Enum.TryParse(tempName, true, out ZodiacName zodiacName) && Enum.IsDefined(typeof(ZodiacName), tempName))
+                    if (Enum.TryParse(tempName, true, out ZodiacName zodiacName) &&
+                        Enum.IsDefined(typeof(ZodiacName), tempName))
                     {
                         targetName = zodiacName.ToString();
                     }
-                    
+
                     break;
                 case FightRoomType.FreeRoom:
                     if (GetStringLength(tempName) > 8)
                     {
-                        string tickerContent = $"<color=#00DCFF>{playerInfoComp.Name}</color> 创建 <color=#00FF00>{targetName}</color> 车队失败：词汇超出四字";
+                        string tickerContent =
+                            $"<color=#00DCFF>{playerInfoComp.Name}</color> 创建 <color=#00FF00>{targetName}</color> 车队失败：词汇超出四字";
                         RoomHelper.AddTicker(tickerContent);
                         return;
                     }
+
                     string currName = GetFilter(tempName);
 
                     if (!currName.Equals(tempName))
                     {
-                        string tickerContent = $"<color=#00DCFF>{playerInfoComp.Name}</color> 创建 <color=#00FF00>{targetName}</color> 车队失败：请更换正常词汇";
+                        string tickerContent =
+                            $"<color=#00DCFF>{playerInfoComp.Name}</color> 创建 <color=#00FF00>{targetName}</color> 车队失败：请更换正常词汇";
                         RoomHelper.AddTicker(tickerContent);
                         return;
                     }
@@ -491,12 +506,12 @@ namespace XN
                     //加，加入匹配到了，内容为空，走自动加入逻辑
                     roomInfoComp.CheckPlayerAddCar(playerId, inputId);
                 }
-                
+
                 return;
             }
 
             long targetCarId = 0;
-            
+
             //找到名字车队
             foreach (var carId in RoomHelper.GetCars())
             {
@@ -513,7 +528,7 @@ namespace XN
                 roomInfoComp.CheckPlayerAddCar(playerId, inputId, targetCarId);
                 return;
             }
-            
+
             //找不到名称车队，创建新车
             var carIds = RoomHelper.GetCars();
             int targetGaroup = 0;
@@ -542,11 +557,12 @@ namespace XN
             if (targetCarId != 0)
             {
                 //获取旧车队皮肤
-                var targetCarInfoComp = EntityManager.Instance.GetEntityById(targetCarId).GetComponent<CarInfoComponent>();
+                var targetCarInfoComp =
+                    EntityManager.Instance.GetEntityById(targetCarId).GetComponent<CarInfoComponent>();
                 targetDeviceId = targetCarInfoComp.DeviceId;
                 targetGaroup = targetCarInfoComp.Group;
                 targetMileage = targetCarInfoComp.Mileage;
-                
+
                 //移除旧车队
                 RoomHelper.RemoveCar(targetCarId);
             }
@@ -555,18 +571,19 @@ namespace XN
                 //场上车满了，而且没有达到最大数量
                 targetMileage = minMileage;
                 targetGaroup = carIds.Count;
-                
+
                 //随机一个皮肤
                 targetDeviceId = RoomHelper.GetRandomDevice();
             }
             else
             {
                 //没找到车，显示飘字: XXX 创建 YY 车队失败：参赛车队已满
-                string tickerContent = $"<color=#00DCFF>{playerInfoComp.Name}</color> 创建 <color=#00FF00>{targetName}</color> 车队失败：参赛车队已满";
+                string tickerContent =
+                    $"<color=#00DCFF>{playerInfoComp.Name}</color> 创建 <color=#00FF00>{targetName}</color> 车队失败：参赛车队已满";
                 RoomHelper.AddTicker(tickerContent);
                 return;
             }
-            
+
             //创建新车队
             var startPos = RoomManager.Instance.GroupLinePos[targetGaroup][1];
 
@@ -575,11 +592,12 @@ namespace XN
                 startPos = new Vector2(-6, startPos.y);
             }
 
-            var carEntity = await RoomHelper.CreateCar(startPos, targetGaroup, targetName, targetMileage, targetDeviceId);
-            
+            var carEntity =
+                await RoomHelper.CreateCar(startPos, targetGaroup, targetName, targetMileage, targetDeviceId);
+
             //刷新排名
             RoomHelper.CarsSort();
-            
+
             var carViewComp = carEntity.GetComponent<CarViewComponent>();
             //刷新特效
             carViewComp.RefreshEffect();
@@ -597,7 +615,7 @@ namespace XN
         public async UniTask DoChangeSkin(int inputId, string playerId, string content)
         {
             var inputConf = TotalConfigManager.ConfigManager.InputIndexConfigCategory.Get(inputId);
-            
+
             int value = 0;
 
             if (inputConf.Interactive == InteractiveID.模糊匹配弹幕)
@@ -616,17 +634,17 @@ namespace XN
             {
                 return;
             }
-            
+
             var response = await PlayerMessage.SendCmdOperationRequest(playerId, inputConf.Cmd, value);
             if (response.Code != 0)
             {
                 Debug.LogError($"SendCmdOperationRequest:{response.Msg}");
                 return;
             }
-            
+
             var playerInfoComp = RoomHelper.GetRoomInfoComponent().GetPlayerInfoComponent(playerId);
             playerInfoComp.SetSkinData(response.Data.SkinId, response.Data.EffectId);
-            
+
             //给车队推消息换皮
             playerInfoComp.RefreshCarSkin();
         }
@@ -661,20 +679,21 @@ namespace XN
                 Debug.LogError($"SendCmdOperationRequest:{response.Msg}");
                 return;
             }
-            
+
             //更新背包
             var respBagRequest = await PlayerMessage.SendBagRequest(playerId);
             var playerItemComp = RoomHelper.GetRoomInfoComponent().GetPlayerItemComponent(playerId);
             playerItemComp.SetItemData(respBagRequest.BagDataList);
-            
+
             //跑马灯
             var playerInfoComp = RoomHelper.GetRoomInfoComponent().GetPlayerInfoComponent(playerId);
             var storeConf = TotalConfigManager.ConfigManager.StoreConfigCategory.Get(value);
             var storeItemConf = TotalConfigManager.ConfigManager.ItemInfoConfigCategory.Get(storeConf.Goods.ItemId);
-            string tickerContent = $"<color=#00DCFF>{playerInfoComp.Name}</color> 成功兑换 <color=#00FF00>{storeItemConf.ItemName}</color>";
+            string tickerContent =
+                $"<color=#00DCFF>{playerInfoComp.Name}</color> 成功兑换 <color=#00FF00>{storeItemConf.ItemName}</color>";
             RoomHelper.AddTicker(tickerContent);
         }
-        
+
         /// <summary>
         /// 切换性别
         /// </summary>
@@ -687,7 +706,7 @@ namespace XN
             {
                 return;
             }
-            
+
             var response = await PlayerMessage.SendCmdOperationRequest(playerId, ECmd.切换);
             if (response.Code != 0)
             {
@@ -697,7 +716,7 @@ namespace XN
 
             playerInfoComp.SetSex((SexType)response.Data.Value);
         }
-        
+
         /// <summary>
         /// 查询油桶
         /// </summary>
@@ -707,23 +726,23 @@ namespace XN
             var playerUnit = RoomHelper.GetRoomInfoComponent().GetPlayerUnit(playerId);
             var playerInfoComp = playerUnit.GetComponent<PlayerInfoComponent>();
             var playerItemComp = playerUnit.GetComponent<PlayerItemComponent>();
-            
+
             var num = playerItemComp.GetItemNum(GameConst.OilDrum);
-            
+
             //跑马灯
             string content = $"<color=#00DCFF>{playerInfoComp.Name}</color> 拥有 <color=#FCFFB3>x{num}</color>";
             RoomHelper.AddTicker(content, true);
         }
 
-        #region =========== SDKMessage =========== 
+        #region =========== SDKMessage ===========
 
         public void SDKMessageUpdateUserInfo(string playerId, string playerNickName, string playerAvatarUrl)
         {
             // 刷新玩家信息
             // 抖音 IUserInfo
-            RoomHelper.UpdateUserInfo(playerId,playerNickName, playerAvatarUrl);
+            RoomHelper.UpdateUserInfo(playerId, playerNickName, playerAvatarUrl);
         }
-        
+
         /// <summary>
         /// 聊天触发 模糊匹配
         /// </summary>
@@ -735,8 +754,8 @@ namespace XN
             Debug.Log($"SDKMessageChat:{playerId}:{content}  time:{timestamp}");
             ChatCmd(playerId, content);
         }
-        
-        
+
+
         /// <summary>
         /// 点赞
         /// </summary>
@@ -751,7 +770,7 @@ namespace XN
             {
                 int inputId = gifts.First().InputId;
                 Debug.Log($"SDKMessageLike: {playerId}  {inputId}:{num}  time:{timestamp}");
-                
+
                 if (num >= 2)
                 {
                     for (int i = 0; i < 2; i++)
@@ -759,7 +778,7 @@ namespace XN
                         AddCmd(playerId, inputId);
                     }
                 }
-                
+
                 // TODO 客户端当前是一条条Add然后解析
                 // for (int i = 0; i < num; i++)
                 // {
@@ -767,7 +786,7 @@ namespace XN
                 // }
             }
         }
-        
+
         /// <summary>
         /// 礼物
         /// </summary>
@@ -788,11 +807,12 @@ namespace XN
                 Debug.LogError($"{ChannelCmd.DouYin} + {giftId} 找不到商品");
                 return;
             }
+
             if (inputIndexCc.InputIndexConfigDic.TryGetValue(oneGift.Gift, out var gifts))
             {
                 List<(int, int)> cmdIdAndNumLit = new();
                 int count = num;
-                for (int i = gifts.Count-1; i >=0; i--)
+                for (int i = gifts.Count - 1; i >= 0; i--)
                 {
                     InputIndexConfig oneInput = gifts[i];
                     int repeat = count / oneInput.InputNumber;
@@ -812,6 +832,7 @@ namespace XN
                 {
                     UnityEngine.Debug.LogError($"{oneGift.Gift}  还有 {count} 未解析成功");
                 }
+
                 // TODO 客户端当前是一条条Add然后解析
                 foreach ((int inputId, int number) in cmdIdAndNumLit)
                 {
@@ -821,10 +842,10 @@ namespace XN
                     }
                 }
             }
-            
+
             EventsManager.BroadCast(GameEnum.GroupBrushGifts, giftId, num);
         }
-        
+
         /// <summary>
         /// 邀请入队
         /// </summary>
@@ -836,7 +857,7 @@ namespace XN
             var roomInfoComp = RoomHelper.GetRoomInfoComponent();
             var inviPlayerInfoComp = roomInfoComp.GetPlayerInfoComponent(inviterPlayerId);
             var secPlayerInfoComp = roomInfoComp.GetPlayerInfoComponent(secPlayerId);
-            
+
             string inviterName = inviPlayerInfoComp?.Name ?? RoomHelper.GetUserInfo(inviterPlayerId).Nickname;
             string secJionName = secPlayerInfoComp?.Name ?? RoomHelper.GetUserInfo(secPlayerId).Nickname;
 
@@ -848,21 +869,25 @@ namespace XN
                     // 邀请者未下场，被邀请者早下场
                     return;
                 }
+
                 string stayStr = $"<color=#00DCFF>{inviterName}</color>邀请<color=#00DCFF>{secJionName}加入观赛席";
                 RoomHelper.AddTicker(stayStr);
                 return;
             }
+
             // 2. 邀请者下场 + 被邀请者已下场
-            if (secPlayerInfoComp !=null && secPlayerInfoComp.CarId != 0)
+            if (secPlayerInfoComp != null && secPlayerInfoComp.CarId != 0)
             {
                 return;
             }
-            
+
             //3. 邀请者下场 + 被邀请这未下场
             // 添加玩家入座指令
-            var inputId = TotalConfigManager.ConfigManager.InputIndexConfigCategory.ECmdInputIndexConfigDic[ECmd.加][0].InputId;
+            var inputId = TotalConfigManager.ConfigManager.InputIndexConfigCategory.ECmdInputIndexConfigDic[ECmd.加][0]
+                .InputId;
 
-            var inviCarInfoComp = EntityManager.Instance.GetEntityById(inviPlayerInfoComp.CarId).GetComponent<CarInfoComponent>();
+            var inviCarInfoComp = EntityManager.Instance.GetEntityById(inviPlayerInfoComp.CarId)
+                .GetComponent<CarInfoComponent>();
             string content = $"加{inviCarInfoComp.Name}";
             _inputData.TryAdd(secPlayerId, new Queue<InputCmdData>());
             _inputData[secPlayerId].Enqueue(new InputCmdData()
@@ -871,14 +896,15 @@ namespace XN
                 InputId = inputId,
                 Content = content
             });
-            
-            string jionStr = $"<color=#00DCFF>{inviterName}</color>邀请<color=#00DCFF>{secJionName}</color>加入<color=#00FF00>{inviCarInfoComp.Name}队</color>";
+
+            string jionStr =
+                $"<color=#00DCFF>{inviterName}</color>邀请<color=#00DCFF>{secJionName}</color>加入<color=#00FF00>{inviCarInfoComp.Name}队</color>";
             RoomHelper.AddTicker(jionStr);
             RoomHelper.AddTicker(jionStr);
         }
-        
-        #endregion 
-        
+
+        #endregion
+
         private int GetStringLength(string str)
         {
             if (string.IsNullOrEmpty(str))
@@ -891,38 +917,40 @@ namespace XN
                 else
                     len += 2;
             }
+
             return len;
         }
 
         #region ============== 敏感词 ===============
 
-        private AhoCorasick filter = new ();
-        
+        private AhoCorasick filter = new();
+
         public void InitSensitiveWord(HashSet<string> whiteNames = null)
         {
             filter = new AhoCorasick();
-            
-            ShieldedLibraryConfigCategory sensitiveWorldCc = TotalConfigManager.ConfigManager.ShieldedLibraryConfigCategory;
+
+            ShieldedLibraryConfigCategory sensitiveWorldCc =
+                TotalConfigManager.ConfigManager.ShieldedLibraryConfigCategory;
             if (whiteNames is { Count: > 0 })
             {
-                filter.LoadSensitiveWorlds(sensitiveWorldCc.DataList.Where(x=>!whiteNames.Contains(x.Word)).Select(x=>x.Word));    
+                filter.LoadSensitiveWorlds(sensitiveWorldCc.DataList.Where(x => !whiteNames.Contains(x.Word))
+                    .Select(x => x.Word));
             }
             else
             {
-                filter.LoadSensitiveWorlds(sensitiveWorldCc.DataList.Select(x=>x.Word));    
+                filter.LoadSensitiveWorlds(sensitiveWorldCc.DataList.Select(x => x.Word));
             }
-            
+
             // 构建失败指针
             filter.BuildFailureLinks();
         }
 
         public string GetFilter(string msg, bool openLog = false)
         {
-            if(openLog) Debug.Log($"敏感词过滤: {msg} ===> {filter.Filter(msg)}");
+            if (openLog) Debug.Log($"敏感词过滤: {msg} ===> {filter.Filter(msg)}");
             return filter.Filter(msg);
         }
-        
-        #endregion
 
+        #endregion
     }
 }

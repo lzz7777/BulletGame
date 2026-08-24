@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -90,7 +91,10 @@ namespace XN
         /// 预加载接口
         /// </summary>
         /// <param name="tag"></param>
-        public async UniTask AdvanceAddRes(string tag, int num, PrefabType prefabType = PrefabType.None)
+        /// <param name="num"></param>
+        /// <param name="prefabType"></param>
+        /// <param name="cb">预加载回调</param>
+        public async UniTask AdvanceAddRes(string tag, int num, PrefabType prefabType = PrefabType.None, Action<GameObject> cb = null)
         {
             // 修复 TryAdd 传 new PoolData() 导致的每帧 GC Alloc
             if (!_poolDictionary.TryGetValue(tag, out var poolData))
@@ -106,6 +110,11 @@ namespace XN
                 if (!obj)
                 {
                     return;
+                }
+
+                if (cb != null)
+                {
+                    cb(obj);
                 }
 
                 obj.transform.localScale = Vector3.zero;
