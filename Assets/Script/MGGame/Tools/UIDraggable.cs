@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,18 +12,25 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private RectTransform canvasRt;
     private Vector2 offset;
     private Vector2 startPosition;
+
     [BoxGroup("Dock设置"), LabelText("折叠按钮"), Tooltip("拖入一个按钮，点击可折叠/展开当前节点")]
     public Button dockButton;
+
     [BoxGroup("Dock设置"), LabelText("拖拽边距"), Tooltip("上下左右边界安全距离，拖拽时不越界")]
     public float margin = 100f;
+
     [BoxGroup("Dock设置"), LabelText("隐藏出屏幕距离"), Tooltip("折叠后节点离屏幕边缘的偏移像素，按钮仍在屏内")]
     public float btnmargin = 0f;
+
     [BoxGroup("Dock设置"), LabelText("按钮左右侧显示自适应"), Tooltip("关闭则固定向右折叠，按钮显示左侧")]
     public bool autoPlaceButton = true;
+
     [BoxGroup("Dock设置"), LabelText("按钮间距"), Tooltip("按钮与节点边缘的本地偏移距离")]
     public float buttonGap = 10f;
+
     [BoxGroup("Dock设置"), LabelText("跟随尺寸变化"), Tooltip("当节点尺寸(sizeDelta)变化时，自动重摆按钮位置")]
     public bool adaptToSizeDelta = false;
+
     private bool isCollapsed;
     private bool preferLeft;
     private Vector3 lastExpandedPos;
@@ -32,7 +39,7 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-        canvas = GetComponentInParent<Canvas>();
+        canvas = transform.parent.GetComponentInParent<Canvas>();
         canvasRt = canvas.GetComponent<RectTransform>();
         lastExpandedPos = rectTransform.localPosition;
         if (dockButton != null) dockButton.onClick.AddListener(ToggleDock);
@@ -69,17 +76,21 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             float rightExtent = (1f - pivot.x) * w;
             float bottomExtent = pivot.y * h;
             float topExtent = (1f - pivot.y) * h;
-            float minX = -halfCanvasW - margin + leftExtent;    // X 可以藏100px
-            float maxX = halfCanvasW + margin - rightExtent;    // X 可以藏100px
-            float minY = -halfCanvasH + margin + bottomExtent;  // Y 需要距边100px
-            float maxY = halfCanvasH - margin - topExtent;      // Y 需要距边100px
+            float minX = -halfCanvasW - margin + leftExtent; // X 可以藏100px
+            float maxX = halfCanvasW + margin - rightExtent; // X 可以藏100px
+            float minY = -halfCanvasH + margin + bottomExtent; // Y 需要距边100px
+            float maxY = halfCanvasH - margin - topExtent; // Y 需要距边100px
 
             var pos = startPosition + newPos - offset;
 
             var clamped = pos;
-            clamped.x = Mathf.Clamp(clamped.x, Mathf.Min(minX, maxX), Mathf.Max(minX, maxX));
-            clamped.y = Mathf.Clamp(clamped.y, Mathf.Min(minY, maxY), Mathf.Max(minY, maxY));
-            if (clamped != pos) { startPosition = clamped; offset = newPos; }
+            clamped.x = Math.Clamp(clamped.x, minX, maxX);
+            clamped.y = Math.Clamp(clamped.y, minY, maxY);
+            if (clamped != pos)
+            {
+                startPosition = clamped;
+                offset = newPos;
+            }
 
             rectTransform.localPosition = clamped;
             preferLeft = clamped.x <= 0f;
@@ -126,7 +137,7 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             float bRightExtent = (1f - bp.x) * bw;
             float targetButtonX = preferLeft
                 ? -halfCanvasW + bLeftExtent + btnmargin
-                : halfCanvasW  - bRightExtent - btnmargin;
+                : halfCanvasW - bRightExtent - btnmargin;
             targetX = targetButtonX - buttonRt.localPosition.x;
         }
         else
@@ -135,7 +146,8 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
                 ? -halfCanvasW + leftExtent + btnmargin
                 : halfCanvasW - rightExtent - btnmargin;
         }
-        float targetY = Mathf.Clamp(rectTransform.localPosition.y, Mathf.Min(minY, maxY), Mathf.Max(minY, maxY));
+
+        float targetY = Math.Clamp(rectTransform.localPosition.y, minY, maxY);
         var target = new Vector3(targetX, targetY, rectTransform.localPosition.z);
         rectTransform.DOLocalMove(target, 0.25f).SetEase(Ease.OutCubic);
         startPosition = target;
@@ -163,10 +175,11 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             float targetX = preferLeft
                 ? -halfCanvasW + margin + leftExtent
                 : halfCanvasW - margin - rightExtent;
-            float targetY = Mathf.Clamp(rectTransform.localPosition.y, Mathf.Min(minY, maxY), Mathf.Max(minY, maxY));
+            float targetY = Math.Clamp(rectTransform.localPosition.y, minY, maxY);
             target = new Vector3(targetX, targetY, rectTransform.localPosition.z);
         }
-        target.y = Mathf.Clamp(target.y, Mathf.Min(minY, maxY), Mathf.Max(minY, maxY));
+
+        target.y = Math.Clamp(target.y, minY, maxY);
         rectTransform.DOLocalMove(target, 0.25f).SetEase(Ease.OutCubic);
         startPosition = target;
         isCollapsed = false;

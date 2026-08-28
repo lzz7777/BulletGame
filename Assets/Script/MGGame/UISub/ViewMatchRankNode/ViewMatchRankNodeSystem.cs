@@ -109,7 +109,8 @@ namespace XN
 
             self.SetActiveScale(true);
             
-            self.Datas = self.TempDatas;
+            self.Datas.Clear();
+            self.Datas.AddRange(self.TempDatas);
 
             ObjectPoolManager.Instance.ReturnToPool(self.Objs);
             self.Objs.Clear();
