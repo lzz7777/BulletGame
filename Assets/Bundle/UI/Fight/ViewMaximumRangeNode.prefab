@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 5353542842648698212}
   - component: {fileID: 1392858536711975797}
   - component: {fileID: 3953631709347878530}
+  - component: {fileID: 5619622920823261219}
   m_Layer: 5
   m_Name: ViewMaximumRangeNode
   m_TagString: Untagged
@@ -242,6 +243,29 @@ MonoBehaviour:
   ViewMaximumRangeNodeSubView: {fileID: 5353542842648698212}
   UIMaximumRangeTMP_UGUI: {fileID: 5480699557096313732}
   IsShow: 0
+--- !u!223 &5619622920823261219
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3713950344102758352}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &7355625286913960561
 GameObject:
   m_ObjectHideFlags: 0

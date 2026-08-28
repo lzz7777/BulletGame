@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: 825554472579244692}
   - component: {fileID: 7617260065687545526}
   - component: {fileID: 1087531604432474121}
+  - component: {fileID: 919204241681691058}
   m_Layer: 5
   m_Name: ViewMatchRankNode
   m_TagString: Untagged
@@ -399,6 +400,30 @@ MonoBehaviour:
   ScrollViewLoopList: {fileID: 5328012207690880449}
   Objs: []
   IsDirty: 0
+  RefreshDt: 0
+--- !u!223 &919204241681691058
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4859806668728307322}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &8830339550279347816
 GameObject:
   m_ObjectHideFlags: 0

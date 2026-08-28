@@ -27,7 +27,7 @@ namespace XN
                 (self.transform as RectTransform).sizeDelta = data.SizeData;
             }
 
-            await YooAssetManager.Instance.LoadSpriteAsync("Head",ResHelper.GetAvatarUrl(avatarUrl), self.UIHeadIconImage);
+            await YooAssetManager.Instance.LoadSpriteAsync("Fight",ResHelper.GetAvatarUrl(avatarUrl), self.UIHeadIconImage);
             self.UIHeadFrameImage.gameObject.SetActive(!string.IsNullOrEmpty(data.Frame));
 
             if (self.FrameEffect != null)

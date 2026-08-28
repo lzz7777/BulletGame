@@ -9,8 +9,8 @@ namespace XN
 public class ViewItemShowItem : UIItemBase
 {
     public Image UIFrameImage;
-    public Text UINameText;
-    public Text UICarNameText;
+    public TextMeshProUGUI UINameText;
+    public TextMeshProUGUI UICarNameText;
     public TextMeshProUGUI UIItemNameTextMeshProUGUI;
     public Image UIItemIconImage;
     public TextMeshProUGUI UIItemNumTextMeshProUGUI;

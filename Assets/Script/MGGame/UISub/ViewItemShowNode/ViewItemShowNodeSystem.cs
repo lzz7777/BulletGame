@@ -37,7 +37,12 @@ namespace XN
 				}
 				else
 				{
-					self.ItemDic[(data.PlayerId, data.InputId)] = await self.CreateItem(data);
+					var item = await self.CreateItem(data);
+
+					if (item != null)
+					{
+						self.ItemDic[(data.PlayerId, data.InputId)] = item;
+					}
 				}
 				
 				return;
@@ -62,6 +67,9 @@ namespace XN
 		private static async UniTask<ViewItemShowItem> CreateItem(this ViewItemShowNode self, ViewItemShowNodeData data)
 		{
 			var obj = await ObjectPoolManager.Instance.GetFromPool<ViewItemShowItem>(self.transform);
+			if (!obj)
+				return null;
+			
 			var viewItem = obj.GetComponent<ViewItemShowItem>();
 			viewItem.ParentNode = self;
 			viewItem.OnInit(new ViewItemShowItemData()

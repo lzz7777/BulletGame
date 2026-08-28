@@ -20,8 +20,8 @@ namespace XN
             {
                 foreach (var renderer in renderers)
                 {
-                    Material tempMat = new Material(renderer.material);
-                    renderer.material = tempMat;
+                    // Material tempMat = new Material(renderer.material);
+                    // renderer.material = tempMat;
                     orderDic.Add(renderer, renderer.sortingOrder);
                 }
             }

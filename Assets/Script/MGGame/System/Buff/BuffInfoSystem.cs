@@ -360,7 +360,7 @@ namespace XN
 
             // 先设置位置，再播放动画和刷新层级，防止出现一帧在原点的闪烁
             effectCtrl.gameObject.transform.position = pos + offset;
-            effectCtrl.RefreshLayerOrder(2000);
+            effectCtrl.RefreshLayerOrder(20000);
             effectCtrl.Play(effectId, effectSkin);
 
             var deUnit = self.Entity.AddChild(EntityType.DisposableEffect);

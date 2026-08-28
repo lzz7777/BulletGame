@@ -17,8 +17,8 @@ namespace XN
                 var mr = skelAnim.GetComponent<MeshRenderer>();
                 SkeletonAnimOrderDic[skelAnim] = mr.sortingOrder;
                 
-                Material newMat = new Material(mr.material);
-                mr.material = newMat;
+                // Material newMat = new Material(mr.material);
+                // mr.material = newMat;
             }
             
             foreach (ParticleSystem partSystem in transform.GetComponentsInChildren<ParticleSystem>())

@@ -309,6 +309,11 @@ namespace XN
                     obj.AddComponent<CarCtrl>().InitData(conf.DeviceRes);
                 });
             }
+
+            foreach (var (key, num) in ObjectPoolManager.Instance.goMaxNumDic)
+            {
+                ObjectPoolManager.Instance.AdvanceAddRes(key, num);
+            }
         }
     }
 }

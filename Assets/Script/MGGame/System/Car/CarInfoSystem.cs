@@ -14,7 +14,8 @@ namespace XN
             if (self.IsDiscard && self.CanMoveY())
             {
                 var entity = self.Entity;
-                self.Entity.GetComponent<CarPositionComponent>().SetPosY(-10, () => { EntityManager.Instance.RemoveEntity(entity); });
+                self.Entity.GetComponent<CarPositionComponent>()
+                    .SetPosY(-10, () => { EntityManager.Instance.RemoveEntity(entity); });
             }
 
             self.UpdateState(deltaTime);
@@ -25,7 +26,7 @@ namespace XN
             }
 
             self.Mileage = Math.Max(0, self.Mileage + self.GetSpeed() * deltaTime);
-            
+
             self.CarStateMachine.Update();
         }
 
@@ -65,7 +66,7 @@ namespace XN
             {
                 return;
             }
-            
+
             self.Shield = Mathf.Max(0, self.Shield - value);
 
             if (self.Shield <= 0)
@@ -73,7 +74,7 @@ namespace XN
                 self.RemoveState(State.Invincible);
                 return;
             }
-            
+
             var carViewComp = self.Entity.GetComponent<CarViewComponent>();
             carViewComp.ViewCarInfoItem.DoPlayShieldAnimation("fx_ui_ViewCarInfoItem_Shield_Hit01");
         }
@@ -107,7 +108,7 @@ namespace XN
         {
             self.Speed = value;
         }
-        
+
         /// <summary>
         /// 判断是否可以移动X
         /// </summary>
@@ -237,7 +238,7 @@ namespace XN
         /// <param name="state"></param>
         public static void RemoveState(this CarInfoComponent self, State state)
         {
-            self.StateDic[state] = (0,0);
+            self.StateDic[state] = (0, 0);
         }
 
         /// <summary>
@@ -280,7 +281,7 @@ namespace XN
         {
             self.PlayerIds.Remove(playerId);
         }
-        
+
         /// <summary>
         /// 获取载具id
         /// </summary>
@@ -302,7 +303,7 @@ namespace XN
                         deviceId = itemConf.TypeValue[0];
                         return deviceId;
                     }
-                    
+
                     //备用皮肤
                     var tempSkin = TotalConfigManager.ConfigManager.ConstConfigCategory.CustomizedSpareSkin;
                     var tempItemConf = TotalConfigManager.ConfigManager.ItemInfoConfigCategory.GetOrDefault(tempSkin);
@@ -475,6 +476,10 @@ namespace XN
         /// </summary>
         /// <param name="self"></param>
         /// <returns></returns>
-        public static int GetCarOrder(this CarInfoComponent self) => GameConst.CarLayer + self.Group * 50;
+        public static int GetCarOrder(this CarInfoComponent self)
+        {
+            // return GameConst.CarLayer + self.Group * 50;
+            return GameConst.CarLayer * 50;
+        }
     }
 }
