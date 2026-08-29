@@ -32,7 +32,7 @@ namespace XN
             GameConst.PlayMode = mode; // 缓存运行模式供后续资源初始化使用
             
             // 挂载到常驻节点上，触发 Start() 开始资源包热更流程
-            GameObject.Find("Main").AddComponent<HotUpdateAsset>();
+            GameObject.Find("LoadDll").AddComponent<HotUpdateAsset>();
         }
 
         #region YooAsset初始化及资源热更流程
@@ -59,6 +59,8 @@ namespace XN
                 return;
             }
 
+            gameObject.AddComponent<YooAssetManager>();
+            
             // 3. 所有资源和配置更新完毕，进入游戏主场景
             LoadScene();
         }

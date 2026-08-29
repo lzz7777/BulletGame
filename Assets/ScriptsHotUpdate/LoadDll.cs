@@ -33,6 +33,8 @@ namespace XN
             XN.AOT.AtlasEventWrapper.Preserve();
 
             Init();
+            
+            DontDestroyOnLoad(this);
         }
 
         #region YooAsset初始化及核心热更流程

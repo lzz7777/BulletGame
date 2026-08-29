@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 407150961}
   - component: {fileID: 407150960}
   m_Layer: 0
-  m_Name: Main
+  m_Name: LoadDll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
