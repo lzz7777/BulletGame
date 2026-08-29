@@ -17,11 +17,26 @@ namespace XN
             if (carViewComp == null)
                 return;
             
-            var effConf = TotalConfigManager.ConfigManager.EffectInfoConfigCategory.Get(self.EffectId, self.EffectSkin);
-            if (!carViewComp.CarCtrl.effectPoints.TryGetValue(effConf.EffectPoint.ToString(), out Transform target))
+            // 缓存查询到的特效配置
+            if (self.CachedEffConf == null)
+            {
+                self.CachedEffConf = TotalConfigManager.ConfigManager.EffectInfoConfigCategory.Get(self.EffectId, self.EffectSkin);
+                self.CachedEffectPointStr = self.CachedEffConf.EffectPoint.ToString();
+            }
+
+            if (!carViewComp.CarCtrl.effectPoints.TryGetValue(self.CachedEffectPointStr, out Transform target))
                 return;
             
-            self.EffectCtrl.gameObject.transform.position = target.position + self.Offset;
+            // 缓存 GameObject 的 Transform，避免频繁调用 GetComponent 造成的开销
+            if (self.CachedTransform == null && self.EffectCtrl != null)
+            {
+                self.CachedTransform = self.EffectCtrl.transform;
+            }
+
+            if (self.CachedTransform != null)
+            {
+                self.CachedTransform.position = target.position + self.Offset;
+            }
         }
     }
 }

@@ -11,6 +11,12 @@ namespace XN
         public EffectCtrl EffectCtrl { get; set; }
         public Vector3 Offset { get; set; }
         
+        // --- 缓存字段，避免每帧产生 GC 与高昂的方法调用开销 ---
+        public cfg.Fight.EffectInfoConfig CachedEffConf { get; set; }
+        public string CachedEffectPointStr { get; set; }
+        public Transform CachedTransform { get; set; }
+        // --------------------------------------------------
+
         public override void OnCreate()
         {
         }
@@ -24,6 +30,11 @@ namespace XN
             EffectSkin = default;
             EffectCtrl = default;
             Offset = default;
+            
+            // 清理缓存
+            CachedEffConf = null;
+            CachedEffectPointStr = null;
+            CachedTransform = null;
         }
     }
 }
