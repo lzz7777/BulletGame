@@ -71,7 +71,7 @@ namespace XN
                 {
                     go.transform.localScale = Vector3.zero;
                 }
-                
+
                 if (go != null)
                 {
                     gos.Add(go);
@@ -94,7 +94,8 @@ namespace XN
         /// <param name="num"></param>
         /// <param name="prefabType"></param>
         /// <param name="cb">预加载回调</param>
-        public async UniTask AdvanceAddRes(string tag, int num, PrefabType prefabType = PrefabType.None, Action<GameObject> cb = null)
+        public async UniTask AdvanceAddRes(string tag, int num, PrefabType prefabType = PrefabType.None,
+            Action<GameObject> cb = null, Transform parentRoot = null)
         {
             // 修复 TryAdd 传 new PoolData() 导致的每帧 GC Alloc
             if (!_poolDictionary.TryGetValue(tag, out var poolData))
@@ -105,7 +106,8 @@ namespace XN
 
             for (int i = 0; i < num; i++)
             {
-                var obj = await YooAssetManager.Instance.InstantiateAsync(tag, _poolRoot.transform);
+                parentRoot ??= _poolRoot.transform;
+                var obj = await YooAssetManager.Instance.InstantiateAsync(tag, parentRoot);
 
                 if (!obj)
                 {
@@ -136,14 +138,15 @@ namespace XN
 
         public GameObject GetFromPoolSync<T>(Transform parentRoot) => GetFromPoolSync(typeof(T).Name, parentRoot);
 
-        // 新增的完全同步获取接口，彻底消除 UniTask 状态机和 Awaiter 产生的 GC
+        /// <summary>
+        /// 新增的完全同步获取接口，彻底消除 UniTask 状态机和 Awaiter 产生的 GC
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="parentRoot"> null 不设置父类 必须提前预加载 </param>
+        /// <param name="prefabType"></param>
+        /// <returns></returns>
         public GameObject GetFromPoolSync(string tag, Transform parentRoot, PrefabType prefabType = PrefabType.None)
         {
-            if (parentRoot == null)
-            {
-                Debug.LogError(tag + " : Parent root is null");
-            }
-
             // 修复 TryAdd(tag, new PoolData()) 导致的严重 GC Alloc 泄漏
             if (!_poolDictionary.TryGetValue(tag, out var poolData))
             {
@@ -161,7 +164,7 @@ namespace XN
                 if (goMaxNum != 0)
                 {
                     //个别限制
-                    if (poolData.Count > goMaxNum)
+                    if (poolData.Count >= goMaxNum)
                     {
                         // Debug.LogError(tag + " : num is max");
                         return null;
@@ -176,7 +179,7 @@ namespace XN
                     if (commonGoMaxNum != 0)
                     {
                         //通用限制
-                        if (poolData.Count > commonGoMaxNum)
+                        if (poolData.Count >= commonGoMaxNum)
                         {
                             // Debug.LogError(tag + " : num is max");
                             return null;
@@ -185,6 +188,12 @@ namespace XN
                 }
 
                 // 完全同步实例化
+
+                if (!parentRoot)
+                {
+                    Debug.LogError("parentRoot is null");
+                }
+
                 var newObj = YooAssetManager.Instance.InstantiateSync(tag, parentRoot);
                 newObj.transform.localScale = Vector3.zero;
                 // newObj.SetActive(false);
@@ -197,7 +206,10 @@ namespace XN
 
             GameObject objectToSpawn = poolData.GoQueue.Dequeue();
             // objectToSpawn.SetActive(true); // 激活对象
-            objectToSpawn.transform.SetParent(parentRoot);
+
+            if (parentRoot)
+                objectToSpawn.transform.SetParent(parentRoot);
+
             objectToSpawn.transform.localPosition = Vector3.zero;
             objectToSpawn.transform.localScale = Vector3.one;
 
@@ -219,7 +231,7 @@ namespace XN
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="obj"></param>
-        public void ReturnToPool(GameObject obj)
+        public void ReturnToPool(GameObject obj, bool noSetParent = false)
         {
             if (!obj)
             {
@@ -248,7 +260,10 @@ namespace XN
 
             obj.transform.localScale = Vector3.zero;
             // obj.SetActive(false); // 禁用对象
-            obj.transform.SetParent(_poolRoot.transform);
+
+            if (!noSetParent)
+                obj.transform.SetParent(_poolRoot.transform);
+
             poolData.GoQueue.Enqueue(obj); // 放回队列
         }
     }

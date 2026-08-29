@@ -6,7 +6,8 @@ namespace XN
     {
         public static void OnDestroySystem(this DisposableEffectComponent self)
         {
-            ObjectPoolManager.Instance.ReturnToPool(self.EffectCtrl?.gameObject);
+            self.EffectCtrl?.Stop();
+            ObjectPoolManager.Instance.ReturnToPool(self.EffectCtrl?.gameObject, true);
         }
 
         [UpdateSystem]

@@ -311,7 +311,6 @@ namespace XN
         private static async UniTask AddDisposableEffect(this BuffInfoComponent self, int effectId, int effectSkin)
         {
             var effConf = TotalConfigManager.ConfigManager.EffectInfoConfigCategory.Get(effectId, effectSkin);
-            Transform effectPoint = null;
 
             if (effConf == null)
             {
@@ -325,9 +324,7 @@ namespace XN
                 return;
 
             //一次性特效也放外面
-            effectPoint = RoomManager.Instance.UnitRoot.transform;
-
-            var effectCtrl = await EffectHelper.GetEffect(effConf.EffectRes, effectPoint);
+            var effectCtrl = await EffectHelper.GetEffect(effConf.EffectRes);
             if (effectCtrl == null)
             {
                 return;
@@ -352,7 +349,7 @@ namespace XN
             else
             {
                 carViewComp = carUnit.GetComponent<CarViewComponent>();
-                if (carViewComp.CarCtrl.effectPoints.TryGetValue(effConf.EffectPoint.ToString(), out effectPoint))
+                if (carViewComp.CarCtrl.effectPoints.TryGetValue(effConf.EffectPoint.ToString(), out var effectPoint))
                 {
                     pos = effectPoint.position;
                 }

@@ -7,7 +7,14 @@ namespace XN
 {
     public static class EffectHelper
     {
-        public static async UniTask<EffectCtrl> GetEffect(string tag, Transform parentRoot,
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="parentRoot"> null 不设置父节点 </param>
+        /// <param name="cancleToken"></param>
+        /// <returns></returns>
+        public static async UniTask<EffectCtrl> GetEffect(string tag, Transform parentRoot = null,
             CancellationToken cancleToken = default)
         {
             try
@@ -16,7 +23,8 @@ namespace XN
                 //
                 // await UniTask.Delay(1, cancellationToken: cancleToken);
 
-                var obj = await ObjectPoolManager.Instance.GetFromPool(tag, parentRoot, PrefabType.Effect);
+                var obj = await ObjectPoolManager.Instance.GetFromPool(tag, parentRoot,
+                    PrefabType.Effect);
 
                 if (!obj)
                 {

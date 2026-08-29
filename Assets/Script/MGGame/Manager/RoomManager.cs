@@ -11,6 +11,7 @@ namespace XN
     {
         public GameObject UnitRoot;
         public GameObject CanvasRoleUI;
+        public GameObject EffectRoot;
 
         public List<List<Vector2>> GroupLinePos = new();
         private List<List<float>> _groupData = new();
@@ -292,11 +293,19 @@ namespace XN
             {
                 if (string.IsNullOrEmpty(conf.EffectRes))
                     continue;
+
+                Transform parentRoot = null;
                 
-                await ObjectPoolManager.Instance.AdvanceAddRes(conf.EffectRes, 50, PrefabType.Effect, obj =>
+                //一次性特效不放池子里，放外面
+                if (conf.IsCarEffectDpShow == 1)
+                {
+                    parentRoot = EffectRoot.transform;
+                }
+                
+                await ObjectPoolManager.Instance.AdvanceAddRes(conf.EffectRes, ObjectPoolManager.Instance.commonGoMaxNum, PrefabType.Effect, obj =>
                 {
                     obj.AddComponent<EffectCtrl>().InitData();
-                });
+                }, parentRoot);
             }
 
             foreach (var conf in TotalConfigManager.ConfigManager.DeviceInfoConfigCategory.DataList)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Spine;
 using Spine.Unity;
@@ -9,7 +10,7 @@ namespace XN
     {
         public Dictionary<SkeletonAnimation, int> SkeletonAnimOrderDic = new();
         public Dictionary<ParticleSystem, int> ParticleOrderDic = new();
-        
+
         public void InitData()
         {
             foreach (SkeletonAnimation skelAnim in transform.GetComponentsInChildren<SkeletonAnimation>())
@@ -26,6 +27,8 @@ namespace XN
                 var psr = partSystem.GetComponent<ParticleSystemRenderer>();
                 ParticleOrderDic[partSystem] = psr.sortingOrder;
             }
+            
+            Stop();
         }
 
         public void RefreshLayerOrder(int order)
@@ -51,32 +54,20 @@ namespace XN
             foreach (var skelAnim in this.SkeletonAnimOrderDic.Keys)
             {
                 int animCount = skelAnim.skeleton.Data.Animations.Count;
-                if (animCount > 1)
-                {
-                    // 使用局部变量保存委托实例，并利用闭包特性在回调中实现一次性解绑
-                    Spine.AnimationState.TrackEntryDelegate onComplete = null;
-                    onComplete = (trackEntry) =>
-                    {
-                        Debug.Log(
-                            $"OnAnimationComplete: effectId: {effectId} effectSkin: {effectSkin} Name:{trackEntry.Animation.Name}");
-                        
-                        if (trackEntry.Animation.Name == "Birth")
-                        {
-                            skelAnim.AnimationState.SetAnimation(0, "Loop", true);
-                            // 触发后解绑自己，防止后续重复调用或内存泄漏
-                            skelAnim.AnimationState.Complete -= onComplete;
-                        }
-                    };
-
-                    //约定有两个动画,Birth, Loop
-                    skelAnim.AnimationState.Complete += onComplete;
-                }
-                else
+                if (animCount <= 1)
                 {
                     skelAnim.Skeleton.SetSkin(effConf.SpineSkin);
                 }
 
+                // 播放 Birth 动画
                 skelAnim.AnimationState.SetAnimation(0, "Birth", false);
+                
+                if (animCount > 1)
+                {
+                    // 约定有两个动画: Birth, Loop。利用 Spine 原生 AddAnimation 队列功能
+                    // 替代手写的 Complete 委托回调，从根本上解决可能产生的闭包内存泄漏
+                    skelAnim.AnimationState.AddAnimation(0, "Loop", true, 0f);
+                }
                 
                 // 强制刷新动画和网格，防止生成时一帧的闪烁或处于SetupPose
                 skelAnim.skeleton.SetToSetupPose();
@@ -87,6 +78,24 @@ namespace XN
             foreach (var part in this.ParticleOrderDic.Keys)
             {
                 part.Play();
+            }
+        }
+
+        public void Stop()
+        {
+            foreach (var skelAnim in this.SkeletonAnimOrderDic.Keys)
+            {
+                // 1. 清空所有动画轨道，停止播放
+                skelAnim.AnimationState?.ClearTracks();
+                
+                // 2. 恢复到初始姿势
+                skelAnim.skeleton?.SetToSetupPose();
+            }
+            
+            foreach (var part in this.ParticleOrderDic.Keys)
+            {
+                part.Stop();
+                part.Clear(); // 清除已发射的残留粒子
             }
         }
     }
