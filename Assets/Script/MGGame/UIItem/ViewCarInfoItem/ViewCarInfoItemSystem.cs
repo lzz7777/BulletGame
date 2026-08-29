@@ -90,39 +90,58 @@ namespace XN
             switch (self.NameplateType)
             {
                 case ViewCarInfoItemNameplateType.Player:
-                    self.UIPlayerMileageText.text = mileageStr;
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(self.UIPlayerMileageText.rectTransform);
+                    if (self.UIPlayerMileageText.text != mileageStr)
+                    {
+                        self.UIPlayerMileageText.text = mileageStr;
+                        // 移除昂贵的 ForceRebuildLayoutImmediate 调用，使用自适应宽度或由下帧自动布局解决
+                        // LayoutRebuilder.ForceRebuildLayoutImmediate(self.UIPlayerMileageText.rectTransform);
 
-                    float playerNodeWidth = Math.Max(324, self.UIPlayerMileageText.rectTransform.rect.width + 200);
-                    var playerRt = self.UIPlayerNodeImage.transform as RectTransform;
-                    playerRt.sizeDelta = new Vector2(playerNodeWidth, playerRt.sizeDelta.y);
+                        float playerNodeWidth = Math.Max(324, self.UIPlayerMileageText.preferredWidth + 200);
+                        var playerRt = self.UIPlayerNodeImage.transform as RectTransform;
+                        if (Math.Abs(playerRt.sizeDelta.x - playerNodeWidth) > 1f)
+                        {
+                            playerRt.sizeDelta = new Vector2(playerNodeWidth, playerRt.sizeDelta.y);
+                        }
+                    }
                     break;
                 case ViewCarInfoItemNameplateType.PlayerLong:
-                    self.UIPlayerLongMileageText.text = mileageStr;
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(self.UIPlayerLongMileageText.rectTransform);
-
-                    float playerLongNodeWidth =
-                        Math.Max(378, self.UIPlayerLongMileageText.rectTransform.rect.width + 240);
-                    var playerLongRt = self.UIPlayerLongNodeImage.transform as RectTransform;
-                    playerLongRt.sizeDelta = new Vector2(playerLongNodeWidth, playerLongRt.sizeDelta.y);
+                    if (self.UIPlayerLongMileageText.text != mileageStr)
+                    {
+                        self.UIPlayerLongMileageText.text = mileageStr;
+                        
+                        float playerLongNodeWidth = Math.Max(378, self.UIPlayerLongMileageText.preferredWidth + 240);
+                        var playerLongRt = self.UIPlayerLongNodeImage.transform as RectTransform;
+                        if (Math.Abs(playerLongRt.sizeDelta.x - playerLongNodeWidth) > 1f)
+                        {
+                            playerLongRt.sizeDelta = new Vector2(playerLongNodeWidth, playerLongRt.sizeDelta.y);
+                        }
+                    }
                     break;
                 case ViewCarInfoItemNameplateType.Nobody:
-                    self.UINobodyMileageTextMeshProUGUI.text = mileageStr;
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(self.UINobodyMileageTextMeshProUGUI.rectTransform);
-
-                    float nobodyNodeWidth = Math.Max(304,
-                        self.UINobodyMileageTextMeshProUGUI.rectTransform.rect.width + 160);
-                    var nobodyRt = self.UINobodyNodeImage.transform as RectTransform;
-                    nobodyRt.sizeDelta = new Vector2(nobodyNodeWidth, nobodyRt.sizeDelta.y);
+                    if (self.UINobodyMileageTextMeshProUGUI.text != mileageStr)
+                    {
+                        self.UINobodyMileageTextMeshProUGUI.text = mileageStr;
+                        
+                        float nobodyNodeWidth = Math.Max(304, self.UINobodyMileageTextMeshProUGUI.preferredWidth + 160);
+                        var nobodyRt = self.UINobodyNodeImage.transform as RectTransform;
+                        if (Math.Abs(nobodyRt.sizeDelta.x - nobodyNodeWidth) > 1f)
+                        {
+                            nobodyRt.sizeDelta = new Vector2(nobodyNodeWidth, nobodyRt.sizeDelta.y);
+                        }
+                    }
                     break;
                 case ViewCarInfoItemNameplateType.NobodyLong:
-                    self.UINobodyLongMileageTextMeshProUGUI.text = mileageStr;
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(self.UINobodyLongMileageTextMeshProUGUI.rectTransform);
-
-                    float nobodyLongNodeWidth = Math.Max(357,
-                        self.UINobodyLongMileageTextMeshProUGUI.rectTransform.rect.width + 200);
-                    var nobodyLongRt = self.UINobodyLongNodeImage.transform as RectTransform;
-                    nobodyLongRt.sizeDelta = new Vector2(nobodyLongNodeWidth, nobodyLongRt.sizeDelta.y);
+                    if (self.UINobodyLongMileageTextMeshProUGUI.text != mileageStr)
+                    {
+                        self.UINobodyLongMileageTextMeshProUGUI.text = mileageStr;
+                        
+                        float nobodyLongNodeWidth = Math.Max(357, self.UINobodyLongMileageTextMeshProUGUI.preferredWidth + 200);
+                        var nobodyLongRt = self.UINobodyLongNodeImage.transform as RectTransform;
+                        if (Math.Abs(nobodyLongRt.sizeDelta.x - nobodyLongNodeWidth) > 1f)
+                        {
+                            nobodyLongRt.sizeDelta = new Vector2(nobodyLongNodeWidth, nobodyLongRt.sizeDelta.y);
+                        }
+                    }
                     break;
             }
         }
