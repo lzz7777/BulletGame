@@ -255,14 +255,14 @@ namespace XN
         
         [BoxGroup("GM")]
         [Button("GM加入")]
-        public static async UniTask GmAdd(int maxNum = 50)
+        public static async UniTask GmAdd(int maxNum = 100)
         {
             if (UIManager.Instance.GameModel == GameModel.Release) return;
 
             int count = 0;
             for (int i = 1; i <= maxNum; i++)
             {
-                for (int j = 0; j < maxNum; j++)
+                for (int j = 0; j < 10; j++)
                 {
                     count++;
                     string name = "lzz" + count;
@@ -274,14 +274,14 @@ namespace XN
         
         [BoxGroup("GM")]
         [Button("GMBuff")]
-        public static async UniTask GmBuff(int maxNum = 50)
+        public static async UniTask GmBuff(int maxNum = 100)
         {
             if (UIManager.Instance.GameModel == GameModel.Release) return;
 
             int count = 0;
             for (int i = 1; i <= maxNum; i++)
             {
-                for (int j = 0; j < maxNum; j++)
+                for (int j = 0; j < 10; j++)
                 {
                     count++;
                     string name = "lzz" + count;

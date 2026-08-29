@@ -7101,7 +7101,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   global: 1
-  commonGoMaxNum: 50
+  commonGoMaxNum: 30
 --- !u!1 &2040462406
 GameObject:
   m_ObjectHideFlags: 0
