@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using cfg;
@@ -5,6 +6,7 @@ using cfg.Fight;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace XN
 {
@@ -92,31 +94,39 @@ namespace XN
         /// <param name="carId"></param>
         /// <param name="changeType"></param>
         /// <param name="changeValue"></param>
-        public static async UniTask DoAttributeFloat(long carId, ChangeType changeType, int changeValue)
+        public static void DoAttributeFloat(long carId, ChangeType changeType, int changeValue)
         {
             var carViewComp = EntityManager.Instance.GetEntityById(carId).GetComponent<CarViewComponent>();
             if (carViewComp == null)
                 return;
 
-            var targetRt =
-                carViewComp.ViewCarInfoItem
-                    .transform as RectTransform;
-            var go = await ObjectPoolManager.Instance.GetFromPool<ViewAttributeFloatItem>(targetRt);
-            if (!go)
-            {
-                return;
-            }
-
-            (go.transform as RectTransform).anchoredPosition = new Vector2(0, -100);
-            var item = go.GetComponent<ViewAttributeFloatItem>();
-            item.OnRefresh(new ViewAttributeFloatItemData()
-            {
-                ChangeType = changeType,
-                ChangeValue = changeValue,
-            });
-
-            await UniTask.Delay(2000);
-            ObjectPoolManager.Instance.ReturnToPool(go);
+            uint texIndex = changeType is ChangeType.MileageDelPct or ChangeType.MileageDelValue ? (uint)1 : 0;
+            changeValue = Math.Abs(changeValue);
+            DamageTextInstancingSystem.Instance.SpawnDamage(changeValue, carViewComp.Car.transform.position, Color.white, texIndex);
+            
+            // var carViewComp = EntityManager.Instance.GetEntityById(carId).GetComponent<CarViewComponent>();
+            // if (carViewComp == null)
+            //     return;
+            //
+            // var targetRt =
+            //     carViewComp.ViewCarInfoItem
+            //         .transform as RectTransform;
+            // var go = await ObjectPoolManager.Instance.GetFromPool<ViewAttributeFloatItem>(targetRt);
+            // if (!go)
+            // {
+            //     return;
+            // }
+            //
+            // (go.transform as RectTransform).anchoredPosition = new Vector2(0, -100);
+            // var item = go.GetComponent<ViewAttributeFloatItem>();
+            // item.OnRefresh(new ViewAttributeFloatItemData()
+            // {
+            //     ChangeType = changeType,
+            //     ChangeValue = changeValue,
+            // });
+            //
+            // await UniTask.Delay(2000);
+            // ObjectPoolManager.Instance.ReturnToPool(go);
         }
 
         /// <summary>
