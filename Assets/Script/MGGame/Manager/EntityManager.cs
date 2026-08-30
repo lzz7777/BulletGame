@@ -235,11 +235,14 @@ namespace XN
                 _viewers.Remove(entity.Id);
             }
 #endif
-
-            var childs = entity.GetChildren();
-            for (int i = childs.Count - 1; i >= 0; i--)
+            
+            var childDic = entity.GetChildren();
+            foreach (var childs in childDic.Values)
             {
-                RemoveEntity(childs[i]);
+                for (int i = childs.Count - 1; i >= 0; i--)
+                {
+                    RemoveEntity(childs[i]);
+                }
             }
 
             entity.OnDestroy();

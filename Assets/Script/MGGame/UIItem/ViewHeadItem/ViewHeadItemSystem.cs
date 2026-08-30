@@ -43,7 +43,7 @@ namespace XN
                 if (data.Frame == "none") return;
 
                 self.FrameEffect =
-                    await EffectHelper.GetEffect(frameEffectId,
+                    await EffectHelper.GetEffectAsync(frameEffectId,
                         self.UIHeadFrameImage
                             .transform);
                 self.FrameEffect?.RefreshLayerOrder(data.SortingOrder);

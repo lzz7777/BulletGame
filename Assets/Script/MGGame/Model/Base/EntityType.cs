@@ -13,6 +13,6 @@ namespace XN
         Player,
         Rank,
         Time,
-        DisposableEffect,
+        Effect,
     }
 }

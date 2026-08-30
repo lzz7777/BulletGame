@@ -8,7 +8,8 @@ namespace XN
     public class EffectViewData
     {
         public int EffectSkin { get; set; }
-        public EffectCtrl EffectCtrl { get; set; }
+        public long EffectEntityId { get; set; }
+        // public EffectCtrl EffectCtrl { get; set; }
     }
 
     public class CarViewComponent : IComponent

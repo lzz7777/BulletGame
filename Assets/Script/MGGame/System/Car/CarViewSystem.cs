@@ -15,12 +15,6 @@ namespace XN
 
         public static void OnDestroySystem(this CarViewComponent self)
         {
-            //回收载具特效
-            foreach (var effectData in self.EffectGroup.Values)
-            {
-                ObjectPoolManager.Instance.ReturnToPool(effectData.EffectCtrl?.gameObject);
-            }
-
             self.Car.transform.DOKill();
 
             ObjectPoolManager.Instance.ReturnToPool(self.TrackLightEffect?.gameObject);
@@ -88,7 +82,7 @@ namespace XN
                 //回收载具特效
                 foreach (var effectData in self.EffectGroup.Values)
                 {
-                    ObjectPoolManager.Instance.ReturnToPool(effectData.EffectCtrl?.gameObject);
+                    EntityManager.Instance.RemoveEntity(effectData.EffectEntityId);
                 }
 
                 self.EffectGroup.Clear();
@@ -157,7 +151,8 @@ namespace XN
         /// <param name="effectId"></param>
         /// <param name="effectSkin"></param>
         /// <returns></returns>
-        public static async UniTask<EffectCtrl> AddEffect(this CarViewComponent self, int effectId, int effectSkin)
+        public static Entity AddEffect(this CarViewComponent self, int effectId, int effectSkin,
+            int layerOrder = 0)
         {
             if (self == null)
                 return null;
@@ -171,45 +166,44 @@ namespace XN
                 return null;
             }
 
-            if (effConf.EffectPoint == PointType.A0)
-            {
-                //放外面
-                effectPoint = RoomManager.Instance.UnitRoot.transform;
-            }
-            else
+            if (effConf.EffectPoint != PointType.A0)
             {
                 self.CarCtrl.effectPoints.TryGetValue(effConf.EffectPoint.ToString(), out effectPoint);
             }
 
-            if (effectPoint == null)
-            {
-                Debug.LogError($"Effect effectPoint {effConf.EffectPoint} is no exist");
-                return null;
-            }
-
-            var effectCtrl = await EffectHelper.GetEffect(effConf.EffectRes, effectPoint);
-            if (effectCtrl == null)
+            var effectCtrl = EffectHelper.GetEffect(effConf.EffectRes, effectPoint);
+            if (!effectCtrl)
             {
                 return null;
             }
-
-            var effectGo = effectCtrl.gameObject;
 
             //随机位置
+            Vector3 offset = Vector3.zero;
             if (effConf.RandArea != null)
             {
                 var randArea = effConf.RandArea;
-                effectGo.transform.localPosition = new Vector3(UnityEngine.Random.Range(-randArea.X, randArea.X),
-                    UnityEngine.Random.Range(-randArea.Y, randArea.Y), 0);
+                offset = new Vector3(UnityEngine.Random.Range(-randArea.X, randArea.X),
+                    UnityEngine.Random.Range(-randArea.Y, randArea.Y));
             }
 
-            var carOrder = self.Entity.GetComponent<CarInfoComponent>().GetCarOrder();
+            if (layerOrder == 0)
+            {
+                layerOrder = self.Entity.GetComponent<CarInfoComponent>().GetCarOrder();
+            }
 
-            // 先设置位置和层级，再播放动画，防止出现一帧在原点的闪烁
-            effectCtrl.RefreshLayerOrder(carOrder);
-            effectCtrl.Play(effectId, effectSkin);
+            effectCtrl.RefreshLayerOrder(layerOrder);
 
-            return effectCtrl;
+            var deUnit = self.Entity.AddChild(EntityType.Effect);
+            deUnit.AddComponent<EffectComponent>(comp =>
+            {
+                comp.EffectId = effectId;
+                comp.EffectSkin = effectSkin;
+                comp.EffectCtrl = effectCtrl;
+                comp.Offset = offset;
+                comp.Target = effectPoint;
+            });
+
+            return deUnit;
         }
 
         /// <summary>
@@ -235,7 +229,7 @@ namespace XN
             string res = "fx_ranktrail_0" + rank;
 
             self.CarCtrl.effectPoints.TryGetValue(PointType.E5.ToString(), out var effectPoint);
-            self.TrackLightEffect = await EffectHelper.GetEffect(res, effectPoint);
+            self.TrackLightEffect = await EffectHelper.GetEffectAsync(res, effectPoint);
             self.TrackLightEffect?.RefreshLayerOrder(self.Entity.GetComponent<CarInfoComponent>().GetCarOrder());
         }
 
@@ -303,23 +297,36 @@ namespace XN
             foreach (var effectId in invalidEffects)
             {
                 var effectData = self.EffectGroup[effectId];
-                ObjectPoolManager.Instance.ReturnToPool(effectData.EffectCtrl?.gameObject);
+
+                EntityManager.Instance.RemoveEntity(effectData.EffectEntityId);
+
                 self.EffectGroup.Remove(effectId);
             }
 
             //刷新特效
             foreach (var (effectId, effectSkin) in effectGroup)
             {
-                self.EffectGroup.TryAdd(effectId, new());
-
-                if (self.EffectGroup[effectId].EffectSkin != effectSkin)
+                if (!self.EffectGroup.TryGetValue(effectId, out var effectData))
                 {
-                    //回收特效
-                    ObjectPoolManager.Instance.ReturnToPool(self.EffectGroup[effectId].EffectCtrl?.gameObject);
+                    self.EffectGroup.Add(effectId, effectData = new());
+                }
+
+                if (effectData.EffectSkin != effectSkin)
+                {
+                    //删除旧特效组件
+                    if (effectData.EffectEntityId != 0)
+                    {
+                        EntityManager.Instance.RemoveEntity(effectData.EffectEntityId);
+                    }
 
                     //生成特效
-                    self.EffectGroup[effectId].EffectSkin = effectSkin;
-                    self.EffectGroup[effectId].EffectCtrl = await self.AddEffect(effectId, effectSkin);
+                    var unit = self.AddEffect(effectId, effectSkin);
+
+                    if (unit != null)
+                    {
+                        effectData.EffectSkin = effectSkin;
+                        effectData.EffectEntityId = unit.Id;
+                    }
                 }
             }
         }
@@ -335,9 +342,9 @@ namespace XN
 
             var carOrder = self.Entity.GetComponent<CarInfoComponent>().GetCarOrder();
 
-            foreach (var effectViewData in self.EffectGroup.Values)
+            foreach (var effectData in self.EffectGroup.Values)
             {
-                effectViewData.EffectCtrl?.RefreshLayerOrder(carOrder);
+                EntityManager.Instance.GetEntityById(effectData.EffectEntityId).GetComponent<EffectComponent>().EffectCtrl?.RefreshLayerOrder(carOrder);
             }
 
             self.TrackLightEffect?.RefreshLayerOrder(carOrder);

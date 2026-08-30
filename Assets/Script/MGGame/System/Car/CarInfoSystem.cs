@@ -391,7 +391,7 @@ namespace XN
         {
             self.EffectGroup.Clear();
 
-            foreach (var buffUnit in self.Entity.GetChildren())
+            foreach (var buffUnit in self.Entity.GetChildren(EntityType.Buff))
             {
                 if (!buffUnit.GetComponent<BuffInfoComponent>(out var buffInfoComp) || buffInfoComp.IsDiscard)
                 {

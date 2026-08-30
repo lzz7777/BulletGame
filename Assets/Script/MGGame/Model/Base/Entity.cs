@@ -13,7 +13,7 @@ namespace XN
         public bool IsFromPool { get; set; }
         
         private Dictionary<Type, IComponent> _components { get; set; } = new();
-        private List<Entity> _children { get; set; } = new();
+        private Dictionary<EntityType, List<Entity>> _childrenDic { get; set; } = new();
 
         public void Init(EntityType tag, bool isFromPool = false)
         {
@@ -29,12 +29,12 @@ namespace XN
             Tag = default;
             IsFromPool = default;
             _components.Clear();
-            _children.Clear();
+            _childrenDic.Clear();
         }
 
         public bool IsDispose => Id == 0;
 
-        public T AddComponent<T>(bool isFromPool = true) where T : IComponent, new()
+        public T AddComponent<T>(Action<T> onSetup = null, bool isFromPool = true) where T : IComponent, new()
         {
             T component;
 
@@ -53,6 +53,9 @@ namespace XN
 
             EntityManager.Instance.RegisterComponent(component);
 
+            // 在调用 OnCreate 之前，先执行外部传入的赋值逻辑
+            onSetup?.Invoke(component);
+            
             component.OnCreate();
 
             return component;
@@ -105,7 +108,12 @@ namespace XN
             
             child._parent?.RemoveChild(child);
 
-            _children.Add(child);
+            if (!_childrenDic.TryGetValue(entityType, out var children))
+            {
+                _childrenDic.Add(entityType, children = new List<Entity>());
+            }
+
+            children.Add(child);
             child._parent = this;
 
 #if UNITY_EDITOR
@@ -117,7 +125,13 @@ namespace XN
 
         public void RemoveChild(Entity child)
         {
-            _children.Remove(child);
+            if (!_childrenDic.TryGetValue(child.Tag, out var children))
+            {
+                Debug.LogError($"RemoveChild error _childrenDic no Tag {child.Tag}");
+                return;
+            }
+
+            children.Remove(child);
             child._parent = null;
         }
 
@@ -126,9 +140,17 @@ namespace XN
             return _parent;
         }
 
-        public List<Entity> GetChildren()
+        public Dictionary<EntityType, List<Entity>> GetChildren()
         {
-            return _children;
+            return _childrenDic;
+        }
+
+        public List<Entity> GetChildren(EntityType entityType)
+        {
+            if (_childrenDic.TryGetValue(entityType, out var children))
+                return children;
+
+            return null;
         }
 
         public Dictionary<Type, IComponent> GetAllComponents()

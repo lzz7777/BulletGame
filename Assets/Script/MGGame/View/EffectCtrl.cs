@@ -53,6 +53,8 @@ namespace XN
             
             foreach (var skelAnim in this.SkeletonAnimOrderDic.Keys)
             {
+                skelAnim.enabled = true;
+                
                 int animCount = skelAnim.skeleton.Data.Animations.Count;
                 if (animCount <= 1)
                 {
@@ -90,6 +92,9 @@ namespace XN
                 
                 // 2. 恢复到初始姿势
                 skelAnim.skeleton?.SetToSetupPose();
+                
+                // 3. 禁用组件，避免在对象池中持续执行 Update/LateUpdate 消耗 CPU
+                skelAnim.enabled = false;
             }
             
             foreach (var part in this.ParticleOrderDic.Keys)

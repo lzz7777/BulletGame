@@ -294,18 +294,11 @@ namespace XN
                 if (string.IsNullOrEmpty(conf.EffectRes))
                     continue;
 
-                Transform parentRoot = null;
-                
-                //一次性特效不放池子里，放外面
-                if (conf.IsCarEffectDpShow == 1)
-                {
-                    parentRoot = EffectRoot.transform;
-                }
-                
+                //特效不放池子里，放外面
                 await ObjectPoolManager.Instance.AdvanceAddRes(conf.EffectRes, ObjectPoolManager.Instance.commonGoMaxNum, PrefabType.Effect, obj =>
                 {
                     obj.AddComponent<EffectCtrl>().InitData();
-                }, parentRoot);
+                }, EffectRoot.transform);
             }
 
             foreach (var conf in TotalConfigManager.ConfigManager.DeviceInfoConfigCategory.DataList)

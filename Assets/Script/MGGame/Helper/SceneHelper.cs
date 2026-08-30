@@ -13,12 +13,9 @@ namespace XN
         
         public static Entity GetRankUnit()
         {
-            foreach (var child in Scene().GetChildren())
+            foreach (var id in EntityManager.Instance.GetEntityIdByTag(EntityType.Rank))
             {
-                if (child.HasComponent<RankInfoComponent>())
-                {
-                    return child;
-                }
+                return EntityManager.Instance.GetEntityById(id);
             }
 
             return null;
@@ -26,12 +23,9 @@ namespace XN
 
         public static Entity GetTimeUnit()
         {
-            foreach (var child in Scene().GetChildren())
+            foreach (var id in EntityManager.Instance.GetEntityIdByTag(EntityType.Time))
             {
-                if (child.HasComponent<TimeInfoComponent>())
-                {
-                    return child;
-                }
+                return EntityManager.Instance.GetEntityById(id);
             }
 
             return null;
