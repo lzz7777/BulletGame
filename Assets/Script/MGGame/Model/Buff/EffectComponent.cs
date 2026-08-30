@@ -5,12 +5,18 @@ namespace XN
 {
     public class EffectComponent : IComponent
     {
+        [SerializeField]
         public int EffectId { get; set; }
+        [SerializeField]
         public int EffectSkin { get; set; }
+        [SerializeField]
         public EffectCtrl EffectCtrl { get; set; }
+        [SerializeField]
         public Vector3 Offset { get; set; }
 
+        [SerializeField]
         public Transform Transform { get; set; }
+        [SerializeField]
         public Transform Target { get; set; }
         
         public override void OnCreate()
@@ -26,7 +32,8 @@ namespace XN
             EffectSkin = default;
             EffectCtrl = default;
             Offset = default;
-            Transform = null;
+            Transform = default;
+            Target = default;
         }
     }
 }

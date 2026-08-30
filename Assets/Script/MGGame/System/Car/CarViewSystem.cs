@@ -15,6 +15,17 @@ namespace XN
 
         public static void OnDestroySystem(this CarViewComponent self)
         {
+            //清除所有特效
+            var children = self.Entity.GetChildren(EntityType.Effect);
+            if (children != null)
+            {
+                for (int i = children.Count - 1; i >= 0; i--)
+                {
+                    var child = children[i];
+                    EntityManager.Instance.RemoveEntity(child);
+                }
+            }
+
             self.Car.transform.DOKill();
 
             ObjectPoolManager.Instance.ReturnToPool(self.TrackLightEffect?.gameObject);
@@ -151,8 +162,7 @@ namespace XN
         /// <param name="effectId"></param>
         /// <param name="effectSkin"></param>
         /// <returns></returns>
-        public static Entity AddEffect(this CarViewComponent self, int effectId, int effectSkin,
-            int layerOrder = 0)
+        public static Entity AddEffect(this CarViewComponent self, int effectId, int effectSkin)
         {
             if (self == null)
                 return null;
@@ -171,7 +181,7 @@ namespace XN
                 self.CarCtrl.effectPoints.TryGetValue(effConf.EffectPoint.ToString(), out effectPoint);
             }
 
-            var effectCtrl = EffectHelper.GetEffect(effConf.EffectRes, effectPoint);
+            var effectCtrl = EffectHelper.GetEffect(effConf.EffectRes);
             if (!effectCtrl)
             {
                 return null;
@@ -186,10 +196,7 @@ namespace XN
                     UnityEngine.Random.Range(-randArea.Y, randArea.Y));
             }
 
-            if (layerOrder == 0)
-            {
-                layerOrder = self.Entity.GetComponent<CarInfoComponent>().GetCarOrder();
-            }
+            var layerOrder = self.Entity.GetComponent<CarInfoComponent>().GetCarOrder();
 
             effectCtrl.RefreshLayerOrder(layerOrder);
 
@@ -265,7 +272,7 @@ namespace XN
         {
             await self.RefreshDevice();
             self.Entity.GetComponent<CarInfoComponent>().RefreshEffectData();
-            await self.RefreshEffect();
+            self.RefreshEffect();
             await self.RefreshTrackLight();
         }
 
@@ -273,10 +280,8 @@ namespace XN
         /// 更新特效皮肤
         /// </summary>
         /// <param name="self"></param>
-        public static async UniTask RefreshEffect(this CarViewComponent self)
+        public static void RefreshEffect(this CarViewComponent self)
         {
-            await UniTask.CompletedTask;
-
             if (!GameStateCtrl.IsGameStart || self == null)
             {
                 return;
@@ -298,7 +303,15 @@ namespace XN
             {
                 var effectData = self.EffectGroup[effectId];
 
-                EntityManager.Instance.RemoveEntity(effectData.EffectEntityId);
+                var u = EntityManager.Instance.GetEntityById(effectData.EffectEntityId);
+                if (u == null)
+                {
+                    Debug.LogWarning("RefreshEffect remove unit is null");
+                }
+                else
+                {
+                    EntityManager.Instance.RemoveEntity(effectData.EffectEntityId);
+                }
 
                 self.EffectGroup.Remove(effectId);
             }
@@ -316,7 +329,15 @@ namespace XN
                     //删除旧特效组件
                     if (effectData.EffectEntityId != 0)
                     {
-                        EntityManager.Instance.RemoveEntity(effectData.EffectEntityId);
+                        var u = EntityManager.Instance.GetEntityById(effectData.EffectEntityId);
+                        if (u == null)
+                        {
+                            Debug.LogWarning("RefreshEffect remove unit is null");
+                        }
+                        else
+                        {
+                            EntityManager.Instance.RemoveEntity(effectData.EffectEntityId);
+                        }
                     }
 
                     //生成特效
@@ -344,7 +365,8 @@ namespace XN
 
             foreach (var effectData in self.EffectGroup.Values)
             {
-                EntityManager.Instance.GetEntityById(effectData.EffectEntityId).GetComponent<EffectComponent>().EffectCtrl?.RefreshLayerOrder(carOrder);
+                EntityManager.Instance.GetEntityById(effectData.EffectEntityId)?.GetComponent<EffectComponent>()
+                    .EffectCtrl?.RefreshLayerOrder(carOrder);
             }
 
             self.TrackLightEffect?.RefreshLayerOrder(carOrder);

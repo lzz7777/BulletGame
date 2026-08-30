@@ -292,7 +292,7 @@ namespace XN
                 //一次性特效
                 if (EffectHelper.JudgeDisposableEffect(effect.EffectId, effect.EffectSkin))
                 {
-                    carViewComp?.AddEffect(effect.EffectId, effect.EffectSkin, 20000);
+                    self.AddDisposableEffect(effect.EffectId, effect.EffectSkin);
                     continue;
                 }
 
@@ -308,58 +308,58 @@ namespace XN
         /// <param name="self"></param>
         /// <param name="effectId"></param>
         /// <param name="effectSkin"></param>
-        // private static async UniTask AddDisposableEffect(this BuffInfoComponent self, int effectId, int effectSkin)
-        // {
-        //     var effConf = TotalConfigManager.ConfigManager.EffectInfoConfigCategory.Get(effectId, effectSkin);
-        //
-        //     if (effConf == null)
-        //     {
-        //         Debug.LogError($"effectId:{effectId} effectSkin:{effectSkin}");
-        //         return;
-        //     }
-        //
-        //     var carUnit = self.Entity.GetParent();
-        //
-        //     if (effConf.EffectPoint != PointType.A0 && !carUnit.GetComponent(out CarViewComponent carViewComp))
-        //         return;
-        //
-        //     //一次性特效也放外面
-        //     var effectCtrl = await EffectHelper.GetEffect(effConf.EffectRes);
-        //     if (effectCtrl == null)
-        //     {
-        //         return;
-        //     }
-        //
-        //     //随机位置
-        //     Vector3 offset = Vector3.zero;
-        //     if (effConf.RandArea != null)
-        //     {
-        //         var randArea = effConf.RandArea;
-        //         offset = new Vector3(UnityEngine.Random.Range(-randArea.X, randArea.X),
-        //             UnityEngine.Random.Range(-randArea.Y, randArea.Y));
-        //     }
-        //
-        //     Transform target = null;
-        //     if (effConf.EffectPoint != PointType.A0)
-        //     {
-        //         carViewComp = carUnit.GetComponent<CarViewComponent>();
-        //         if (carViewComp.CarCtrl.effectPoints.TryGetValue(effConf.EffectPoint.ToString(), out var effectPoint))
-        //         {
-        //             target = effectPoint;
-        //         }
-        //     }
-        //
-        //     effectCtrl.RefreshLayerOrder(20000);
-        //     
-        //     var deUnit = self.Entity.AddChild(EntityType.Effect);
-        //     deUnit.AddComponent<EffectComponent>(comp =>
-        //     {
-        //         comp.EffectId = effectId;
-        //         comp.EffectSkin = effectSkin;
-        //         comp.EffectCtrl = effectCtrl;
-        //         comp.Offset = offset;
-        //         comp.Target = target;
-        //     });
-        // }
+        private static void AddDisposableEffect(this BuffInfoComponent self, int effectId, int effectSkin)
+        {
+            var effConf = TotalConfigManager.ConfigManager.EffectInfoConfigCategory.Get(effectId, effectSkin);
+        
+            if (effConf == null)
+            {
+                Debug.LogError($"effectId:{effectId} effectSkin:{effectSkin}");
+                return;
+            }
+        
+            var carUnit = self.Entity.GetParent();
+        
+            if (effConf.EffectPoint != PointType.A0 && !carUnit.GetComponent(out CarViewComponent carViewComp))
+                return;
+        
+            //一次性特效也放外面
+            var effectCtrl = EffectHelper.GetEffect(effConf.EffectRes);
+            if (effectCtrl == null)
+            {
+                return;
+            }
+        
+            //随机位置
+            Vector3 offset = Vector3.zero;
+            if (effConf.RandArea != null)
+            {
+                var randArea = effConf.RandArea;
+                offset = new Vector3(UnityEngine.Random.Range(-randArea.X, randArea.X),
+                    UnityEngine.Random.Range(-randArea.Y, randArea.Y));
+            }
+        
+            Transform target = null;
+            if (effConf.EffectPoint != PointType.A0)
+            {
+                carViewComp = carUnit.GetComponent<CarViewComponent>();
+                if (carViewComp.CarCtrl.effectPoints.TryGetValue(effConf.EffectPoint.ToString(), out var effectPoint))
+                {
+                    target = effectPoint;
+                }
+            }
+        
+            effectCtrl.RefreshLayerOrder(20000);
+            
+            var deUnit = self.Entity.AddChild(EntityType.Effect);
+            deUnit.AddComponent<EffectComponent>(comp =>
+            {
+                comp.EffectId = effectId;
+                comp.EffectSkin = effectSkin;
+                comp.EffectCtrl = effectCtrl;
+                comp.Offset = offset;
+                comp.Target = target;
+            });
+        }
     }
 }
