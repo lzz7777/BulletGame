@@ -1,23 +1,28 @@
 using System.Collections.Generic;
 using System;
+using System.Threading;
 
 namespace XN
 {
     public class Entity : IPool
     {
-        private static long _nextId { get; set; } = 1000;
+        // 去掉属性封装，改为普通的 private static 字段
+        private static long _nextId = 1000;
         public long Id { get; private set; }
+        
         private Entity _parent { get; set; }
         public EntityType Tag { get; private set; }
         
         public bool IsFromPool { get; set; }
         
-        private Dictionary<Type, IComponent> _components { get; set; } = new();
-        private Dictionary<EntityType, List<Entity>> _childrenDic { get; set; } = new();
+        private Dictionary<Type, IComponent> _components { get; set; } = new(64);
+        private Dictionary<EntityType, List<Entity>> _childrenDic { get; set; } = new(128);
 
         public void Init(EntityType tag, bool isFromPool = false)
         {
-            Id = ++_nextId;
+            // 使用 Interlocked.Increment 保证绝对的原子性和多线程安全
+            Id = Interlocked.Increment(ref _nextId);
+            
             Tag = tag;
             IsFromPool = isFromPool;
         }

@@ -32,14 +32,21 @@ namespace XN
         }
         // ====================================================================================
 
-        private Dictionary<long, Entity> _entitiesDic { set; get; } = new();
-        private Dictionary<Type, List<IComponent>> _componentCache { set; get; } = new();
-        private Dictionary<EntityType, List<long>> _entityTypeDic { set; get; } = new();
+        private Dictionary<long, Entity> _entitiesDic { set; get; } = new(5000);
+        private Dictionary<Type, List<IComponent>> _componentCache { set; get; } = new(64);
+        private Dictionary<EntityType, List<long>> _entityTypeDic { set; get; } = new(32);
         
-        private Dictionary<Type, Stack<object>> _objectPool { set; get; } = new();
+        private Dictionary<Type, Stack<object>> _objectPool { set; get; } = new(64);
 
-        // 存所有需要 Update 的委托：Key 是组件类型，Value 是对应的静态扩展方法委托
-        private Dictionary<Type, Action<IComponent, float>> _updateDelegates = new();
+        private struct UpdateSystemInfo
+        {
+            public Type ComponentType;
+            public Action<IComponent, float> UpdateAction;
+            public int Order;
+        }
+
+        // 存所有需要 Update 的委托及顺序，按 Order 排序
+        private List<UpdateSystemInfo> _updateSystems = new();
         
 #if UNITY_EDITOR
         public Transform EntityRoot => _entityRoot;
@@ -75,6 +82,8 @@ namespace XN
 
         private void CollectUpdateSystems()
         {
+            _updateSystems.Clear();
+
             // 找到所有打了 [UpdateSystem] 的静态方法
             var methods = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(a => a.GetTypes())
@@ -84,6 +93,7 @@ namespace XN
 
             foreach (var method in methods)
             {
+                var attr = method.GetCustomAttribute<UpdateSystemAttribute>();
                 // 扩展方法的第一个参数就是 Component 的类型 (this CarInfoComponent self)
                 var parameters = method.GetParameters();
                 if (parameters.Length != 2 || !typeof(IComponent).IsAssignableFrom(parameters[0].ParameterType))
@@ -96,26 +106,35 @@ namespace XN
                 var callerType = typeof(UpdateActionCaller<>).MakeGenericType(componentType);
                 var caller = (IUpdateActionCaller)Activator.CreateInstance(callerType, method);
                 
-                _updateDelegates[componentType] = caller.Call;
+                _updateSystems.Add(new UpdateSystemInfo
+                {
+                    ComponentType = componentType,
+                    UpdateAction = caller.Call,
+                    Order = attr.Order
+                });
             }
+
+            // 根据 Order 从小到大排序（数值越小越早执行）
+            _updateSystems.Sort((a, b) => a.Order.CompareTo(b.Order));
         }
 
         private void Update()
         {
             float dt =  Time.deltaTime;
-            // 核心：自动遍历并调用扩展方法！
-            foreach (var kvp in _updateDelegates)
+            // 核心：按排序后的顺序遍历执行！
+            for (int i = 0; i < _updateSystems.Count; i++)
             {
-                Type compType = kvp.Key;
-                Action<IComponent, float> updateAction = kvp.Value;
+                var sysInfo = _updateSystems[i];
+                Type compType = sysInfo.ComponentType;
+                Action<IComponent, float> updateAction = sysInfo.UpdateAction;
 
                 var components = GetComponents(compType);
                 if (components == null) continue;
 
                 // 倒序遍历防止删除报错
-                for (int i = components.Count - 1; i >= 0; i--)
+                for (int j = components.Count - 1; j >= 0; j--)
                 {
-                    var comp = components[i];
+                    var comp = components[j];
                     if (comp == null || comp.Entity == null || comp.Entity.IsDispose) continue;
 
                     updateAction(comp, dt);
@@ -128,7 +147,8 @@ namespace XN
             Type type = comp.GetType();
             if (!_componentCache.TryGetValue(type, out var list))
             {
-                list = new List<IComponent>();
+                // 预设组件列表大小，减少扩容开销
+                list = new List<IComponent>(512);
                 _componentCache[type] = list;
             }
 
@@ -209,8 +229,12 @@ namespace XN
             }
 
             entity.Init(entityTag, isFromPool);
-            _entityTypeDic.TryAdd(entityTag, new());
-            _entityTypeDic[entityTag].Add(entity.Id);
+            if (!_entityTypeDic.TryGetValue(entityTag, out var list))
+            {
+                list = new List<long>(1024);
+                _entityTypeDic[entityTag] = list;
+            }
+            list.Add(entity.Id);
             _entitiesDic[entity.Id] = entity;
 
 #if UNITY_EDITOR
