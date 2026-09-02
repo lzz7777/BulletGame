@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace XN
 {
-    public class CarPositionComponent : IComponent
+    public class CarPositionComponent : ComponentBase
     {
         [SerializeField]
         public float X { get; set; }

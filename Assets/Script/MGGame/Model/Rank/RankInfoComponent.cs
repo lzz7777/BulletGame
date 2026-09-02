@@ -3,7 +3,7 @@ using cfg;
 
 namespace XN
 {
-    public class RankInfoComponent : IComponent
+    public class RankInfoComponent : ComponentBase
     {
         public Dictionary<RankType, RankTimesData> RankInfo = new();
         

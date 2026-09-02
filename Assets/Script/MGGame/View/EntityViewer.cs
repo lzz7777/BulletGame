@@ -17,14 +17,14 @@ public class EntityViewer : MonoBehaviour
     [LabelText("Components List")]
     [ListDrawerSettings(IsReadOnly = true, Expanded = true, ListElementLabelName = "@this.GetType().Name")]
     [Obsolete("Obsolete")]
-    public List<IComponent> ComponentList
+    public List<ComponentBase> ComponentList
     {
         get
         {
             if (Entity == null || Entity.IsDispose) return null;
             var comps = Entity.GetAllComponents();
             if (comps == null) return null;
-            return new List<IComponent>(comps.Values);
+            return new List<ComponentBase>(comps);
         }
     }
 

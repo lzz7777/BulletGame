@@ -1,6 +1,6 @@
 namespace XN
 {
-    public abstract class IComponent : IPool
+    public abstract class ComponentBase : IPool
     {
         public Entity Entity { get; set; }
         public bool IsFromPool { get; set; }

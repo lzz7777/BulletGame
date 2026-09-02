@@ -1,6 +1,6 @@
 namespace XN
 {
-    public class SceneInfoComponent : IComponent
+    public class SceneInfoComponent : ComponentBase
     {
         public string AnchorOpenId { get; set; }
         public string RoomId { get; set; }

@@ -12,7 +12,7 @@ namespace XN
         // public EffectCtrl EffectCtrl { get; set; }
     }
 
-    public class CarViewComponent : IComponent
+    public class CarViewComponent : ComponentBase
     {
         [SerializeField]
         public GameObject Car { get; set; }

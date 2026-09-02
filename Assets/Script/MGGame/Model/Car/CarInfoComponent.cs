@@ -27,7 +27,7 @@ namespace XN
         }
     }
 
-    public class CarInfoComponent : IComponent
+    public class CarInfoComponent : ComponentBase
     {
         /// <summary>
         /// 里程

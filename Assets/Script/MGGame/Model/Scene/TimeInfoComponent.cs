@@ -2,7 +2,7 @@ using System;
 
 namespace XN
 {
-    public class TimeInfoComponent : IComponent
+    public class TimeInfoComponent : ComponentBase
     {
         public long ServerId;
         public long ServerTimeAndLocalOffset;

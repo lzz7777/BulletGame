@@ -3,7 +3,7 @@ using cfg;
 
 namespace XN
 {
-    public class RoomInfoComponent : IComponent
+    public class RoomInfoComponent : ComponentBase
     {
         public int RoomID { get; set; }
         public float Time { get; set; }

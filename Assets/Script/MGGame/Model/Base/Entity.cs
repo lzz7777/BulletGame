@@ -9,20 +9,22 @@ namespace XN
         // 去掉属性封装，改为普通的 private static 字段
         private static long _nextId = 1000;
         public long Id { get; private set; }
-        
+
         private Entity _parent { get; set; }
         public EntityType Tag { get; private set; }
-        
+
         public bool IsFromPool { get; set; }
-        
-        private Dictionary<Type, IComponent> _components { get; set; } = new(64);
+
+        // 使用 Dictionary<int, ComponentBase>，省内存，没有越界风险，且通过 int ID 取代 Type 节省部分哈希和句柄转换开销
+        private Dictionary<long, ComponentBase> _components = new(4);
+
         private Dictionary<EntityType, List<Entity>> _childrenDic { get; set; } = new(128);
 
         public void Init(EntityType tag, bool isFromPool = false)
         {
             // 使用 Interlocked.Increment 保证绝对的原子性和多线程安全
             Id = Interlocked.Increment(ref _nextId);
-            
+
             Tag = tag;
             IsFromPool = isFromPool;
         }
@@ -39,7 +41,7 @@ namespace XN
 
         public bool IsDispose => Id == 0;
 
-        public T AddComponent<T>(Action<T> onSetup = null, bool isFromPool = true) where T : IComponent, new()
+        public T AddComponent<T>(Action<T> onSetup = null, bool isFromPool = true) where T : ComponentBase, new()
         {
             T component;
 
@@ -54,33 +56,35 @@ namespace XN
 
             component.Entity = this;
             component.IsFromPool = isFromPool;
-            _components[typeof(T)] = component;
+
+            long compId = ComponentTypeId<T>.Id;
+            _components[compId] = component;
 
             EntityManager.Instance.RegisterComponent(component);
 
             // 在调用 OnCreate 之前，先执行外部传入的赋值逻辑
             onSetup?.Invoke(component);
-            
+
             component.OnCreate();
 
             return component;
         }
 
-        public T GetComponent<T>() where T : IComponent
+        public T GetComponent<T>() where T : ComponentBase
         {
-            if (_components.TryGetValue(typeof(T), out var comp))
+            if (_components.TryGetValue(ComponentTypeId<T>.Id, out var comp))
             {
-                return (T)comp;
+                return comp as T;
             }
 
             return null;
         }
 
-        public bool GetComponent<T>(out T comp) where T : IComponent
+        public bool GetComponent<T>(out T comp) where T : ComponentBase
         {
-            if (_components.TryGetValue(typeof(T), out var com))
+            if (_components.TryGetValue(ComponentTypeId<T>.Id, out var baseComp))
             {
-                comp = (T)com;
+                comp = baseComp as T;
                 return true;
             }
 
@@ -88,29 +92,30 @@ namespace XN
             return false;
         }
 
-        public bool HasComponent<T>() where T : IComponent
+        public bool HasComponent<T>() where T : ComponentBase
         {
-            return _components.ContainsKey(typeof(T));
+            return _components.ContainsKey(ComponentTypeId<T>.Id);
         }
 
-        public void RemoveComponent<T>(T comp) where T : IComponent
+        public void RemoveComponent<T>(T comp) where T : ComponentBase
         {
             comp.OnDestroy();
 
             EntityManager.Instance.UnregisterComponent(comp);
 
-            _components.Remove(comp.GetType());
+            long compId = ComponentTypeId<T>.Id;
+            _components.Remove(compId);
 
             if (comp.IsFromPool)
             {
                 EntityManager.Instance.ReturnToPool(comp);
             }
         }
-        
+
         public Entity AddChild(EntityType entityType)
         {
             var child = EntityManager.Instance.CreateEntity(entityType);
-            
+
             child._parent?.RemoveChild(child);
 
             if (!_childrenDic.TryGetValue(entityType, out var children))
@@ -158,15 +163,17 @@ namespace XN
             return null;
         }
 
-        public Dictionary<Type, IComponent> GetAllComponents()
+        public IEnumerable<ComponentBase> GetAllComponents()
         {
-            return _components;
+            return _components.Values;
         }
 
         public void OnDestroy()
         {
             foreach (var comp in _components.Values)
             {
+                if (comp == null) continue;
+
                 comp.OnDestroy();
 
                 EntityManager.Instance.UnregisterComponent(comp);

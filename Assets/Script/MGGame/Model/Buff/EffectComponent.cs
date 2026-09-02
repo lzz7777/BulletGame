@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace XN
 {
-    public class EffectComponent : IComponent
+    public class EffectComponent : ComponentBase
     {
         [SerializeField]
         public int EffectId { get; set; }

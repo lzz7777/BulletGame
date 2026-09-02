@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace XN
 {
-    public class PlayerItemComponent : IComponent
+    public class PlayerItemComponent : ComponentBase
     {
         public Dictionary<long, BagData> BagDataDict { get; set; } = new();
         

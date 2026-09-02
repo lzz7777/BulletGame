@@ -6,6 +6,6 @@ namespace XN
         /// 移除组件
         /// </summary>
         /// <param name="comp"></param>
-        public static void Remove(this IComponent comp) => comp.Entity.RemoveComponent(comp);
+        public static void Remove(this ComponentBase comp) => comp.Entity.RemoveComponent(comp);
     }
 }

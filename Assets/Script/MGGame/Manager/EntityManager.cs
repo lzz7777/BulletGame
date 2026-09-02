@@ -11,10 +11,10 @@ namespace XN
         // ========================== 性能优化：无反射强类型调用包装器 ==========================
         private interface IUpdateActionCaller
         {
-            void Call(IComponent comp, float dt);
+            void Call(ComponentBase comp, float dt);
         }
 
-        private class UpdateActionCaller<T> : IUpdateActionCaller where T : IComponent
+        private class UpdateActionCaller<T> : IUpdateActionCaller where T : ComponentBase
         {
             private readonly Action<T, float> _action;
 
@@ -24,7 +24,7 @@ namespace XN
                 _action = (Action<T, float>)Delegate.CreateDelegate(typeof(Action<T, float>), methodInfo);
             }
 
-            public void Call(IComponent comp, float dt)
+            public void Call(ComponentBase comp, float dt)
             {
                 // 无装箱，无拆箱，无反射，直接强转执行委托！
                 _action((T)comp, dt);
@@ -33,7 +33,7 @@ namespace XN
         // ====================================================================================
 
         private Dictionary<long, Entity> _entitiesDic { set; get; } = new(5000);
-        private Dictionary<Type, List<IComponent>> _componentCache { set; get; } = new(64);
+        private Dictionary<Type, List<ComponentBase>> _componentCache { set; get; } = new(64);
         private Dictionary<EntityType, List<long>> _entityTypeDic { set; get; } = new(32);
         
         private Dictionary<Type, Stack<object>> _objectPool { set; get; } = new(64);
@@ -41,7 +41,7 @@ namespace XN
         private struct UpdateSystemInfo
         {
             public Type ComponentType;
-            public Action<IComponent, float> UpdateAction;
+            public Action<ComponentBase, float> UpdateAction;
             public int Order;
         }
 
@@ -96,7 +96,7 @@ namespace XN
                 var attr = method.GetCustomAttribute<UpdateSystemAttribute>();
                 // 扩展方法的第一个参数就是 Component 的类型 (this CarInfoComponent self)
                 var parameters = method.GetParameters();
-                if (parameters.Length != 2 || !typeof(IComponent).IsAssignableFrom(parameters[0].ParameterType))
+                if (parameters.Length != 2 || !typeof(ComponentBase).IsAssignableFrom(parameters[0].ParameterType))
                     continue;
 
                 Type componentType = parameters[0].ParameterType;
@@ -126,7 +126,7 @@ namespace XN
             {
                 var sysInfo = _updateSystems[i];
                 Type compType = sysInfo.ComponentType;
-                Action<IComponent, float> updateAction = sysInfo.UpdateAction;
+                Action<ComponentBase, float> updateAction = sysInfo.UpdateAction;
 
                 var components = GetComponents(compType);
                 if (components == null) continue;
@@ -142,13 +142,13 @@ namespace XN
             }
         }
 
-        public void RegisterComponent(IComponent comp)
+        public void RegisterComponent(ComponentBase comp)
         {
             Type type = comp.GetType();
             if (!_componentCache.TryGetValue(type, out var list))
             {
                 // 预设组件列表大小，减少扩容开销
-                list = new List<IComponent>(512);
+                list = new List<ComponentBase>(512);
                 _componentCache[type] = list;
             }
 
@@ -156,7 +156,7 @@ namespace XN
             list.Add(comp);
         }
 
-        public void UnregisterComponent(IComponent comp)
+        public void UnregisterComponent(ComponentBase comp)
         {
             Type type = comp.GetType();
             if (_componentCache.TryGetValue(type, out var list))
@@ -184,12 +184,12 @@ namespace XN
             }
         }
 
-        public List<IComponent> GetComponents(Type type)
+        public List<ComponentBase> GetComponents(Type type)
         {
             return _componentCache.TryGetValue(type, out var list) ? list : null;
         }
 
-        public List<IComponent> GetComponents<T>() where T : IComponent
+        public List<ComponentBase> GetComponents<T>() where T : ComponentBase
         {
             return GetComponents(typeof(T));
         }

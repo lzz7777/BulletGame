@@ -14,7 +14,7 @@ namespace XN
         public int GroupId;
     }
 
-    public class BuffInfoComponent : IComponent
+    public class BuffInfoComponent : ComponentBase
     {
         public int BuffId { get; set; }
         public float EndTime { get; set; }

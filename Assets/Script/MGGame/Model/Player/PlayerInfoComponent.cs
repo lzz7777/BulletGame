@@ -28,7 +28,7 @@ namespace XN
         public bool IsEditor = false;
     }
 
-    public class PlayerInfoComponent : IComponent
+    public class PlayerInfoComponent : ComponentBase
     {
         public string PlayerId;
         public long CarId { get; set; }
