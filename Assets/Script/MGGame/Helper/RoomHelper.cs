@@ -232,45 +232,98 @@ namespace XN
         }
 
         /// <summary>
-        /// 车辆里程排序结构体，0 GC 且优化了浮点比较
+        /// 紧凑的排序数据结构，用于提高 CPU Cache 命中率并避免排序中频繁查询组件
         /// </summary>
-        private struct CarMileageComparer : IComparer<long>
+        private struct CarSortData : IComparable<CarSortData>
         {
-            public int Compare(long a, long b)
+            public long CarId;
+            public float Mileage;
+            public int PlayerCount;
+
+            public int CompareTo(CarSortData other)
             {
-                var carInfoComp1 = EntityManager.Instance.GetEntityById(a).GetComponent<CarInfoComponent>();
-                var carInfoComp2 = EntityManager.Instance.GetEntityById(b).GetComponent<CarInfoComponent>();
-
-                if (System.Math.Abs(carInfoComp1.Mileage - carInfoComp2.Mileage) > 0.001f)
-                {
-                    return carInfoComp2.Mileage.CompareTo(carInfoComp1.Mileage);
-                }
-
-                if (carInfoComp2.PlayerIds.Count != carInfoComp1.PlayerIds.Count)
-                {
-                    return carInfoComp2.PlayerIds.Count.CompareTo(carInfoComp1.PlayerIds.Count);
-                }
-
-                return carInfoComp1.Entity.Id.CompareTo(carInfoComp2.Entity.Id);
+                if (System.Math.Abs(this.Mileage - other.Mileage) > 0.001f)
+                    return other.Mileage.CompareTo(this.Mileage);
+                if (this.PlayerCount != other.PlayerCount)
+                    return other.PlayerCount.CompareTo(this.PlayerCount);
+                return this.CarId.CompareTo(other.CarId);
             }
         }
 
-        private static readonly CarMileageComparer _carComparer = new CarMileageComparer();
+        // 预分配缓存，规避运行时扩容（按照项目规范，预设合理初始容量）
+        private static CarSortData[] _carSortBuffer = new CarSortData[128];
 
         /// <summary>
-        /// 车辆里程排序
+        /// 车辆里程排序（适用于海量实体的 0 GC 且防 Cache Miss 高性能版本）
         /// </summary>
         public static void CarsSort()
         {
             var roomInfoComp = GetRoomInfoComponent();
             var carIds = roomInfoComp.CarIds;
+            int count = carIds.Count;
+            if (count <= 1) return;
 
-            carIds.Sort(_carComparer);
-
-            for (int i = 0; i < carIds.Count; i++)
+            // 1. 容量检查与按 2 的幂次扩容（极端情况下的安全网）
+            if (_carSortBuffer.Length < count)
             {
-                roomInfoComp.CarRankDic[carIds[i]] = i;
+                int newCapacity = Mathf.NextPowerOfTwo(count);
+                _carSortBuffer = new CarSortData[newCapacity];
             }
+
+            // 2. O(N) 数据收集：将内存离散的组件数据，拷贝到连续的数组内存中
+            for (int i = 0; i < count; i++)
+            {
+                long carId = carIds[i];
+                var carInfoComp = EntityManager.Instance.GetEntityById(carId).GetComponent<CarInfoComponent>();
+                _carSortBuffer[i] = new CarSortData
+                {
+                    CarId = carId,
+                    Mileage = carInfoComp.Mileage,
+                    PlayerCount = carInfoComp.PlayerIds.Count
+                };
+            }
+
+            // 3. O(N log N) 排序：在连续内存上执行 0 GC 快排
+            QuickSort(_carSortBuffer, 0, count - 1);
+
+            // 4. O(N) 写回数据
+            for (int i = 0; i < count; i++)
+            {
+                long sortedCarId = _carSortBuffer[i].CarId;
+                carIds[i] = sortedCarId;
+                roomInfoComp.CarRankDic[sortedCarId] = i;
+            }
+        }
+
+        // 泛型约束手写快排，彻底消除 Array.Sort 可能由于 Mono 版本带来的包装器 GC
+        private static void QuickSort<T>(T[] arr, int left, int right) where T : IComparable<T>
+        {
+            if (left < right)
+            {
+                int pivot = Partition(arr, left, right);
+                QuickSort(arr, left, pivot - 1);
+                QuickSort(arr, pivot + 1, right);
+            }
+        }
+
+        private static int Partition<T>(T[] arr, int left, int right) where T : IComparable<T>
+        {
+            T pivotValue = arr[right];
+            int i = left - 1;
+            for (int j = left; j < right; j++)
+            {
+                if (arr[j].CompareTo(pivotValue) <= 0)
+                {
+                    i++;
+                    T temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+            T temp2 = arr[i + 1];
+            arr[i + 1] = arr[right];
+            arr[right] = temp2;
+            return i + 1;
         }
 
         /// <summary>

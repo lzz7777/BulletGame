@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
@@ -11,13 +10,12 @@ namespace XN
         Debug,
         Release,
     }
-    
+
     public class UIManager : MonoSingleton<UIManager>
     {
         private Stack<UIPanelBase> _panelStack = new();
         private Dictionary<string, UIPanelBase> _panelCache = new();
-        [SerializeField][LabelText("游戏模式")]
-        public GameModel GameModel = GameModel.Release;
+        [SerializeField] [LabelText("游戏模式")] public GameModel GameModel = GameModel.Release;
 
         public Dictionary<UIPanelType, Transform> UiPanelCanvasDic = new();
 
@@ -59,15 +57,16 @@ namespace XN
             {
                 return false;
             }
-            
+
             uIPanelBase = (T)window;
             return true;
         }
-
+        
         public async UniTask<UIPanelBase> OpenWindow<T>(UIWindowData uIWindowData = null) where T : UIPanelBase =>
             await OpenWindow(typeof(T).Name, uIWindowData);
 
-        private async UniTask<UIPanelBase> OpenWindow(string typeName, UIWindowData uIWindowData = null, bool noPop = false)
+        private async UniTask<UIPanelBase> OpenWindow(string typeName, UIWindowData uIWindowData = null,
+            bool noPop = false)
         {
             if (!_panelCache.TryGetValue(typeName, out var window))
             {
@@ -75,7 +74,7 @@ namespace XN
                 window = obj.GetComponent<UIPanelBase>();
                 _panelCache[typeName] = window;
             }
-            
+
             if (window.UIPanelType == UIPanelType.Normal)
             {
                 //关闭上一个主页面
@@ -89,7 +88,7 @@ namespace XN
 
                 _panelStack.Push(window);
             }
-            
+
             window.gameObject.SetActive(true);
             window.transform.SetParent(UiPanelCanvasDic[window.UIPanelType]);
             window.transform.SetAsLastSibling();
@@ -99,7 +98,7 @@ namespace XN
             rt.offsetMax = Vector2.zero;
             window.OnOpen(uIWindowData);
             Debug.Log($"OpenWindow:{typeName}");
-            
+
             return window;
         }
 
@@ -111,11 +110,11 @@ namespace XN
             {
                 return;
             }
-            
+
             window.gameObject.SetActive(false);
             window.OnClose();
             Debug.Log($"CloseWindow:{typeName}");
-            
+
             if (window.UIPanelType == UIPanelType.Normal && _panelStack.Count > 0 && !noPop)
             {
                 var nextWindow = _panelStack.Pop();

@@ -7,9 +7,9 @@ namespace XN
 {
     public class ViewBattleRankNode : UISubViewBase
     {
-		public UISubView ViewBattleRankNodeSubView;
-		public TextMeshProUGUI UIMonthTMP_UGUI;
-		public VerticalLayoutGroup UIItemNodeVerticalLayoutGroup;
+        public UISubView ViewBattleRankNodeSubView;
+        public TextMeshProUGUI UIMonthTMP_UGUI;
+        public VerticalLayoutGroup UIItemNodeVerticalLayoutGroup;
 
         public override void OnOpen(UIWindowData uIWindowData)
         {
@@ -25,7 +25,7 @@ namespace XN
 
         #region CustomFields
 
-	public List<GameObject> Items = new();
+        public List<GameObject> Items = new();
 
         #endregion
     }

@@ -21,6 +21,8 @@ namespace XN
 
         // 全局换组冷却锁
         public float GlobalChangeGroupNextTime = 0;
+
+        public float UpdateCarsMileageCD = 0;
         
         protected override async void OnInit()
         {
@@ -71,6 +73,13 @@ namespace XN
         /// </summary>
         private void UpdateCarsMileage()
         {
+            UpdateCarsMileageCD -= Time.deltaTime;
+            
+            if (UpdateCarsMileageCD > 0)
+                return;
+
+            UpdateCarsMileageCD = 0.1f;
+            
             RoomHelper.CarsSort();
 
             var roomInfoComp = RoomHelper.GetRoomInfoComponent();
