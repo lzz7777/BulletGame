@@ -390,9 +390,16 @@ namespace XN
             if (!carInfoComp.CanMoveX() || !carInfoComp.CanMoveY())
                 return;
 
+            float targetX = self.Car.transform.position.x - 1;
+
+            //判断是否超过最左边
+            if (targetX < CarHelper.GetMinPos())
+            {
+                return;
+            }
+            
             carInfoComp.AddMoveType(CarMoveType.MoveX);
             carInfoComp.AddMoveType(CarMoveType.MoveY);
-            float targetX = self.Car.transform.position.x - 1;
             self.Car.transform.DOMoveX(targetX, 0.1f).SetEase(Ease.OutSine).OnComplete(() =>
             {
                 carInfoComp.RemoveMoveType(CarMoveType.MoveX);
