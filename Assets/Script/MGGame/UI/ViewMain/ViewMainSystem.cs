@@ -82,6 +82,7 @@ namespace XN
             // LocalLog.UploadServer();
             
             UIManager.Instance.OpenWindow<ViewLoopListTest>().Forget();
+            // UIManager.Instance.OpenWindow<ViewGridLoopListTest>().Forget();
         }
 
         public static void UIToggleRoomOnValueChanged(this ViewMain self, bool value, FightRoomType roomType)

@@ -210,8 +210,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67c5c578790b415494c79e691a4328b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scrollRect: {fileID: 6312365288335972635}
-  _content: {fileID: 4707765339450310009}
   _spacing: 10
   _prefab: {fileID: 7050425877008208136}
 --- !u!1 &2715789229551300922
@@ -475,6 +473,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: ViewLoopListTestItem
       objectReference: {fileID: 0}
+    - target: {fileID: 2715789229551300922, guid: 233e54ac08890ea4c9eb60272c5ff8c6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558255190647873045, guid: 233e54ac08890ea4c9eb60272c5ff8c6,
+        type: 3}
+      propertyPath: ErrorGameObject
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558255190647873045, guid: 233e54ac08890ea4c9eb60272c5ff8c6,
+        type: 3}
+      propertyPath: objectDatas.Array.data[4].componentDatas.Array.data[0].ComponentEnum
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 7157453976937321234, guid: 233e54ac08890ea4c9eb60272c5ff8c6,
         type: 3}
       propertyPath: m_Pivot.x
@@ -575,11 +588,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8531162693127317778, guid: 233e54ac08890ea4c9eb60272c5ff8c6,
+        type: 3}
+      propertyPath: ViewLoopListTestItemLoopListItem
+      value: 
+      objectReference: {fileID: 1829246811011962282}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 233e54ac08890ea4c9eb60272c5ff8c6, type: 3}
+--- !u!114 &1829246811011962282 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6704317611696797080, guid: 233e54ac08890ea4c9eb60272c5ff8c6,
+    type: 3}
+  m_PrefabInstance: {fileID: 4929276725020811314}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7050425877008208136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff5fbf2b857a49b4a9ed23c0a1cf70c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &2827184595042644768 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7157453976937321234, guid: 233e54ac08890ea4c9eb60272c5ff8c6,
