@@ -2,10 +2,15 @@
 
 namespace XN
 {
-    public class #CLASS_NAME# : UIItemBase
+    public class #CLASS_NAME# : UIItemBase<#CLASS_NAME#Data>
     {
 #FIELDS#
         
+        public override void Refresh(#CLASS_NAME#Data data)
+        {
+            this.OnRefresh(data);
+        }
+                
         #region CustomFields
         #CUSTOM_FIELDS#
         #endregion
