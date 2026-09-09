@@ -69,7 +69,10 @@ public enum UICollectorComponentEnum
     ParticleButton,
     
     LoopList,
+    GridLoopList,
+    
     LoopListItem,
+    
     SubView,// 子页面
     VerticalLayoutGroup,
 }
@@ -106,7 +109,9 @@ public static class UICollectorData
             "TMPro.TMP_InputField" => UICollectorComponentEnum.TMP_InputField,
             
             "XN.UILoopList" => UICollectorComponentEnum.LoopList,
+            "XN.UIGridLoopList" => UICollectorComponentEnum.GridLoopList,
             "XN.UILoopListItem" => UICollectorComponentEnum.LoopListItem,
+            
             "XN.UISubView" => UICollectorComponentEnum.SubView,
             
             _ => UICollectorComponentEnum.None
@@ -123,6 +128,7 @@ public static class UICollectorData
             UICollectorComponentEnum.TMP_UGUI => "TextMeshProUGUI",
             UICollectorComponentEnum.LoopList  => "UILoopList",
             UICollectorComponentEnum.LoopListItem => "UILoopListItem",
+            UICollectorComponentEnum.GridLoopList => "UIGridLoopList",
             UICollectorComponentEnum.SubView => "UISubView",
             
             _ => $"{componentType}",
