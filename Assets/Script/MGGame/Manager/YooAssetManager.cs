@@ -372,10 +372,13 @@ namespace XN
             return await LoadAssetAsync<Sprite>(location, autoRelease, token);
         }
 
-        public async UniTask<Sprite> LoadSpriteAsync(string location, Image image, bool setNative = false)
+        public async UniTask<Sprite> LoadSpriteAsync(string location, Image image, bool setNative = false, CancellationToken token = default)
         {
-            var sprite = await LoadSpriteAsync(location);
+            var sprite = await LoadSpriteAsync(location, false, token);
+            if (token.IsCancellationRequested) return null;
             if (sprite == null) return null;
+            if (image == null) return null;
+            
             image.sprite = sprite;
             if (setNative)
             {
@@ -384,10 +387,13 @@ namespace XN
             return sprite;
         }
         
-        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, Image image, bool setNative = false)
+        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, Image image, bool setNative = false, CancellationToken token = default)
         {
-            var sprite = await GetSpriteFromAtlas(atlasName, location);
+            var sprite = await GetSpriteFromAtlas(atlasName, location, token);
+            if (token.IsCancellationRequested) return null;
             if (sprite == null) return null;
+            if (image == null) return null;
+            
             image.sprite = sprite;
             if (setNative)
             {
@@ -396,27 +402,37 @@ namespace XN
             return sprite;
         }
         
-        public async UniTask<Sprite> LoadSpriteAsync(string location, SpriteRenderer spriteRand)
+        public async UniTask<Sprite> LoadSpriteAsync(string location, SpriteRenderer spriteRand, CancellationToken token = default)
         {
-            var sprite = await LoadSpriteAsync(location);
+            var sprite = await LoadSpriteAsync(location, false, token);
+            if (token.IsCancellationRequested) return null;
             if (sprite == null) return null;
+            if (spriteRand == null) return null;
+            
             spriteRand.sprite = sprite;
             return sprite;
         }
         
-        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, SpriteRenderer spriteRand)
+        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, SpriteRenderer spriteRand, CancellationToken token = default)
         {
-            var sprite = await GetSpriteFromAtlas(atlasName, location);
+            var sprite = await GetSpriteFromAtlas(atlasName, location, token);
+            if (token.IsCancellationRequested) return null;
             if (sprite == null) return null;
+            if (spriteRand == null) return null;
+            
             spriteRand.sprite = sprite;
             return sprite;
         }
         
-        public async UniTask<Sprite> GetSpriteFromAtlas(string atlasName, string spriteName)
+        public async UniTask<Sprite> GetSpriteFromAtlas(string atlasName, string spriteName, CancellationToken token = default)
         {
             // 1. 先通过 YooAsset 加载图集资产
             var handle = YooAssetManager.DefaultPackage.LoadAssetAsync<SpriteAtlas>(atlasName);
             await handle.Task;
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             if (handle.Status == EOperationStatus.Succeed)
             {
