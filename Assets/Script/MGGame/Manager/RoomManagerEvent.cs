@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using cfg;
 using Cysharp.Threading.Tasks;
 
@@ -44,7 +44,7 @@ namespace XN
                     {
                         // 这里特殊处理， 视频结束后，才开始下一段音乐。
                         SoundManager.Instance.PlayMusic(MGGameState.到达终点);
-                    }).ToCoroutine();
+                    }).Forget();
 
                     // 上报数据
                     // DataManager.SendRoomData((cbStr) =>
@@ -52,12 +52,12 @@ namespace XN
                     //     Debug.Log("上报完毕...回调回来...打开结算界面");
                     //     SampleMessagePushManager.UploadLog(new[] { "Battle", "End" }, cbStr);
                     //     // ver1.打开局内结算
-                    //     UIManager.Instance.OpenWindow<ViewBattleMVP>().ToCoroutine();
-                    // }).ToCoroutine();
+                    //     UIManager.Instance.OpenWindow<ViewBattleMVP>().Forget();
+                    // }).Forget();
                     
                     Debug.Log("上报完毕...回调回来...打开结算界面");
                     // ver1.打开局内结算
-                    UIManager.Instance.OpenWindow<ViewBattleMVP>().ToCoroutine();
+                    UIManager.Instance.OpenWindow<ViewBattleMVP>().Forget();
                     break;
                 default:
                     Debug.LogWarning($" TODO ..... {GameStateCtrl.State}");
@@ -262,7 +262,7 @@ namespace XN
         {
             await ClearRoomData();
 
-            UIManager.Instance.OpenWindow<ViewMain>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewMain>().Forget();
         }
 
         public async UniTask OneMoreAgain()
@@ -271,7 +271,7 @@ namespace XN
             await ClearRoomData();
             EnterRoom(curRoomId);
             // TODO ? UI 未显示
-            UIManager.Instance.OpenWindow<ViewBattleMain>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewBattleMain>().Forget();
         }
 
         #endregion

@@ -1,4 +1,4 @@
-using cfg;
+﻿using cfg;
 using cfg.Item;
 using Cysharp.Threading.Tasks;
 
@@ -23,12 +23,12 @@ public static class ItemRankOnePlayerSystem
 		// 通用信息
 		// self.UINameTextMeshProUGUI.text = string.IsNullOrEmpty(data.Name) ? data.PlayerId : data.Name;
 		self.UINameTextText.text = string.IsNullOrEmpty(data.Name) ? data.PlayerId : data.Name;
-		YooAssetManager.Instance.LoadSpriteAsync(data.AvatarUrl, self.UIHeadIconImage).ToCoroutine();
+		YooAssetManager.Instance.LoadSpriteAsync(data.AvatarUrl, self.UIHeadIconImage).Forget();
 		self.UIHeadFrameImage.enabled = data.IsShowFrame;
 		if (data.IsShowFrame)
 		{
 			string frame = RankHelper.GetHallOfFameFrameResByIndex(data.Index);
-			YooAssetManager.Instance.LoadSpriteAsync(frame,self.UIHeadFrameImage,true).ToCoroutine();
+			YooAssetManager.Instance.LoadSpriteAsync(frame,self.UIHeadFrameImage,true).Forget();
 		}
 		if (data.Index > 3)
 		{
@@ -37,7 +37,7 @@ public static class ItemRankOnePlayerSystem
 		else
 		{
 			self.UINumImage.gameObject.SetActive(true);
-			YooAssetManager.Instance.LoadSpriteAsync($"sjpm_pm{data.Index}", self.UINumImage).ToCoroutine();
+			YooAssetManager.Instance.LoadSpriteAsync($"sjpm_pm{data.Index}", self.UINumImage).Forget();
 		}
 		
 		// 差异部件
@@ -90,7 +90,7 @@ public static class ItemRankOnePlayerSystem
 				self.UIValueTxt1TextMeshProUGUI.SetText(UIManagerHelper.UIMathCeil(data.OwnScore + data.WinScore));
 				self.UIValueTxt2TextMeshProUGUI.SetText("");
 				// self.UIValueTxt2TextMeshProUGUI.SetText(UIManagerHelper.UIMathCeil(data.OwnFans + data.WinFans));
-				YooAssetManager.Instance.LoadSpriteAsync(data.Text5, self.UIValueWeekImage).ToCoroutine();
+				YooAssetManager.Instance.LoadSpriteAsync(data.Text5, self.UIValueWeekImage).Forget();
 				self.UIValueWeekImage.gameObject.SetActive(true);
 				break;
 			case RankType.FansRank:
@@ -136,7 +136,7 @@ public static class ItemRankOnePlayerSystem
 	    // 奖励皮肤包
 	    if (data.RewardsShow != null)
 	    {
-		    YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetIconOrNone(data.RewardsShow), self.UISkinImage,true).ToCoroutine();
+		    YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetIconOrNone(data.RewardsShow), self.UISkinImage,true).Forget();
 		    self.UIBgSkinImage.gameObject.SetActive(true);
 	    }
 	    
@@ -150,3 +150,4 @@ public static class ItemRankOnePlayerSystem
     #endregion
 }
 }
+

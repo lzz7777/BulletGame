@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ public static class ViewRankFanBadgePopSystem
     public static void OnOpenSystem(this ViewRankFanBadgePop self, UIWindowData uIWindowData)
     {
 	    self.currIndex = 1;
-	    self.RefreshImage(0).ToCoroutine();
+	    self.RefreshImage(0).Forget();
     }
     
     public static void OnCloseSystem(this ViewRankFanBadgePop self)
@@ -28,13 +28,13 @@ public static class ViewRankFanBadgePopSystem
     public static void UILeftButtonOnClick(this ViewRankFanBadgePop self)
     {
 	    // -1
-	    self.RefreshImage(-1).ToCoroutine();
+	    self.RefreshImage(-1).Forget();
     }
 
     public static void UIRightButtonOnClick(this ViewRankFanBadgePop self)
     {
 	    // +1
-	    self.RefreshImage(1).ToCoroutine();
+	    self.RefreshImage(1).Forget();
 
     }
     #endregion
@@ -68,3 +68,4 @@ public static class ViewRankFanBadgePopSystem
     #endregion
 }
 }
+

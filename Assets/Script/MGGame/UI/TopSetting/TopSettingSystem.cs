@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ByteDance.LiveOpenSdk.Runtime;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -93,12 +93,12 @@ public static class TopSettingSystem
         {
             case SaveData.Key.MuteMusic:
                 string iconMusic = isMute ? "icon_yinyue02" : "icon_yinyue";
-                YooAssetManager.Instance.LoadSpriteAsync(iconMusic,self.UIMusicButton.image,true).ToCoroutine();
+                YooAssetManager.Instance.LoadSpriteAsync(iconMusic,self.UIMusicButton.image,true).Forget();
                 SoundManager.Instance.SetMusicMute(isMute);
                 break;
             case SaveData.Key.MuteAudio:
                 string iconAudio = isMute ? "icon_yinxiao02" : "icon_yinxiao";
-                YooAssetManager.Instance.LoadSpriteAsync(iconAudio,self.UIEffectButton.image,true).ToCoroutine();
+                YooAssetManager.Instance.LoadSpriteAsync(iconAudio,self.UIEffectButton.image,true).Forget();
                 SoundManager.Instance.SetAudioMute(isMute);
                 break;
         }
@@ -133,3 +133,4 @@ public static class TopSettingSystem
     #endregion
 }
 }
+

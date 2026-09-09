@@ -1,4 +1,4 @@
-using cfg.Item;
+﻿using cfg.Item;
 using Cysharp.Threading.Tasks;
 
 namespace XN
@@ -8,7 +8,7 @@ public static class ViewRedeemPopSystem
 	#region CircleLife
     public static void OnOpenSystem(this ViewRedeemPop self, UIWindowData uIWindowData)
     {
-	    self.InitRedeemUI().ToCoroutine();
+	    self.InitRedeemUI().Forget();
     }
     
     public static void OnCloseSystem(this ViewRedeemPop self)
@@ -48,3 +48,4 @@ public static class ViewRedeemPopSystem
     #endregion
 }
 }
+

@@ -1,4 +1,4 @@
-using cfg.Fight;
+﻿using cfg.Fight;
 using Cysharp.Threading.Tasks;
 
 namespace XN
@@ -21,14 +21,14 @@ public static class ViewMapToggleItemSystem
 			self.toggle.interactable = true;
 			self.UIBackgroundImage.gameObject.SetActive(true);
 			self.UITextTextMeshProUGUI.SetText(oneSceneInfo.SceneName);
-			YooAssetManager.Instance.LoadSpriteAsync(oneSceneInfo.Preview, self.UIBgImage,true).ToCoroutine();
+			YooAssetManager.Instance.LoadSpriteAsync(oneSceneInfo.Preview, self.UIBgImage,true).Forget();
 		}
 		else
 		{
 			self.toggle.interactable = false;
 			self.UIBackgroundImage.gameObject.SetActive(false);
 			self.UITextTextMeshProUGUI.SetText("");
-			YooAssetManager.Instance.LoadSpriteAsync("bg_ditu_jqqd", self.UIBgImage,true).ToCoroutine();
+			YooAssetManager.Instance.LoadSpriteAsync("bg_ditu_jqqd", self.UIBgImage,true).Forget();
 		}
 	}
 
@@ -68,3 +68,4 @@ public static class ViewMapToggleItemSystem
     #endregion
 }
 }
+

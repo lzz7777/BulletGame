@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -60,13 +60,13 @@ namespace XN
 
         public static void UIDbpfButtonOnClick(this ViewRankListPop self)
         {
-            UIManager.Instance.OpenWindow<ViewRankLastSeason>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewRankLastSeason>().Forget();
         }
 
         public static void UIPhbButtonOnClick(this ViewRankListPop self)
         {
             UIManager.Instance.OpenWindow<ViewWorldRankMain>(new UIWindowData() { StringArgs1 = "World2Rank", })
-                .ToCoroutine();
+                .Forget();
         }
 
         #region 皮肤
@@ -77,7 +77,7 @@ namespace XN
         /// <param name="self"></param>
         public static void UIZbpfButtonOnClick(this ViewRankListPop self)
         {
-            UIManager.Instance.OpenWindow<ViewRankWeekPop>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewRankWeekPop>().Forget();
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace XN
         /// <param name="self"></param>
         public static void UIDhpfButtonOnClick(this ViewRankListPop self)
         {
-            UIManager.Instance.OpenWindow<ViewRedeemPop>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewRedeemPop>().Forget();
         }
 
         #endregion

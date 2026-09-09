@@ -1,4 +1,4 @@
-using cfg;
+﻿using cfg;
 using cfg.Item;
 using Cysharp.Threading.Tasks;
 
@@ -11,7 +11,7 @@ public static class ViewRedeemItemSystem
 	public static void OnRefresh(this ViewRedeemItem self, ViewRedeemItemData data)
 	{
 		StoreConfig oneConfig = data.config;
-		YooAssetManager.Instance.LoadSpriteAsync(oneConfig.CostItemPic, self.UIIconImage, true).ToCoroutine();
+		YooAssetManager.Instance.LoadSpriteAsync(oneConfig.CostItemPic, self.UIIconImage, true).Forget();
 		self.UINameTextMeshProUGUI.SetText($"{oneConfig.CostName}({oneConfig.CostDay})");
 		self.UICmdTextMeshProUGUI.SetText($"兑换{oneConfig.GoodsId}");
 		self.UICostTextMeshProUGUI.SetText(oneConfig.Cost.Number.ToString());
@@ -29,3 +29,4 @@ public static class ViewRedeemItemSystem
     #endregion
 }
 }
+

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -39,7 +39,7 @@ namespace XN
                 ObjectPoolManager.Instance.ReturnToPool(self.Mvp2Items);
                 self.Mvp2Items.Clear();
             }
-            UIManager.Instance.OpenWindow<ViewWorldRankMain>(new UIWindowData() { StringArgs1 = "Room2Rank", }).ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewWorldRankMain>(new UIWindowData() { StringArgs1 = "Room2Rank", }).Forget();
         }
 
         #endregion

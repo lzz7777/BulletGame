@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using cfg;
@@ -31,7 +31,7 @@ public static class ViewWorldRankMainSystem
     public static void UIBtnBackMainButtonOnClick(this ViewWorldRankMain self)
     {
 	    self.Close();
-	    // UIManager.Instance.OpenWindow<ViewMain>().ToCoroutine();
+	    // UIManager.Instance.OpenWindow<ViewMain>().Forget();
     }
     
     public static void UIButtonSelectModeButtonOnClick(this ViewWorldRankMain self)
@@ -47,7 +47,7 @@ public static class ViewWorldRankMainSystem
 	    // UI
 	    self.Close();
 	    // 再来
-	    RoomManager.Instance.OneMoreAgain().ToCoroutine();
+	    RoomManager.Instance.OneMoreAgain().Forget();
     }
     
     public static void UIRankFamousTopButtonOnClick(this ViewWorldRankMain self)
@@ -57,7 +57,7 @@ public static class ViewWorldRankMainSystem
     
     public static void UIToggleDetailFansButtonOnClick(this ViewWorldRankMain self)
     {
-	    UIManager.Instance.OpenWindow<ViewRankFanBadgePop>().ToCoroutine();
+	    UIManager.Instance.OpenWindow<ViewRankFanBadgePop>().Forget();
     }
     #endregion
     
@@ -236,7 +236,7 @@ public static class ViewWorldRankMainSystem
 
 	    // 兼容分页签下拉取Player List
 	    self.currToggle = rankType;
-	    self.RefreshScrollPlayerItems(rankType).ToCoroutine();
+	    self.RefreshScrollPlayerItems(rankType).Forget();
     }
     
     public static async UniTask RefreshScrollPlayerItems(this ViewWorldRankMain self, RankType currRankType)
@@ -372,3 +372,4 @@ public static class ViewWorldRankMainSystem
     #endregion
 }
 }
+

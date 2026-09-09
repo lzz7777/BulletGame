@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using cfg;
@@ -127,7 +127,7 @@ namespace XN
 
             // 兼容分页签下拉取Player List
             self.currToggle = rankType;
-            self.RefreshScrollPlayerItems(self.currToggle).ToCoroutine();
+            self.RefreshScrollPlayerItems(self.currToggle).Forget();
         }
 
         public static async UniTask RefreshScrollPlayerItems(this ViewRankLastSeason self, RankType currRankType)

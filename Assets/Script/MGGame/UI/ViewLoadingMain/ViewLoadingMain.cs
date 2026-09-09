@@ -1,4 +1,4 @@
-using Spine.Unity;
+﻿using Spine.Unity;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -43,8 +43,9 @@ public class ViewLoadingMain : UIPanelBase
 		{
 			Img.SetActiveScale(Img.name == constCc.Logo);
 		}
-		// YooAssetManager.Instance.LoadSpriteAsync(constCc.Logo, UITitleImage, true).ToCoroutine();
+		// YooAssetManager.Instance.LoadSpriteAsync(constCc.Logo, UITitleImage, true).Forget();
 	}
 	#endregion
 }
 }
+

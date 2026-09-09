@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace XN
@@ -38,7 +38,7 @@ namespace XN
 
             if (!string.IsNullOrEmpty(data.Frame))
             {
-                YooAssetManager.Instance.LoadSpriteAsync(data.Frame, self.UIHeadFrameImage).ToCoroutine();
+                YooAssetManager.Instance.LoadSpriteAsync(data.Frame, self.UIHeadFrameImage).Forget();
                 string frameEffectId = data.Frame.Replace("mrt_txk_", "fx_ui_UIHeadFrame_");
                 if (data.Frame == "none") return;
 

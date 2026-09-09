@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using cfg;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -108,7 +108,7 @@ namespace XN
                 {
                     self.DoEntranceShow(self.EntranceShowData.Dequeue());
                 }
-            }).ToCoroutine();
+            }).Forget();
 
             CheckStartGame();
 
@@ -123,7 +123,7 @@ namespace XN
         public static void UIRankButtonOnClick(this ViewBattleMain self)
         {
             UIManager.Instance.OpenWindow<ViewWorldRankMain>(new UIWindowData() { StringArgs1 = "World2Rank", })
-                .ToCoroutine();
+                .Forget();
         }
 
         /// <summary>
@@ -132,22 +132,22 @@ namespace XN
         /// <param name="self"></param>
         public static void UIDtaDSkinsButtonOnClick(this ViewBattleMain self)
         {
-            UIManager.Instance.OpenWindow<ViewRankLastSeason>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewRankLastSeason>().Forget();
         }
 
         public static void UIDataFamousButtonOnClick(this ViewBattleMain self)
         {
-            UIManager.Instance.OpenWindow<ViewFamousRankMain>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewFamousRankMain>().Forget();
         }
 
         public static void UIDataMilesButtonOnClick(this ViewBattleMain self)
         {
-            UIManager.Instance.OpenWindow<ViewRankMilesFuelPop>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewRankMilesFuelPop>().Forget();
         }
 
         public static void UIDataWeekSkinsButtonOnClick(this ViewBattleMain self)
         {
-            UIManager.Instance.OpenWindow<ViewRankWeekPop>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewRankWeekPop>().Forget();
         }
 
         public static void UIRankListButtonOnClick(this ViewBattleMain self)
@@ -267,7 +267,7 @@ namespace XN
             }
 
             VideoManager.Instance.PlayHalfScreenAsync(inputConf.InputAnimation,
-                () => { Debug.Log($"礼物 {inputConf.InputAnimation} 视频完了.........."); }).ToCoroutine();
+                () => { Debug.Log($"礼物 {inputConf.InputAnimation} 视频完了.........."); }).Forget();
         }
 
         private static void EntranceShowEvent(this ViewBattleMain self, string playerId)

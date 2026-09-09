@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using cfg;
 using cfg.Rank;
@@ -13,8 +13,8 @@ namespace XN
 
         public static void OnOpenSystem(this ViewRankMilesFuelPop self, UIWindowData uIWindowData)
         {
-            self.RefreshMiles().ToCoroutine();
-            self.InitFuelUI().ToCoroutine();
+            self.RefreshMiles().Forget();
+            self.InitFuelUI().Forget();
         }
 
         public static void OnCloseSystem(this ViewRankMilesFuelPop self)

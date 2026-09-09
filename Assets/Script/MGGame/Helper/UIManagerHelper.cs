@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -7,20 +7,20 @@ namespace XN
 {
     public static class UIManagerHelper
     {
-        public static void Close<T>(this T self) where T : UIPanelBase => self.CloseAsync<T>().ToCoroutine();
+        public static void Close<T>(this T self) where T : UIPanelBase => self.CloseAsync<T>().Forget();
 
         public static async UniTask CloseAsync<T>(this T self) where T : UIPanelBase =>
-            UIManager.Instance.CloseWindow<T>().ToCoroutine();
+            UIManager.Instance.CloseWindow<T>().Forget();
 
         public static void OpenWindow<T>(this UIPanelBase self, UIWindowData uIWindowData = null) where T : UIPanelBase =>
-            self.OpenWindowAsync<T>(uIWindowData).ToCoroutine();
+            self.OpenWindowAsync<T>(uIWindowData).Forget();
 
         public static async UniTask OpenWindowAsync<T>(this UIPanelBase self, UIWindowData uIWindowData = null) where T : UIPanelBase =>
             await UIManager.Instance.OpenWindow<T>();
 
         public static void OpenSubWindow<T>(this UIPanelBase self, RectTransform parentNode,
             UIWindowData uIWindowData = null) where T : UISubViewBase =>
-            self.OpenSubWindowAsync<T>(parentNode, uIWindowData).ToCoroutine();
+            self.OpenSubWindowAsync<T>(parentNode, uIWindowData).Forget();
 
         public static async UniTask OpenSubWindowAsync<T>(this UIPanelBase uIPanelBase, RectTransform parentNode,
             UIWindowData uIWindowData) where T : UISubViewBase
@@ -46,7 +46,7 @@ namespace XN
         }
 
         public static void CloseSubWindow<T>(this UIPanelBase uIPanelBase) where T : UISubViewBase =>
-            CloseSubWindowAsync(uIPanelBase, typeof(T).Name).ToCoroutine();
+            CloseSubWindowAsync(uIPanelBase, typeof(T).Name).Forget();
 
         public static async UniTask CloseSubWindowAsync(this UIPanelBase uIPanelBase, string typeName)
         {

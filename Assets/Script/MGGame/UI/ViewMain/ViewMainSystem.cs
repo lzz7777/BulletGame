@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using cfg;
@@ -59,12 +59,12 @@ namespace XN
         public static void UIButtonRankButtonOnClick(this ViewMain self)
         {
             // UIManager.Instance.OpenWindow<ViewWorldRankMain>();
-            UIManager.Instance.OpenWindow<ViewWorldRankMain>(new UIWindowData() { StringArgs1 = "World2Rank", }).ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewWorldRankMain>(new UIWindowData() { StringArgs1 = "World2Rank", }).Forget();
         }
 
         public static void UIButtonMapButtonOnClick(this ViewMain self)
         {
-            self.RefreshMapToggle().ToCoroutine();
+            self.RefreshMapToggle().Forget();
             self.UIMapNodeButton.gameObject.SetActive(true);
         }
 
@@ -81,7 +81,7 @@ namespace XN
 // #endif
             // LocalLog.UploadServer();
             
-            UIManager.Instance.OpenWindow<ViewLoopListTest>().ToCoroutine();
+            UIManager.Instance.OpenWindow<ViewLoopListTest>().Forget();
         }
 
         public static void UIToggleRoomOnValueChanged(this ViewMain self, bool value, FightRoomType roomType)
@@ -116,7 +116,7 @@ namespace XN
             if (!value) return;
             self.currRoomId = Index;
             // self.GetConfigRoomoId();
-            self.RefreshMap().ToCoroutine();
+            self.RefreshMap().Forget();
         }
 
         #endregion
@@ -192,7 +192,7 @@ namespace XN
                     {
                         // SaveData.SetInt(SaveData.Key.MapSceneId, id);
                         self.SetSceneInfoCompSceneId(id);
-                        self.RefreshMap().ToCoroutine();
+                        self.RefreshMap().Forget();
                     }
                 };
                 obj.GetComponent<ViewMapToggleItem>().OnRefresh(itemData);
@@ -224,7 +224,7 @@ namespace XN
         {
             var currChannel = TotalConfigManager.ConfigManager.ConstConfigCategory.CurrChannel;
             var constCc = TotalConfigManager.ConfigManager.LoginInfoConfigCategory.GetOrDefault(currChannel);
-            YooAssetManager.Instance.LoadSpriteAsync(constCc.Logo, self.UITitleImage, true).ToCoroutine();
+            YooAssetManager.Instance.LoadSpriteAsync(constCc.Logo, self.UITitleImage, true).Forget();
         }
 
         #endregion

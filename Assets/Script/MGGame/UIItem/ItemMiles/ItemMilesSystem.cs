@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace XN
@@ -12,8 +12,8 @@ public static class ItemMilesSystem
 		self.UIRankIndexTextMeshProUGUI.text = data.rankIndex.ToString();
 		self.UINameText.text = data.name;
 		self.UIScoreTextMeshProUGUI.text = $"{UIManagerHelper.UIMathCeil(data.score)}米";
-		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetAvatarUrl(data.headIcon), self.UIHeadIconImage).ToCoroutine();
-		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetIconOrNone(data.RwdSkin), self.UIIconImage).ToCoroutine();
+		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetAvatarUrl(data.headIcon), self.UIHeadIconImage).Forget();
+		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetIconOrNone(data.RwdSkin), self.UIIconImage).Forget();
 	}
 
 	#endregion
@@ -28,3 +28,4 @@ public static class ItemMilesSystem
     #endregion
 }
 }
+

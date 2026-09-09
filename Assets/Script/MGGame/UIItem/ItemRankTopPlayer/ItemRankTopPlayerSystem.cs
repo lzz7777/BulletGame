@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using cfg.Item;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -16,7 +16,7 @@ public static class ItemRankTopPlayerSystem
 		self.UIHeadBgBtn.enabled = data.OnClick != null;
 		self.UINameTextMeshProUGUI.text = data.Name;
 		self.UINameTxetText.text = data.Name;
-		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetAvatarUrl(data.AvatarUrl), self.UIHeadIconImage).ToCoroutine();
+		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetAvatarUrl(data.AvatarUrl), self.UIHeadIconImage).Forget();
 		
 		self.UIHeadBgImage.transform.localScale = Vector3.one * data.Scale;
 		// Star 星级
@@ -29,13 +29,13 @@ public static class ItemRankTopPlayerSystem
 		self.UIHeadFrameImage.enabled = data.IsShowFrame;
 		if (data.IsShowFrame)
 		{
-			YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetIconOrNone(oneStarInfo.FrameRes),self.UIHeadFrameImage).ToCoroutine();
+			YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetIconOrNone(oneStarInfo.FrameRes),self.UIHeadFrameImage).Forget();
 		}
 
 		// Bg + Fg
-		YooAssetManager.Instance.LoadSpriteAsync(oneStarInfo.StarBGRes,self.UIHeadBgImage,true).ToCoroutine();
+		YooAssetManager.Instance.LoadSpriteAsync(oneStarInfo.StarBGRes,self.UIHeadBgImage,true).Forget();
 
-		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetIconOrNone(oneStarInfo.StarUpRes),self.UIHeadFgImage,true).ToCoroutine();
+		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetIconOrNone(oneStarInfo.StarUpRes),self.UIHeadFgImage,true).Forget();
 
 	}
 
@@ -57,3 +57,4 @@ public static class ItemRankTopPlayerSystem
     #endregion
 }
 }
+

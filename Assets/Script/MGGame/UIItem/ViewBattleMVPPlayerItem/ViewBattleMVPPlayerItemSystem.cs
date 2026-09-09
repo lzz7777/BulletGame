@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 
 namespace XN
 {
@@ -10,7 +10,7 @@ public static class ViewBattleMVPPlayerItemSystem
 	{
 		// self.UINameTextMeshProUGUI.SetText(data.Name);
 		self.UINameText.text = data.Name;
-		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetAvatarUrl(data.AvatarUrl), self.UIHeadIconImage).ToCoroutine();
+		YooAssetManager.Instance.LoadSpriteAsync(ResHelper.GetAvatarUrl(data.AvatarUrl), self.UIHeadIconImage).Forget();
 		self.UIScoreTextMeshProUGUI.text = $"积分<color=#f3ec32><size=24>{UIManagerHelper.UIMathCeil(data.Score)}</size></color>";
 		self.UIScoreAddTextMeshProUGUI.text = data.ScoreAdd > 0 ? $"抢{UIManagerHelper.UIMathCeil(data.ScoreAdd)}" :"";
 		string formStr = "粉丝<color=#f3ec32><size=24>{0}</size></color>";
@@ -40,3 +40,4 @@ public static class ViewBattleMVPPlayerItemSystem
     #endregion
 }
 }
+
