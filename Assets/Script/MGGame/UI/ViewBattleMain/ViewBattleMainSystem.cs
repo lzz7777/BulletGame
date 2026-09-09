@@ -196,6 +196,8 @@ namespace XN
             self.RefreshEvent();
         }
 
+        private static readonly System.Text.StringBuilder _tempTimeBuilder = new System.Text.StringBuilder(16);
+
         private static void OnUpdateRoom(this ViewBattleMain self)
         {
             var roomUnit = RoomHelper.GetRoomUnit();
@@ -215,12 +217,17 @@ namespace XN
 
                 int sec = (int)rts;
                 int ms = (int)(rts * 100) % 100;
-                self.UITakeCrownText.text = $"{sec}.{ms:D2}";
+                
+                _tempTimeBuilder.Clear();
+                _tempTimeBuilder.Append(sec).Append('.').Append(ms.ToString("D2"));
+                self.UITakeCrownText.text = _tempTimeBuilder.ToString();
                 return;
             }
 
             var dateTime = TimeHelper.Time2DateTime((int)rts);
-            self.UITimeTextMeshProUGUI.text = $"{dateTime.Minute:D2}:{dateTime.Second:D2}";
+            _tempTimeBuilder.Clear();
+            _tempTimeBuilder.Append(dateTime.Minute.ToString("D2")).Append(':').Append(dateTime.Second.ToString("D2"));
+            self.UITimeTextMeshProUGUI.text = _tempTimeBuilder.ToString();
         }
 
         private static void RefreshEvent(this ViewBattleMain self)

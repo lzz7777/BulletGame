@@ -404,18 +404,24 @@ namespace XN
 
                 buffInfoComp.EffectDeviceGroup.TryGetValue(0, out var effectGroup1);
                 buffInfoComp.EffectDeviceGroup.TryGetValue(self.GetCarDeviceId(), out var effectGroup2);
-                List<Dictionary<int, int>> effectGroups = new() { effectGroup1, effectGroup2 };
-                foreach (var effectGroup in effectGroups)
+                
+                if (effectGroup1 != null)
                 {
-                    if (effectGroup == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (var (buffEffectId, buffEffectSkin) in effectGroup)
+                    foreach (var (buffEffectId, buffEffectSkin) in effectGroup1)
                     {
                         self.EffectGroup.TryGetValue(buffEffectId, out int effectSkin);
-
+                        if (buffEffectSkin > effectSkin)
+                        {
+                            self.EffectGroup[buffEffectId] = buffEffectSkin;
+                        }
+                    }
+                }
+                
+                if (effectGroup2 != null)
+                {
+                    foreach (var (buffEffectId, buffEffectSkin) in effectGroup2)
+                    {
+                        self.EffectGroup.TryGetValue(buffEffectId, out int effectSkin);
                         if (buffEffectSkin > effectSkin)
                         {
                             self.EffectGroup[buffEffectId] = buffEffectSkin;

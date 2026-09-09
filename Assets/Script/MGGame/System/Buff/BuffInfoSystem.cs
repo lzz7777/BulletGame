@@ -88,8 +88,9 @@ namespace XN
         /// <param name="self"></param>
         public static void CheckFunction(this BuffInfoComponent self)
         {
-            foreach (var functionData in self.Functions)
+            for (int i = 0; i < self.Functions.Count; i++)
             {
+                var functionData = self.Functions[i];
                 if (functionData.TimeQueue.Count > 0 && self.Time >= functionData.TimeQueue.Peek())
                 {
                     functionData.TimeQueue.Dequeue();
@@ -120,8 +121,9 @@ namespace XN
             float lastMileage = carInfoComp.Mileage;
             float lastShield = carInfoComp.Shield;
 
-            foreach (var buffChange in funcConf.ChangeValue)
+            for (int i = 0; i < funcConf.ChangeValue.Count; i++)
             {
+                var buffChange = funcConf.ChangeValue[i];
                 bool canDo =
                     !TotalConfigManager.ConfigManager.BuffMutexConfigCategory.MutexDic[carState][buffChange.Type];
                 if (!canDo)
@@ -129,7 +131,12 @@ namespace XN
                     continue;
                 }
 
-                Debug.Log($"执行 {buffChange.Type} {buffChange.Value}");
+#if UNITY_EDITOR
+                if (Debug.logLevel <= ShowLogLevel.Debug)
+                {
+                    Debug.Log($"执行 {buffChange.Type} {buffChange.Value}");
+                }
+#endif
 
                 float changeValue = buffChange.Value;
 
@@ -215,8 +222,9 @@ namespace XN
         {
             var carInfoComp = self.Entity.GetParent().GetComponent<CarInfoComponent>();
 
-            foreach (var mutexe in self.Mutexes)
+            for (int i = 0; i < self.Mutexes.Count; i++)
             {
+                var mutexe = self.Mutexes[i];
                 switch (mutexe.Type)
                 {
                     case ChangeType.SpeedAddPct:
@@ -269,8 +277,9 @@ namespace XN
             var carViewComp = carUnit.GetComponent<CarViewComponent>();
 
             //整理数据，载具同特效id，存特效皮肤id大的
-            foreach (var buffEffect in funcConf.BuffEffect)
+            for (int i = 0; i < funcConf.BuffEffect.Count; i++)
             {
+                var buffEffect = funcConf.BuffEffect[i];
                 //一次性特效
                 if (EffectHelper.JudgeDisposableEffect(buffEffect.EffectId, buffEffect.EffectSkin))
                 {
@@ -278,8 +287,13 @@ namespace XN
                 }
 
                 //可替换特效
-                self.EffectDeviceGroup.TryAdd(buffEffect.DeviceId, new());
-                self.EffectDeviceGroup.TryGetValue(buffEffect.DeviceId, out var effectGroup);
+                if (!self.EffectDeviceGroup.TryGetValue(buffEffect.DeviceId, out var effectGroup))
+                {
+                    effectGroup = UnityEngine.Pool.DictionaryPool<int, int>.Get();
+                    // 确保内层字典也有足够的初始容量，防止冷启动时 set_Item 产生 GC
+                    effectGroup.EnsureCapacity(10);
+                    self.EffectDeviceGroup.Add(buffEffect.DeviceId, effectGroup);
+                }
 
                 effectGroup.TryGetValue(buffEffect.EffectId, out var effectSkin);
                 effectGroup[buffEffect.EffectId] = Mathf.Max(effectSkin, buffEffect.EffectSkin);
@@ -287,8 +301,9 @@ namespace XN
 
             //特效生成
             var effects = BuffHelper.GetBuffEffects(funcId, carInfoComp.GetCarDeviceId());
-            foreach (var effect in effects)
+            for (int i = 0; i < effects.Count; i++)
             {
+                var effect = effects[i];
                 //一次性特效
                 if (EffectHelper.JudgeDisposableEffect(effect.EffectId, effect.EffectSkin))
                 {

@@ -98,7 +98,10 @@ namespace XN
         {
             foreach (var (playerId, saveQueue) in _saveInputData)
             {
-                _inputData.TryAdd(playerId, new());
+                if (!_inputData.TryGetValue(playerId, out var _))
+                {
+                    _inputData.Add(playerId, new ());
+                }
                 _inputData[playerId] = CalculateHelper.MergeQueues(_inputData[playerId], saveQueue);
             }
         }
@@ -298,7 +301,10 @@ namespace XN
             {
                 StartGamePlayerJoin(playerId, inputId);
 
-                _saveInputData.TryAdd(playerId, new Queue<InputCmdData>());
+                if (!_saveInputData.TryGetValue(playerId, out var _))
+                {
+                    _saveInputData.Add(playerId, new());
+                }
                 _saveInputData[playerId].Enqueue(new InputCmdData()
                 {
                     PlayerId = playerId,
@@ -308,7 +314,10 @@ namespace XN
                 return;
             }
 
-            _inputData.TryAdd(playerId, new Queue<InputCmdData>());
+            if (!_inputData.TryGetValue(playerId,  out var _))
+            {
+                _inputData.Add(playerId, new());
+            }
             _inputData[playerId].Enqueue(new InputCmdData()
             {
                 PlayerId = playerId,
@@ -889,7 +898,11 @@ namespace XN
             var inviCarInfoComp = EntityManager.Instance.GetEntityById(inviPlayerInfoComp.CarId)
                 .GetComponent<CarInfoComponent>();
             string content = $"加{inviCarInfoComp.Name}";
-            _inputData.TryAdd(secPlayerId, new Queue<InputCmdData>());
+
+            if (!_inputData.TryGetValue(secPlayerId, out var _))
+            {
+                _inputData.Add(secPlayerId, new());
+            }
             _inputData[secPlayerId].Enqueue(new InputCmdData()
             {
                 PlayerId = secPlayerId,

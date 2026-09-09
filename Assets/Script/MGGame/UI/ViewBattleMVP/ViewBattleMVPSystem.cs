@@ -54,10 +54,10 @@ namespace XN
         {
             // var roomPlayersMap = RoomHelper.GetPlayers();
             // string[] playerIDsold = RoomHelper.GetPlayers().Keys.ToArray();
-            string[] playerIDs = RoomHelper.GetPlayerIdsInCar();
+            var playerIDs = RoomHelper.GetPlayerIdsInCar();
             // Debug.Log($"{playerIDsold.Length} ===> {playerIDs.Length}");
 
-            List<RankDataRet> DatRankList = await DataManager.GetRankIndexInfo(cfg.RankType.WeekRank, playerIDs);	// 服务器 周榜排名
+            List<RankDataRet> DatRankList = await DataManager.GetRankIndexInfo(cfg.RankType.WeekRank, playerIDs.ToArray());	// 服务器 周榜排名
 
             // 车队Top3
             List<long> carIds = RoomHelper.GetCars();
@@ -179,7 +179,7 @@ namespace XN
                 })
                 .ToList();
             
-            List<RankDataRet> mileDatRankList = await DataManager.GetRankIndexInfo(cfg.RankType.Milestone, playerIDs);	// 服务器 周榜排名
+            List<RankDataRet> mileDatRankList = await DataManager.GetRankIndexInfo(cfg.RankType.Milestone, playerIDs.ToArray());	// 服务器 周榜排名
 
             ObjectPoolManager.Instance.ReturnToPool(self.PlayerItems);
             self.PlayerItems.Clear();

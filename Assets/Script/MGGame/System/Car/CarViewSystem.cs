@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using cfg;
 using Cysharp.Threading.Tasks;
@@ -276,6 +276,8 @@ namespace XN
             await self.RefreshTrackLight();
         }
 
+        private static readonly List<int> _tempInvalidEffects = new List<int>(16);
+
         /// <summary>
         /// 更新特效皮肤
         /// </summary>
@@ -290,16 +292,16 @@ namespace XN
             var effectGroup = self.Entity.GetComponent<CarInfoComponent>().GetEffectGroup();
 
             //回收失效特效
-            List<int> invalidEffects = new();
+            _tempInvalidEffects.Clear();
             foreach (var (effectId, effectData) in self.EffectGroup)
             {
                 if (!effectGroup.ContainsKey(effectId))
                 {
-                    invalidEffects.Add(effectId);
+                    _tempInvalidEffects.Add(effectId);
                 }
             }
 
-            foreach (var effectId in invalidEffects)
+            foreach (var effectId in _tempInvalidEffects)
             {
                 var effectData = self.EffectGroup[effectId];
 

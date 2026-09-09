@@ -79,7 +79,12 @@ namespace XN
         public static void AddMaximumRangeData(this PlayerItemComponent self)
         {
             var maximumRange = self.GetItemNum(GameConst.KillCount) + 1;
-            Debug.Log($"AddMaximumRangeData:{maximumRange}");
+#if UNITY_EDITOR
+            if (Debug.logLevel <= ShowLogLevel.Debug)
+            {
+                Debug.Log($"AddMaximumRangeData:{maximumRange}");
+            }
+#endif
             self.SetItemNum(GameConst.KillCount, maximumRange);
         }
     }

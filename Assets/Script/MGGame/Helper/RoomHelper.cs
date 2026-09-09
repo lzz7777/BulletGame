@@ -23,12 +23,25 @@ namespace XN
 
         public static Dictionary<string, long> GetPlayers() => GetRoomInfoComponent().PlayerIds;
 
+        private static readonly List<string> _tempPlayerIdsInCar = new List<string>(128);
+
         /// <summary>
         /// 获取所有加入成功游戏的 本局人员ID
         /// </summary>
         /// <returns></returns>
-        public static string[] GetPlayerIdsInCar() => GetRoomInfoComponent().PlayerIds.Keys
-            .Where(playerId => GetRoomInfoComponent().GetPlayerInfoComponent(playerId).CarId != 0).ToArray();
+        public static List<string> GetPlayerIdsInCar()
+        {
+            var roomInfo = GetRoomInfoComponent();
+            _tempPlayerIdsInCar.Clear();
+            foreach (var playerId in roomInfo.PlayerIds.Keys)
+            {
+                if (roomInfo.GetPlayerInfoComponent(playerId).CarId != 0)
+                {
+                    _tempPlayerIdsInCar.Add(playerId);
+                }
+            }
+            return _tempPlayerIdsInCar;
+        }
 
         public static Dictionary<string, UserInfo> GetUserInfos() => GetRoomInfoComponent().UserInfos;
 
@@ -371,13 +384,16 @@ namespace XN
             return targetCarId;
         }
 
+        private static readonly List<long> _tempPlayerCars = new List<long>(16);
+
         /// <summary>
         /// 获取有人车队
         /// </summary>
         /// <returns></returns>
         public static List<long> GetPlayerCars()
         {
-            var carIds = new List<long>();
+            var carIds = _tempPlayerCars;
+            carIds.Clear();
 
             foreach (var carId in GetCars())
             {

@@ -32,11 +32,11 @@ namespace XN
         }
         // ====================================================================================
 
-        private Dictionary<long, Entity> _entitiesDic { set; get; } = new(5000);
+        private Dictionary<long, Entity> _entitiesDic { set; get; } = new(4096);
         private Dictionary<Type, List<ComponentBase>> _componentCache { set; get; } = new(64);
         private Dictionary<EntityType, List<long>> _entityTypeDic { set; get; } = new(32);
         
-        private Dictionary<Type, Stack<object>> _objectPool { set; get; } = new(64);
+        private Dictionary<Type, Stack<object>> _objectPool { set; get; } = new(1024);
 
         private struct UpdateSystemInfo
         {
@@ -196,8 +196,11 @@ namespace XN
 
         public T GetFromPool<T>() where T : new()
         {
-            _objectPool.TryAdd(typeof(T), new());
-            var poolData = _objectPool[typeof(T)];
+            if (!_objectPool.TryGetValue(typeof(T), out var poolData))
+            {
+                poolData = new Stack<object>();
+                _objectPool[typeof(T)] = poolData;
+            }
 
             if (poolData.Count > 0)
             {
@@ -209,8 +212,11 @@ namespace XN
 
         public void ReturnToPool<T>(T t)
         {
-            _objectPool.TryAdd(typeof(T), new());
-            var poolData = _objectPool[typeof(T)];
+            if (!_objectPool.TryGetValue(typeof(T), out var poolData))
+            {
+                poolData = new Stack<object>();
+                _objectPool[typeof(T)] = poolData;
+            }
 
             poolData.Push(t);
         }

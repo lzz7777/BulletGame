@@ -139,73 +139,11 @@ namespace XN
         public GameObject GetFromPoolSync<T>(Transform parentRoot) => GetFromPoolSync(typeof(T).Name, parentRoot);
 
         /// <summary>
-        /// 新增的完全同步获取接口，彻底消除 UniTask 状态机和 Awaiter 产生的 GC
+        /// 核心出池逻辑，提取公共代码以复用
         /// </summary>
-        /// <param name="tag"></param>
-        /// <param name="parentRoot"> null 不设置父类 必须提前预加载 </param>
-        /// <param name="prefabType"></param>
-        /// <returns></returns>
-        public GameObject GetFromPoolSync(string tag, Transform parentRoot, PrefabType prefabType = PrefabType.None)
+        private GameObject InternalDequeue(string tag, Transform parentRoot, PoolData poolData)
         {
-            // 修复 TryAdd(tag, new PoolData()) 导致的严重 GC Alloc 泄漏
-            if (!_poolDictionary.TryGetValue(tag, out var poolData))
-            {
-                poolData = new PoolData { PrefabType = prefabType };
-                _poolDictionary.Add(tag, poolData);
-            }
-
-            // 如果对象池为空，可以动态扩展（这里简单处理：重新创建一个对象）
-            if (poolData.GoQueue.Count == 0)
-            {
-                goMaxNumDic.TryGetValue(tag, out var goMaxNum);
-                if (goMaxNum == -1)
-                    return null;
-
-                if (goMaxNum != 0)
-                {
-                    //个别限制
-                    if (poolData.Count >= goMaxNum)
-                    {
-                        // Debug.LogError(tag + " : num is max");
-                        return null;
-                    }
-                }
-
-                if (poolData.PrefabType == PrefabType.Effect)
-                {
-                    if (commonGoMaxNum == -1)
-                        return null;
-
-                    if (commonGoMaxNum != 0)
-                    {
-                        //通用限制
-                        if (poolData.Count >= commonGoMaxNum)
-                        {
-                            // Debug.LogError(tag + " : num is max");
-                            return null;
-                        }
-                    }
-                }
-
-                // 完全同步实例化
-
-                if (!parentRoot)
-                {
-                    Debug.LogError("parentRoot is null");
-                }
-
-                var newObj = YooAssetManager.Instance.InstantiateSync(tag, parentRoot);
-                newObj.transform.localScale = Vector3.zero;
-                // newObj.SetActive(false);
-
-                _instanceIdToTag[newObj.GetInstanceID()] = tag; // 记录映射，消除 Return 时的 GC
-
-                poolData.GoQueue.Enqueue(newObj);
-                poolData.Count++;
-            }
-
             GameObject objectToSpawn = poolData.GoQueue.Dequeue();
-            // objectToSpawn.SetActive(true); // 激活对象
 
             if (parentRoot)
                 objectToSpawn.transform.SetParent(parentRoot);
@@ -214,6 +152,74 @@ namespace XN
             objectToSpawn.transform.localScale = Vector3.one;
 
             return objectToSpawn;
+        }
+
+        /// <summary>
+        /// 同步获取（仅当预热过，或者不需要等待 YooAsset 加载时使用）
+        /// 彻底消除 UniTask 状态机和 Awaiter 产生的 GC
+        /// </summary>
+        public GameObject GetFromPoolSync(string tag, Transform parentRoot, PrefabType prefabType = PrefabType.None)
+        {
+            if (!_poolDictionary.TryGetValue(tag, out var poolData))
+            {
+                poolData = new PoolData { PrefabType = prefabType };
+                _poolDictionary.Add(tag, poolData);
+            }
+
+            if (poolData.GoQueue.Count == 0)
+            {
+                goMaxNumDic.TryGetValue(tag, out var goMaxNum);
+                if (goMaxNum == -1) return null;
+                if (goMaxNum != 0 && poolData.Count >= goMaxNum) return null;
+
+                if (poolData.PrefabType == PrefabType.Effect)
+                {
+                    if (commonGoMaxNum == -1) return null;
+                    if (commonGoMaxNum != 0 && poolData.Count >= commonGoMaxNum) return null;
+                }
+
+                if (!parentRoot) Debug.LogError("parentRoot is null");
+
+                var newObj = YooAssetManager.Instance.InstantiateSync(tag, parentRoot);
+                newObj.transform.localScale = Vector3.zero;
+
+                _instanceIdToTag[newObj.GetInstanceID()] = tag;
+
+                poolData.GoQueue.Enqueue(newObj);
+                poolData.Count++;
+            }
+
+            return InternalDequeue(tag, parentRoot, poolData);
+        }
+
+        /// <summary>
+        /// 异步获取（如果没有预热，将等待 YooAsset 异步加载完成）
+        /// 解决未预热直接滑动导致的 InstantiateSync 卡顿问题
+        /// </summary>
+        public async UniTask<GameObject> GetFromPoolAsync(string tag, Transform parentRoot, PrefabType prefabType = PrefabType.None)
+        {
+            if (!_poolDictionary.TryGetValue(tag, out var poolData))
+            {
+                poolData = new PoolData { PrefabType = prefabType };
+                _poolDictionary.Add(tag, poolData);
+            }
+
+            if (poolData.GoQueue.Count == 0)
+            {
+                if (!parentRoot) Debug.LogError("parentRoot is null");
+
+                // 使用异步加载，不卡主线程
+                var newObj = await YooAssetManager.Instance.InstantiateAsync(tag, parentRoot);
+                if (!newObj) return null;
+
+                newObj.transform.localScale = Vector3.zero;
+                _instanceIdToTag[newObj.GetInstanceID()] = tag;
+
+                poolData.GoQueue.Enqueue(newObj);
+                poolData.Count++;
+            }
+
+            return InternalDequeue(tag, parentRoot, poolData);
         }
 
         public void ReturnToPool(List<GameObject> gos)

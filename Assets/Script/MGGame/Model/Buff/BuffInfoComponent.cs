@@ -36,7 +36,7 @@ namespace XN
         /// <summary>
         /// 替换特效组 (DeviceId, (EffectId, EffectSkin))
         /// </summary>
-        public Dictionary<int, Dictionary<int, int>> EffectDeviceGroup = new();
+        public Dictionary<int, Dictionary<int, int>> EffectDeviceGroup = new(10);
         
         public override void OnCreate()
         {
@@ -51,9 +51,23 @@ namespace XN
             Time = default;
             PlayerId = default;
             IsDiscard = default;
-            Functions.Clear();
-            Mutexes.Clear();
-            EffectDeviceGroup.Clear();
+            
+            // 将内部的字典缓存池化，避免垃圾回收
+            if (EffectDeviceGroup != null)
+            {
+                foreach (var kvp in EffectDeviceGroup)
+                {
+                    if (kvp.Value != null)
+                    {
+                        kvp.Value.Clear();
+                        UnityEngine.Pool.DictionaryPool<int, int>.Release(kvp.Value);
+                    }
+                }
+                EffectDeviceGroup.Clear();
+            }
+            
+            Functions?.Clear();
+            Mutexes?.Clear();
         }
     }
 }
