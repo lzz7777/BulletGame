@@ -27,8 +27,21 @@ namespace XN
             public int DataIndex;
         }
 
+        private struct RefreshTask
+        {
+            public ItemInfo ItemInfo;
+            public int DataIndex;
+        }
+
         private List<ItemInfo> _itemList = new();
         private int _totalCount;
+        
+        // 分帧加载队列
+        private Queue<RefreshTask> _refreshQueue = new();
+        // 开启分帧加载机制（默认开启）
+        [SerializeField] private bool _enableTimeSlicing = true;
+        // 每帧最大耗时预算(秒)，默认2ms
+        [SerializeField] private float _timeBudgetPerFrame = 0.002f;
 
         // 缓存数据
         private int _instantiateCount; // 实际实例化的数量
@@ -109,6 +122,7 @@ namespace XN
         public void ClearData()
         {
             _itemDataList.Clear();
+            _refreshQueue.Clear();
         }
 
         /// <summary>
@@ -119,6 +133,117 @@ namespace XN
         {
             item = new();
             _itemDataList.Add(item);
+        }
+
+        /// <summary>
+        /// 尾部新增数据（O(1) 增量更新）
+        /// </summary>
+        public void AppendData(UIItemDataBase item)
+        {
+            _itemDataList.Add(item);
+            _totalCount = _itemDataList.Count;
+
+            // 更新 Content 高度
+            int totalRowCount = Mathf.CeilToInt((float)_totalCount / _columnCount);
+            float totalHeight = totalRowCount * (_itemHeight + _spacing.y) - _spacing.y;
+            if (totalHeight < 0) totalHeight = 0;
+            _content.sizeDelta = new Vector2(_content.sizeDelta.x, totalHeight);
+
+            // 补充加载：如果当前数据量还不足以填满视口（或刚够），触发滚动更新以显示新条目
+            if (_totalCount <= _instantiateCount)
+            {
+                RefreshDisplay();
+            }
+        }
+
+        /// <summary>
+        /// 局部数据更新（O(1) 穿透刷新，高度不变）
+        /// </summary>
+        public void UpdateDataAt(int index)
+        {
+            if (index < 0 || index >= _totalCount) return;
+            if (!_isInit || _itemList.Count == 0) return;
+
+            int itemIndex = index % _instantiateCount;
+            var itemInfo = _itemList[itemIndex];
+
+            // 仅当该数据当前正在视口中显示时，才定向触发刷新
+            if (itemInfo.DataIndex == index && itemInfo.Go.activeSelf)
+            {
+                if (_enableTimeSlicing)
+                {
+                    _refreshQueue.Enqueue(new RefreshTask 
+                    { 
+                        ItemInfo = itemInfo, 
+                        DataIndex = index 
+                    });
+                    itemInfo.UIItem.ShowLoadingState();
+                }
+                else
+                {
+                    itemInfo.UIItem.Refresh(_itemDataList[index]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 中间插入数据 (O(N-k))
+        /// </summary>
+        public void InsertDataAt(int index, UIItemDataBase item)
+        {
+            if (index < 0 || index > _totalCount) return;
+
+            _itemDataList.Insert(index, item);
+            _totalCount = _itemDataList.Count;
+
+            // 更新 Content 高度
+            int totalRowCount = Mathf.CeilToInt((float)_totalCount / _columnCount);
+            float totalHeight = totalRowCount * (_itemHeight + _spacing.y) - _spacing.y;
+            if (totalHeight < 0) totalHeight = 0;
+            _content.sizeDelta = new Vector2(_content.sizeDelta.x, totalHeight);
+
+            ResetVisibleItemsIndexAndRefresh();
+        }
+
+        /// <summary>
+        /// 移除数据 (O(N-k))
+        /// </summary>
+        public void RemoveDataAt(int index)
+        {
+            if (index < 0 || index >= _totalCount) return;
+
+            _itemDataList.RemoveAt(index);
+            _totalCount = _itemDataList.Count;
+
+            // 更新 Content 高度
+            int totalRowCount = Mathf.CeilToInt((float)_totalCount / _columnCount);
+            float totalHeight = totalRowCount * (_itemHeight + _spacing.y) - _spacing.y;
+            if (totalHeight < 0) totalHeight = 0;
+            _content.sizeDelta = new Vector2(_content.sizeDelta.x, totalHeight);
+
+            ResetVisibleItemsIndexAndRefresh();
+        }
+
+        private void ResetVisibleItemsIndexAndRefresh()
+        {
+            if (!_isInit) return;
+            
+            // 强制所有现有缓存槽位的 DataIndex 失效，让 OnScroll 重新排版
+            for (int i = 0; i < _itemList.Count; i++)
+            {
+                var info = _itemList[i];
+                info.DataIndex = -1;
+                
+                // 强制隐藏所有节点，让 OnScroll 重新分配显示
+                if (info.Go.activeSelf)
+                {
+                    info.Go.SetActive(false);
+                }
+                
+                _itemList[i] = info;
+            }
+            
+            RefreshDisplay();
         }
 
         /// <summary>
@@ -202,12 +327,26 @@ namespace XN
                         float posY = -row * (_itemHeight + _spacing.y);
                         
                         itemInfo.Rect.anchoredPosition = new Vector2(posX, posY);
-
-                        // 刷新UI
-                        itemInfo.UIItem.Refresh(_itemDataList[dataIndex]);
-
                         // 更新记录（struct直接覆盖，0 GC）
                         itemInfo.DataIndex = dataIndex;
+                        
+                        if (_enableTimeSlicing)
+                        {
+                            // 加入分帧刷新队列
+                            _refreshQueue.Enqueue(new RefreshTask 
+                            { 
+                                ItemInfo = itemInfo, 
+                                DataIndex = dataIndex 
+                            });
+                            // 显示加载状态防串位
+                            itemInfo.UIItem.ShowLoadingState();
+                        }
+                        else
+                        {
+                            // 传统同步刷新UI
+                            itemInfo.UIItem.Refresh(_itemDataList[dataIndex]);
+                        }
+
                         _itemList[itemIndex] = itemInfo;
                     }
                     else if (!itemInfo.Go.activeSelf)
@@ -245,7 +384,33 @@ namespace XN
                 _itemList.Clear();
             }
 
+            _refreshQueue.Clear();
             _isInit = false;
+        }
+
+        private void Update()
+        {
+            if (!_enableTimeSlicing || _refreshQueue.Count == 0) return;
+
+            float startTime = Time.realtimeSinceStartup;
+
+            while (_refreshQueue.Count > 0)
+            {
+                var task = _refreshQueue.Dequeue();
+                
+                // 防御性校验：快速滑动时，该UI可能已经被重新分配给别的数据索引
+                // 只有队列里的索引和UI实际当前绑定的索引一致时，才执行耗时的刷新逻辑
+                if (task.ItemInfo.DataIndex == task.DataIndex && task.DataIndex < _itemDataList.Count)
+                {
+                    task.ItemInfo.UIItem.Refresh(_itemDataList[task.DataIndex]);
+                }
+
+                // 耗时超过预算，中断循环，剩余任务留到下一帧
+                if (Time.realtimeSinceStartup - startTime > _timeBudgetPerFrame)
+                {
+                    break;
+                }
+            }
         }
     }
 }

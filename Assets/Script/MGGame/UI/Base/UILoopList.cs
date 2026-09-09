@@ -145,6 +145,149 @@ namespace XN
         }
 
         /// <summary>
+        /// 尾部新增数据（O(1) 增量更新，适用于聊天追加）
+        /// </summary>
+        public void AppendData(UIItemDataBase item, float? height = null)
+        {
+            _itemDataList.Add(item);
+            _totalCount = _itemDataList.Count;
+
+            if (_itemHeights != null && height.HasValue)
+            {
+                _itemHeights.Add(height.Value);
+                float currentY = _prefixSumHeights[_prefixSumHeights.Count - 1] + height.Value + _spacing;
+                _prefixSumHeights.Add(currentY);
+            }
+
+            // 更新 Content 高度
+            float totalHeight = 0;
+            if (_itemHeights != null && _itemHeights.Count == _totalCount)
+            {
+                totalHeight = _totalCount > 0 ? _prefixSumHeights[_totalCount] - _spacing : 0;
+            }
+            else
+            {
+                totalHeight = _totalCount * (_itemHeight + _spacing) - _spacing;
+            }
+            if (totalHeight < 0) totalHeight = 0;
+            _content.sizeDelta = new Vector2(_content.sizeDelta.x, totalHeight);
+
+            // 补充加载：如果当前数据量还不足以填满视口（或刚够），触发滚动更新以显示新条目
+            if (_totalCount <= _instantiateCount)
+            {
+                RefreshDisplay();
+            }
+        }
+
+        /// <summary>
+        /// 局部数据更新（O(1) 穿透刷新，高度不变）
+        /// </summary>
+        public void UpdateDataAt(int index)
+        {
+            if (index < 0 || index >= _totalCount) return;
+            if (!_isInit || _itemList.Count == 0) return;
+
+            int itemIndex = index % _instantiateCount;
+            var itemInfo = _itemList[itemIndex];
+
+            // 仅当该数据当前正在视口中显示时，才定向触发刷新
+            if (itemInfo.DataIndex == index && itemInfo.Go.activeSelf)
+            {
+                itemInfo.UIItem.Refresh(_itemDataList[index]);
+            }
+        }
+
+        /// <summary>
+        /// 中间插入数据（局部重构前缀和 O(N-k)）
+        /// </summary>
+        public void InsertDataAt(int index, UIItemDataBase item, float? height = null)
+        {
+            if (index < 0 || index > _totalCount) return;
+
+            _itemDataList.Insert(index, item);
+            _totalCount = _itemDataList.Count;
+
+            if (_itemHeights != null && height.HasValue)
+            {
+                _itemHeights.Insert(index, height.Value);
+            }
+
+            RebuildPrefixSumFrom(index);
+            ResetVisibleItemsIndexAndRefresh();
+        }
+
+        /// <summary>
+        /// 移除数据（局部重构前缀和 O(N-k)）
+        /// </summary>
+        public void RemoveDataAt(int index)
+        {
+            if (index < 0 || index >= _totalCount) return;
+
+            _itemDataList.RemoveAt(index);
+            if (_itemHeights != null)
+            {
+                _itemHeights.RemoveAt(index);
+            }
+            _totalCount = _itemDataList.Count;
+
+            RebuildPrefixSumFrom(index);
+            ResetVisibleItemsIndexAndRefresh();
+        }
+
+        private void RebuildPrefixSumFrom(int startIndex)
+        {
+            if (_itemHeights != null && _itemHeights.Count == _totalCount)
+            {
+                // 确保 _prefixSumHeights 长度为 _totalCount + 1
+                if (_prefixSumHeights.Count > _totalCount + 1)
+                {
+                    _prefixSumHeights.RemoveRange(_totalCount + 1, _prefixSumHeights.Count - (_totalCount + 1));
+                }
+                else 
+                {
+                    while (_prefixSumHeights.Count < _totalCount + 1)
+                    {
+                        _prefixSumHeights.Add(0);
+                    }
+                }
+
+                // 重新计算 startIndex 及之后的前缀和
+                float currentY = startIndex == 0 ? 0 : _prefixSumHeights[startIndex];
+                for (int i = startIndex; i < _totalCount; i++)
+                {
+                    currentY += _itemHeights[i] + _spacing;
+                    _prefixSumHeights[i + 1] = currentY;
+                }
+            }
+
+            // 更新 Content 高度
+            float totalHeight = 0;
+            if (_itemHeights != null && _itemHeights.Count == _totalCount)
+            {
+                totalHeight = _totalCount > 0 ? _prefixSumHeights[_totalCount] - _spacing : 0;
+            }
+            else
+            {
+                totalHeight = _totalCount * (_itemHeight + _spacing) - _spacing;
+            }
+            if (totalHeight < 0) totalHeight = 0;
+            _content.sizeDelta = new Vector2(_content.sizeDelta.x, totalHeight);
+        }
+
+        private void ResetVisibleItemsIndexAndRefresh()
+        {
+            if (!_isInit) return;
+            // 强制所有现有缓存槽位的 DataIndex 失效，让 OnScroll 重新排版
+            for (int i = 0; i < _itemList.Count; i++)
+            {
+                var info = _itemList[i];
+                info.DataIndex = -1;
+                _itemList[i] = info;
+            }
+            RefreshDisplay();
+        }
+
+        /// <summary>
         /// 刷新ui
         /// </summary>
         /// <param name="resetPos"></param>

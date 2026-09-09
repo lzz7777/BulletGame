@@ -30,6 +30,13 @@ namespace XN
             }
         }
 
+        public static void OnShowLoadingState(this ViewGridLoopListTestItem self)
+        {
+            self.NumText.text = "";
+
+            self.IconImage.sprite = null;
+        }
+
         #endregion
 
         #region UIEvents

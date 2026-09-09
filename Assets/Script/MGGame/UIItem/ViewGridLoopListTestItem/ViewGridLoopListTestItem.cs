@@ -12,14 +12,16 @@ namespace XN
         public Image IconImage;
         public Text NumText;
 
-        #region CustomFields
-
-        public CancellationTokenSource Cts;
-
         public override void Refresh(ViewGridLoopListTestItemData data)
         {
             this.OnRefresh(data);
         }
+        
+        #region CustomFields
+
+        public CancellationTokenSource Cts;
+
+        public override void ShowLoadingState() => this.OnShowLoadingState();
 
         private void OnDestroy()
         {
