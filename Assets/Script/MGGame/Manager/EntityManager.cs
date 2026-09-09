@@ -33,6 +33,11 @@ namespace XN
         // ====================================================================================
 
         private Dictionary<long, Entity> _entitiesDic { set; get; } = new(4096);
+        
+        // 实体数量记录
+        public int CurrentEntityCount => _entitiesDic.Count;
+        public int TotalCreatedEntityCount { get; private set; }
+
         private Dictionary<Type, List<ComponentBase>> _componentCache { set; get; } = new(64);
         private Dictionary<EntityType, List<long>> _entityTypeDic { set; get; } = new(32);
         
@@ -47,7 +52,7 @@ namespace XN
 
         // 存所有需要 Update 的委托及顺序，按 Order 排序
         private List<UpdateSystemInfo> _updateSystems = new();
-        
+
 #if UNITY_EDITOR
         public Transform EntityRoot => _entityRoot;
         private Transform _entityRoot;
@@ -223,6 +228,8 @@ namespace XN
         
         public Entity CreateEntity(EntityType entityTag, bool isFromPool = true)
         {
+            TotalCreatedEntityCount++; // 记录累计创建实体数量
+            
             Entity entity;
 
             if (isFromPool)

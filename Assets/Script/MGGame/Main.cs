@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using ByteDance.LiveOpenSdk.Runtime;
@@ -35,13 +35,6 @@ namespace XN
 
             viewLoadingMain = LoadingUI.GetComponent<ViewLoadingMain>();
             // LocalLog.LaunchHandleLog();
-
-            // 关闭普通日志的堆栈输出，彻底消除 ExtractStackTrace 的 GC
-            Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
-            Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
-            // 错误和异常建议保留堆栈，方便排查 Bug
-            Application.SetStackTraceLogType(LogType.Error, StackTraceLogType.ScriptOnly);
-            Application.SetStackTraceLogType(LogType.Exception, StackTraceLogType.ScriptOnly);
         }
 
         private async void Start()
@@ -81,10 +74,11 @@ namespace XN
             {
                 IntArgs1 = (int)FightRoomType.TextRoom,
             });
-            UIManager.Instance.OpenWindow<TopSetting>().ToCoroutine();
+            UIManager.Instance.OpenWindow<TopSetting>().Forget();
             LoadingUI.gameObject.SetActive(false);
 
             // gameObject.AddComponent<FPSView>();
+            gameObject.AddComponent<EntityCountView>();
         }
 
         private async UniTask InitData()
