@@ -2,59 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Spine;
 using Spine.Unity;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using YooAsset;
 using UnityEngine.Networking;
-using System.Linq;
 using UnityEngine.U2D;
 
 namespace XN
 {
     public class YooAssetManager : MonoSingleton<YooAssetManager>
     {
-        /// <summary>
-        /// 远端资源地址查询服务类
-        /// </summary>
-        public class RemoteServices : IRemoteServices
-        {
-            private readonly string _defaultHostServer;
-            private readonly string _fallbackHostServer;
-
-            public RemoteServices(string defaultHostServer, string fallbackHostServer)
-            {
-                _defaultHostServer = defaultHostServer;
-                _fallbackHostServer = fallbackHostServer;
-            }
-
-            string IRemoteServices.GetRemoteMainURL(string fileName)
-            {
-                return $"{_defaultHostServer}/{fileName}";
-            }
-
-            string IRemoteServices.GetRemoteFallbackURL(string fileName)
-            {
-                return $"{_fallbackHostServer}/{fileName}";
-            }
-        }
-
         public static string DefaultPackageName = "DefaultPackage";
         public static string ConfigPackageName = "ConfigPackage";
+
         /// <summary>
         /// 默认包,大部分资源都在
         /// </summary>
         public static ResourcePackage DefaultPackage => YooAssets.GetPackage(DefaultPackageName);
-        public static ResourcePackage ConfigPackage => YooAssets.GetPackage(ConfigPackageName);
+
         public bool IsInitialized { get; private set; }
-        private UniTaskCompletionSource<bool> _initTcs = new ();
-        private readonly Dictionary<string, Texture2D> _httpTextureCache = new ();
+        private UniTaskCompletionSource<bool> _initTcs = new();
+        private readonly Dictionary<string, Texture2D> _httpTextureCache = new();
+
         /// <summary>
         /// 主要是拿头像
         /// </summary>
-        private readonly Dictionary<string, Sprite> _httpSpriteCache = new ();
+        private readonly Dictionary<string, Sprite> _httpSpriteCache = new();
+
+        private readonly Dictionary<string, AssetHandle> _atlasHandleCache = new();
 
         protected override void OnInit()
         {
@@ -66,6 +43,13 @@ namespace XN
         protected override void OnRemove()
         {
             XN.AOT.AtlasEventWrapper.RemoveListener(OnAtlasRequested);
+
+            foreach (var handle in _atlasHandleCache.Values)
+            {
+                handle?.Release();
+            }
+
+            _atlasHandleCache.Clear();
         }
 
         [UnityEngine.Scripting.Preserve]
@@ -74,22 +58,22 @@ namespace XN
             LoadAtlasForUGUIAsync(atlasName, callback).Forget();
         }
 
-        private async UniTaskVoid LoadAtlasForUGUIAsync(string atlasName, System.Action<UnityEngine.U2D.SpriteAtlas> callback)
+        private async UniTaskVoid LoadAtlasForUGUIAsync(string atlasName,
+            System.Action<UnityEngine.U2D.SpriteAtlas> callback)
         {
             await EnsureInitialized();
-            var handle = DefaultPackage.LoadAssetAsync<UnityEngine.U2D.SpriteAtlas>(atlasName);
-            await handle.Task;
-            if (handle.Status == EOperationStatus.Succeed)
+            var atlas = await GetAtlasAsync(atlasName);
+            if (atlas != null)
             {
-                callback(handle.AssetObject as UnityEngine.U2D.SpriteAtlas);
+                callback(atlas);
                 Debug.Log($"[SpriteAtlas] UI图集延迟绑定成功: {atlasName}");
             }
             else
             {
-                Debug.LogError($"[SpriteAtlas] UI图集延迟绑定失败: {atlasName} | {handle.LastError}");
+                Debug.LogError($"[SpriteAtlas] UI图集延迟绑定失败: {atlasName}");
             }
         }
-        
+
         /// <summary>
         /// 核心包初始化流程。
         /// 负责初始化资源系统、创建资源包、设置运行模式，并更新资源清单。
@@ -102,7 +86,7 @@ namespace XN
                 IsInitialized = true;
                 return;
             }
-            
+
             // 1. 基础系统初始化
             YooAssets.Initialize();
 
@@ -113,6 +97,7 @@ namespace XN
                 Debug.LogError($"{DefaultPackageName} init failed");
                 return;
             }
+
             // 设置 DefaultPackage 为默认包，后续不传包名的加载接口默认从这里读
             YooAssets.SetDefaultPackage(defaultPackage);
 
@@ -122,26 +107,20 @@ namespace XN
                 Debug.LogError($"{ConfigPackageName} init failed");
                 return;
             }
-            
+
             // 6. 初始化全部完成，标记状态并通知等待的任务继续执行
             IsInitialized = true;
             _initTcs.TrySetResult(true);
             // 额外延迟 1 秒，确保底层状态稳定
             await UniTask.Delay(1000);
         }
-    
+
         private async UniTask<(ResourcePackage, bool)> InitPackageSingle(string packageName)
         {
             var package = YooAssets.CreatePackage(packageName);
 
-            // 3. 根据当前运行环境设置资源的加载模式并执行包的初始化
-#if UNITY_EDITOR
             // 编辑器下：使用 Simulate 模式，直接读取 Asset 目录下的文件，无需构建 Bundle
             await InitPackageEditorSimulateMode(package, packageName);
-#else
-            // 非编辑器下（真机/打包版）：使用 OfflinePlayMode 模式，读取内置的 StreamingAssets
-            await InitPackageOfflinePlayMode(package);
-#endif
 
             // 4. 更新 DefaultPackage 的资源清单
             // 向服务器（或本地）请求最新的资源版本号，必须传入 false 关闭时间戳，防止破坏 OSS 签名验证
@@ -152,7 +131,7 @@ namespace XN
                 Debug.LogError($"请求资源清单的版本信息失败：{operation1.Error}");
                 return (package, false);
             }
-            
+
             // 使用获取到的版本号更新资源清单 manifest
             var operation2 = package.UpdatePackageManifestAsync(operation1.PackageVersion, 60);
             await operation2;
@@ -172,81 +151,26 @@ namespace XN
         /// <param name="package">要初始化的资源包</param>
         /// <param name="packageName">包名，用于模拟构建参数</param>
         private IEnumerator InitPackageEditorSimulateMode(ResourcePackage package, string packageName)
-        {  
+        {
             // 获取模拟构建结果
-            var buildResult = EditorSimulateModeHelper.SimulateBuild(packageName);    
+            var buildResult = EditorSimulateModeHelper.SimulateBuild(packageName);
             var packageRoot = buildResult.PackageRootDirectory;
             // 创建编辑器专用的文件系统参数
             var fileSystemParams = FileSystemParameters.CreateDefaultEditorFileSystemParameters(packageRoot);
-    
+
             var createParameters = new EditorSimulateModeParameters();
             createParameters.EditorFileSystemParameters = fileSystemParams;
-            
+
             // 执行包的异步初始化
             var initOperation = package.InitializeAsync(createParameters);
             yield return initOperation;
-    
-            if(initOperation.Status == EOperationStatus.Succeed)
+
+            if (initOperation.Status == EOperationStatus.Succeed)
                 Debug.Log($"{packageName} 资源包初始化成功！");
-            else 
+            else
                 Debug.LogError($"{packageName} 资源包初始化失败：{initOperation.Error}");
         }
-        
-        /// <summary>
-        /// 初始化离线运行模式（单机模式）。
-        /// 仅从内置的 StreamingAssets 目录加载资源，不涉及网络下载。
-        /// </summary>
-        /// <param name="package">要初始化的资源包</param>
-        private IEnumerator InitPackageOfflinePlayMode(ResourcePackage package)
-        {
-            // 创建内置文件系统参数（默认指向 StreamingAssets 下的 yoo 目录）
-            var fileSystemParams = FileSystemParameters.CreateDefaultBuildinFileSystemParameters();
-    
-            var createParameters = new OfflinePlayModeParameters();
-            createParameters.BuildinFileSystemParameters = fileSystemParams;
-    
-            // 执行包的异步初始化
-            var initOperation = package.InitializeAsync(createParameters);
-            yield return initOperation;
-    
-            if(initOperation.Status == EOperationStatus.Succeed)
-                Debug.Log($"{package.PackageName} 资源包初始化成功！");
-            else 
-                Debug.LogError($"{package.PackageName} 资源包初始化失败：{initOperation.Error}");
-        }   
-        
-        /// <summary>
-        /// 初始化联机运行模式（热更模式）。
-        /// 支持从远端 CDN 下载最新资源，并缓存在本地。
-        /// </summary>
-        /// <param name="package">要初始化的资源包</param>
-        private IEnumerator InitPackageHostPlayMode(ResourcePackage package)
-        {
-            // 配置主力和备用的远端下载服务器地址
-            string defaultHostServer = "http://127.0.0.1/CDN/Android/v1.0";
-            string fallbackHostServer = "http://127.0.0.1/CDN/Android/v1.0";
-            
-            // 实例化远程服务类，供底层拼接下载 URL
-            IRemoteServices remoteServices = new RemoteServices(defaultHostServer, fallbackHostServer);
-            
-            // 创建缓存文件系统（用于存取下载到沙盒的资源）和内置文件系统（用于存取 StreamingAssets 里的首包资源）
-            var cacheFileSystemParams = FileSystemParameters.CreateDefaultCacheFileSystemParameters(remoteServices);
-            var buildinFileSystemParams = FileSystemParameters.CreateDefaultBuildinFileSystemParameters();   
-    
-            var createParameters = new HostPlayModeParameters();
-            createParameters.BuildinFileSystemParameters = buildinFileSystemParams; 
-            createParameters.CacheFileSystemParameters = cacheFileSystemParams;
-    
-            // 执行包的异步初始化
-            var initOperation = package.InitializeAsync(createParameters);
-            yield return initOperation;
-    
-            if(initOperation.Status == EOperationStatus.Succeed)
-                Debug.Log($"{package.PackageName} 资源包初始化成功！");
-            else 
-                Debug.LogError($"{package.PackageName} 资源包初始化失败：{initOperation.Error}");
-        }
-        
+
         private async UniTask EnsureInitialized()
         {
             if (IsInitialized) return;
@@ -256,9 +180,10 @@ namespace XN
         // 补充YooAsset下加载接口（通用封装）
 
         /// <summary>
-        /// 异步加载任意资源（返回对象）。可选自动释放句柄。
+        /// 异步加载任意资源（返回对象）。
+        /// 例如 TextAsset.bytes。Sprite/Texture/Material/AudioClip/Prefab 等对象型资源请勿使用自动释放。
         /// </summary>
-        public async UniTask<T> LoadAssetAsync<T>(string location, bool autoRelease = false, CancellationToken token = default)
+        public async UniTask<T> LoadAssetAsync<T>(string location, CancellationToken token = default)
             where T : Object
         {
             await EnsureInitialized();
@@ -270,39 +195,83 @@ namespace XN
                 handle.Release();
                 return null;
             }
+
             if (handle.Status != EOperationStatus.Succeed || handle.AssetObject == null)
             {
                 Debug.LogError($"LoadAssetAsync 失败：{location} | {handle.LastError}");
                 handle.Release();
                 return null;
             }
+
             var obj = handle.AssetObject as T;
-            if (autoRelease) handle.Release();
             return obj;
+        }
+
+        /// <summary>
+        /// 返回 AssetHandle，由调用方自行管理生命周期。
+        /// </summary>
+        public async UniTask<AssetHandle> LoadAssetHandleAsync<T>(string location, CancellationToken token = default)
+            where T : Object
+        {
+            await EnsureInitialized();
+            var handle = DefaultPackage.LoadAssetAsync<T>(location);
+            await handle.Task;
+
+            if (token.IsCancellationRequested)
+            {
+                handle.Release();
+                return null;
+            }
+
+            if (handle.Status != EOperationStatus.Succeed || handle.AssetObject == null)
+            {
+                Debug.LogError($"LoadAssetHandleAsync 失败：{location} | {handle.LastError}");
+                handle.Release();
+                return null;
+            }
+
+            return handle;
         }
 
         /// <summary>
         /// 同步加载（谨慎使用，建议仅在初始化时）。
         /// </summary>
-        public T LoadAssetSync<T>(string location, bool autoRelease = false) where T : Object
+        public T LoadAssetSync<T>(string location) where T : Object
         {
             var package = DefaultPackage;
             var handle = package.LoadAssetSync<T>(location);
             if (handle.Status != EOperationStatus.Succeed)
             {
                 Debug.LogError($"LoadAssetSync 失败：{location}");
-                if (!autoRelease) handle.Release();
+                handle.Release();
                 return null;
             }
+
             var obj = handle.AssetObject as T;
-            if (autoRelease) handle.Release();
             return obj;
+        }
+
+        /// <summary>
+        /// 同步加载并返回 AssetHandle，由调用方自行管理生命周期。
+        /// </summary>
+        public AssetHandle LoadAssetHandleSync<T>(string location) where T : Object
+        {
+            var handle = DefaultPackage.LoadAssetSync<T>(location);
+            if (handle.Status != EOperationStatus.Succeed || handle.AssetObject == null)
+            {
+                Debug.LogError($"LoadAssetHandleSync 失败：{location}");
+                handle.Release();
+                return null;
+            }
+
+            return handle;
         }
 
         /// <summary>
         /// 异步实例化游戏对象（Prefab）。
         /// </summary>
-        public async UniTask<GameObject> InstantiateAsync(string location, Transform parent = null, bool instantiateInWorldSpace = false)
+        public async UniTask<GameObject> InstantiateAsync(string location, Transform parent = null,
+            bool instantiateInWorldSpace = false)
         {
             await EnsureInitialized();
             var handle = DefaultPackage.LoadAssetAsync<GameObject>(location);
@@ -313,23 +282,30 @@ namespace XN
                 handle.Release();
                 return null;
             }
+
             var prefab = handle.AssetObject as GameObject;
-            GameObject go = parent != null ? Object.Instantiate(prefab, parent, instantiateInWorldSpace) : Object.Instantiate(prefab);
+            GameObject go = parent != null
+                ? Object.Instantiate(prefab, parent, instantiateInWorldSpace)
+                : Object.Instantiate(prefab);
             handle.Release();
             return go;
         }
 
-        public GameObject InstantiateSync(string location, Transform parent = null, bool instantiateInWorldSpace = false)
+        public GameObject InstantiateSync(string location, Transform parent = null,
+            bool instantiateInWorldSpace = false)
         {
             var prefab = LoadAssetSync<GameObject>(location);
-            GameObject go = parent != null ? Object.Instantiate(prefab, parent, instantiateInWorldSpace) : Object.Instantiate(prefab);
+            GameObject go = parent != null
+                ? Object.Instantiate(prefab, parent, instantiateInWorldSpace)
+                : Object.Instantiate(prefab);
             return go;
         }
-        
+
         /// <summary>
         /// 加载场景。
         /// </summary>
-        public async UniTask<bool> LoadSceneAsync(string location, LoadSceneMode mode = LoadSceneMode.Additive, LocalPhysicsMode physicsMode = LocalPhysicsMode.None)
+        public async UniTask<bool> LoadSceneAsync(string location, LoadSceneMode mode = LoadSceneMode.Additive,
+            LocalPhysicsMode physicsMode = LocalPhysicsMode.None)
         {
             await EnsureInitialized();
             var package = DefaultPackage;
@@ -340,6 +316,7 @@ namespace XN
                 Debug.LogError($"LoadSceneAsync 失败：{location} | {op.LastError}");
                 return false;
             }
+
             return true;
         }
 
@@ -348,15 +325,22 @@ namespace XN
         /// </summary>
         public async UniTask<byte[]> LoadRawBytesAsync(string location)
         {
-            // 为兼容 2.3.12：使用 TextAsset 方式读取原始字节，更稳妥
-            var ta = await LoadAssetAsync<TextAsset>(location, autoRelease: true);
-            return ta != null ? ta.bytes : null;
+            var handle = await LoadAssetHandleAsync<TextAsset>(location);
+            if (handle == null)
+            {
+                return null;
+            }
+
+            var ta = handle.AssetObject as TextAsset;
+            byte[] bytes = ta != null ? ta.bytes : null;
+            handle.Release();
+            return bytes;
         }
 
         /// <summary>
         /// 常用类型快捷方法：Sprite、Texture2D、AudioClip、TextAsset、Material。
         /// </summary>
-        public async UniTask<Sprite> LoadSpriteAsync(string location, bool autoRelease = false, CancellationToken token = default)
+        public async UniTask<Sprite> LoadSpriteAsync(string location, CancellationToken token = default)
         {
             var loc = location ?? string.Empty;
             if (loc.StartsWith("http://") || loc.StartsWith("https://"))
@@ -366,85 +350,246 @@ namespace XN
                 var tex = await LoadTextureFromUrlAsync(loc, token);
                 if (token.IsCancellationRequested || tex == null) return null;
                 var sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100f);
-                if (!autoRelease) _httpSpriteCache[key] = sprite;
+                _httpSpriteCache[key] = sprite;
                 return sprite;
             }
-            return await LoadAssetAsync<Sprite>(location, autoRelease, token);
+
+            return await LoadAssetAsync<Sprite>(location, token: token);
         }
 
-        public async UniTask<Sprite> LoadSpriteAsync(string location, Image image, bool setNative = false, CancellationToken token = default)
+        public async UniTask<Sprite> LoadSpriteAsync(string location, Image image, bool setNative = false,
+            CancellationToken token = default)
         {
-            var sprite = await LoadSpriteAsync(location, false, token);
-            if (token.IsCancellationRequested) return null;
-            if (sprite == null) return null;
-            if (image == null) return null;
-            
-            image.sprite = sprite;
-            if (setNative)
-            {
-                image.SetNativeSize();
-            }
-            return sprite;
-        }
-        
-        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, Image image, bool setNative = false, CancellationToken token = default)
-        {
-            var sprite = await GetSpriteFromAtlas(atlasName, location, token);
-            if (token.IsCancellationRequested) return null;
-            if (sprite == null) return null;
-            if (image == null) return null;
-            
-            image.sprite = sprite;
-            if (setNative)
-            {
-                image.SetNativeSize();
-            }
-            return sprite;
-        }
-        
-        public async UniTask<Sprite> LoadSpriteAsync(string location, SpriteRenderer spriteRand, CancellationToken token = default)
-        {
-            var sprite = await LoadSpriteAsync(location, false, token);
-            if (token.IsCancellationRequested) return null;
-            if (sprite == null) return null;
-            if (spriteRand == null) return null;
-            
-            spriteRand.sprite = sprite;
-            return sprite;
-        }
-        
-        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, SpriteRenderer spriteRand, CancellationToken token = default)
-        {
-            var sprite = await GetSpriteFromAtlas(atlasName, location, token);
-            if (token.IsCancellationRequested) return null;
-            if (sprite == null) return null;
-            if (spriteRand == null) return null;
-            
-            spriteRand.sprite = sprite;
-            return sprite;
-        }
-        
-        public async UniTask<Sprite> GetSpriteFromAtlas(string atlasName, string spriteName, CancellationToken token = default)
-        {
-            // 1. 先通过 YooAsset 加载图集资产
-            var handle = YooAssetManager.DefaultPackage.LoadAssetAsync<SpriteAtlas>(atlasName);
-            await handle.Task;
-            if (token.IsCancellationRequested)
+            if (image == null)
             {
                 return null;
             }
 
-            if (handle.Status == EOperationStatus.Succeed)
+            var owner = TryGetHandleOwner(image);
+            if (owner != null)
             {
-                var atlas = handle.AssetObject as SpriteAtlas;
-                // 2. 从图集中提取具体的 Sprite
-                return atlas.GetSprite(spriteName);
+                return await LoadSpriteAsync(location, image, owner, setNative, token);
             }
-    
-            return null;
+
+            var sprite = await LoadSpriteAsync(location, token);
+            if (token.IsCancellationRequested) return null;
+            if (sprite == null) return null;
+
+            image.sprite = sprite;
+            if (setNative)
+            {
+                image.SetNativeSize();
+            }
+
+            return sprite;
         }
-        
-        public UniTask<Texture2D> LoadTextureAsync(string location, bool autoRelease = false, CancellationToken token = default) => LoadAssetAsync<Texture2D>(location, autoRelease, token);
+
+        public async UniTask<Sprite> LoadSpriteAsync(string location, Image image, IYooAssetHandleOwner owner,
+            bool setNative = false, CancellationToken token = default)
+        {
+            if (image == null)
+            {
+                return null;
+            }
+
+            var bindingKey = GetBindingKey(image);
+            var loc = location ?? string.Empty;
+            if (string.IsNullOrEmpty(loc))
+            {
+                owner?.ReleaseManagedAssetHandle(bindingKey);
+                image.sprite = null;
+                return null;
+            }
+
+            if (loc.StartsWith("http://") || loc.StartsWith("https://"))
+            {
+                owner?.ReleaseManagedAssetHandle(bindingKey);
+                var httpSprite = await LoadSpriteAsync(location, token);
+                if (token.IsCancellationRequested || image == null)
+                {
+                    return null;
+                }
+
+                image.sprite = httpSprite;
+                if (setNative)
+                {
+                    image.SetNativeSize();
+                }
+
+                return httpSprite;
+            }
+
+            if (owner == null)
+            {
+                return await LoadSpriteAsync(location, image, setNative, token);
+            }
+
+            var handle = await LoadAssetHandleAsync<Sprite>(location, token);
+            if (handle == null)
+            {
+                return null;
+            }
+
+            if (token.IsCancellationRequested)
+            {
+                handle.Release();
+                return null;
+            }
+
+            if (image == null)
+            {
+                handle.Release();
+                return null;
+            }
+
+            var sprite = handle.AssetObject as Sprite;
+            if (sprite == null)
+            {
+                handle.Release();
+                return null;
+            }
+
+            owner.ReplaceManagedAssetHandle(bindingKey, handle);
+            image.sprite = sprite;
+            if (setNative)
+            {
+                image.SetNativeSize();
+            }
+
+            return sprite;
+        }
+
+        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, Image image,
+            bool setNative = false, CancellationToken token = default)
+        {
+            if (image == null)
+            {
+                return null;
+            }
+
+            var owner = TryGetHandleOwner(image);
+            if (owner != null)
+            {
+                return await LoadSpriteAsync(atlasName, location, image, owner, setNative, token);
+            }
+
+            var sprite = await GetSpriteFromAtlas(atlasName, location, token);
+            if (token.IsCancellationRequested) return null;
+            if (sprite == null) return null;
+
+            image.sprite = sprite;
+            if (setNative)
+            {
+                image.SetNativeSize();
+            }
+
+            return sprite;
+        }
+
+        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, Image image,
+            IYooAssetHandleOwner owner, bool setNative = false, CancellationToken token = default)
+        {
+            if (image == null)
+            {
+                return null;
+            }
+
+            var bindingKey = GetBindingKey(image);
+            if (string.IsNullOrEmpty(atlasName) || string.IsNullOrEmpty(location))
+            {
+                owner?.ReleaseManagedAssetHandle(bindingKey);
+                image.sprite = null;
+                return null;
+            }
+
+            if (owner == null)
+            {
+                var spriteWithoutOwner = await GetSpriteFromAtlas(atlasName, location, token);
+                if (token.IsCancellationRequested || spriteWithoutOwner == null)
+                {
+                    return null;
+                }
+
+                image.sprite = spriteWithoutOwner;
+                if (setNative)
+                {
+                    image.SetNativeSize();
+                }
+
+                return spriteWithoutOwner;
+            }
+
+            var handle = await LoadAssetHandleAsync<SpriteAtlas>(atlasName, token);
+            if (handle == null)
+            {
+                return null;
+            }
+
+            if (token.IsCancellationRequested)
+            {
+                handle.Release();
+                return null;
+            }
+
+            var atlas = handle.AssetObject as SpriteAtlas;
+            if (atlas == null)
+            {
+                handle.Release();
+                return null;
+            }
+
+            var sprite = atlas.GetSprite(location);
+            if (sprite == null)
+            {
+                handle.Release();
+                owner.ReleaseManagedAssetHandle(bindingKey);
+                image.sprite = null;
+                return null;
+            }
+
+            owner.ReplaceManagedAssetHandle(bindingKey, handle);
+            image.sprite = sprite;
+            if (setNative)
+            {
+                image.SetNativeSize();
+            }
+
+            return sprite;
+        }
+
+        public async UniTask<Sprite> LoadSpriteAsync(string location, SpriteRenderer spriteRand,
+            CancellationToken token = default)
+        {
+            var sprite = await LoadSpriteAsync(location, token);
+            if (token.IsCancellationRequested) return null;
+            if (sprite == null) return null;
+            if (spriteRand == null) return null;
+
+            spriteRand.sprite = sprite;
+            return sprite;
+        }
+
+        public async UniTask<Sprite> LoadSpriteAsync(string atlasName, string location, SpriteRenderer spriteRand,
+            CancellationToken token = default)
+        {
+            var sprite = await GetSpriteFromAtlas(atlasName, location, token);
+            if (token.IsCancellationRequested) return null;
+            if (sprite == null) return null;
+            if (spriteRand == null) return null;
+
+            spriteRand.sprite = sprite;
+            return sprite;
+        }
+
+        public async UniTask<Sprite> GetSpriteFromAtlas(string atlasName, string spriteName,
+            CancellationToken token = default)
+        {
+            var atlas = await GetAtlasAsync(atlasName, token);
+            return atlas != null ? atlas.GetSprite(spriteName) : null;
+        }
+
+        public UniTask<Texture2D> LoadTextureAsync(string location, CancellationToken token = default)
+            => LoadAssetAsync<Texture2D>(location, token: token);
 
         private async UniTask<Texture2D> LoadTextureFromUrlAsync(string url, CancellationToken token = default)
         {
@@ -454,7 +599,12 @@ namespace XN
             try
             {
                 await req.SendWebRequest();
-                if (token.IsCancellationRequested) { req.Abort(); return null; }
+                if (token.IsCancellationRequested)
+                {
+                    req.Abort();
+                    return null;
+                }
+
                 if (req.result == UnityWebRequest.Result.Success)
                 {
                     var tex = DownloadHandlerTexture.GetContent(req);
@@ -470,14 +620,24 @@ namespace XN
             {
                 Debug.LogWarning(e);
             }
+
             return null;
         }
-        public UniTask<AudioClip> LoadAudioAsync(string location, bool autoRelease = false, CancellationToken token = default) => LoadAssetAsync<AudioClip>(location, autoRelease, token);
-        public UniTask<TextAsset> LoadTextAsync(string location, bool autoRelease = false, CancellationToken token = default) => LoadAssetAsync<TextAsset>(location, autoRelease, token);
-        public UniTask<Material> LoadMaterialAsync(string location, bool autoRelease = false, CancellationToken token = default) => LoadAssetAsync<Material>(location, autoRelease, token);
 
-        public UniTask<SkeletonDataAsset> LoadSkeletonAsync(string location, bool autoRelease = false, CancellationToken token = default) => LoadAssetAsync<SkeletonDataAsset>(location, autoRelease, token);
-        public UniTask<GameObject> LoadGameObjectAsync(string location, bool autoRelease = false, CancellationToken token = default) => LoadAssetAsync<GameObject>(location, autoRelease, token);
+        public UniTask<AudioClip> LoadAudioAsync(string location, CancellationToken token = default)
+            => LoadAssetAsync<AudioClip>(location, token: token);
+
+        public UniTask<TextAsset> LoadTextAsync(string location, CancellationToken token = default)
+            => LoadAssetAsync<TextAsset>(location, token: token);
+
+        public UniTask<Material> LoadMaterialAsync(string location, CancellationToken token = default)
+            => LoadAssetAsync<Material>(location, token: token);
+
+        public UniTask<SkeletonDataAsset> LoadSkeletonAsync(string location, CancellationToken token = default)
+            => LoadAssetAsync<SkeletonDataAsset>(location, token: token);
+
+        public UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken token = default)
+            => LoadAssetAsync<GameObject>(location, token: token);
 
         /// <summary>
         /// 判断资源是否存在于包内。
@@ -510,10 +670,100 @@ namespace XN
         {
             var package = DefaultPackage;
             var assetInfos = package.GetAssetInfos(tag);
-            
+
             Debug.Log($"yooasset GetGroupTagFileNum:{assetInfos.Length}");
-            
+
             return assetInfos.Length;
+        }
+
+        public Sprite LoadSpriteSync(string location, Image image, IYooAssetHandleOwner owner, bool setNative = false)
+        {
+            if (image == null)
+            {
+                return null;
+            }
+
+            var bindingKey = GetBindingKey(image);
+            if (string.IsNullOrEmpty(location))
+            {
+                owner?.ReleaseManagedAssetHandle(bindingKey);
+                image.sprite = null;
+                return null;
+            }
+
+            var handle = LoadAssetHandleSync<Sprite>(location);
+            if (handle == null)
+            {
+                return null;
+            }
+
+            var sprite = handle.AssetObject as Sprite;
+            if (sprite == null)
+            {
+                handle.Release();
+                return null;
+            }
+
+            owner?.ReplaceManagedAssetHandle(bindingKey, handle);
+            image.sprite = sprite;
+            if (setNative)
+            {
+                image.SetNativeSize();
+            }
+
+            return sprite;
+        }
+
+        private static string GetBindingKey(Component target)
+        {
+            return target == null ? string.Empty : target.GetInstanceID().ToString();
+        }
+
+        private static IYooAssetHandleOwner TryGetHandleOwner(Component target)
+        {
+            if (target == null)
+            {
+                return null;
+            }
+
+            Transform current = target.transform;
+            while (current != null)
+            {
+                var behaviours = current.GetComponents<MonoBehaviour>();
+                for (int i = 0; i < behaviours.Length; i++)
+                {
+                    if (behaviours[i] is IYooAssetHandleOwner owner)
+                    {
+                        return owner;
+                    }
+                }
+
+                current = current.parent;
+            }
+
+            return null;
+        }
+
+        private async UniTask<SpriteAtlas> GetAtlasAsync(string atlasName, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(atlasName))
+            {
+                return null;
+            }
+
+            if (_atlasHandleCache.TryGetValue(atlasName, out var cachedHandle) && cachedHandle != null)
+            {
+                return cachedHandle.AssetObject as SpriteAtlas;
+            }
+
+            var handle = await LoadAssetHandleAsync<SpriteAtlas>(atlasName, token);
+            if (handle == null)
+            {
+                return null;
+            }
+
+            _atlasHandleCache[atlasName] = handle;
+            return handle.AssetObject as SpriteAtlas;
         }
     }
 }

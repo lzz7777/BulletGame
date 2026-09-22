@@ -26,8 +26,20 @@ namespace XN
                 }
                 self.Cts = new CancellationTokenSource();
                 
-                YooAssetManager.Instance.LoadSpriteAsync($"mrt_txk_{data.Index % 8 + 1}", self.IconImage, false, self.Cts.Token).Forget();
+                YooAssetManager.Instance.LoadSpriteAsync($"mrt_txk_{data.Index % 8 + 1}", self.IconImage, self, false, self.Cts.Token).Forget();
             }
+        }
+
+        public static void OnRecycle(this ViewGridLoopListTestItem self)
+        {
+            if (self.Cts != null)
+            {
+                self.Cts.Cancel();
+                self.Cts.Dispose();
+                self.Cts = null;
+            }
+
+            self.ReleaseAllManagedAssetHandles();
         }
 
         public static void OnShowLoadingState(this ViewGridLoopListTestItem self)

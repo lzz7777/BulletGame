@@ -26,7 +26,7 @@ namespace XN
             public int DataIndex;
         }
 
-        private List<ItemInfo> _itemList = new();
+        private List<ItemInfo> _itemList;
         private int _totalCount;
 
         // 缓存数据
@@ -50,8 +50,9 @@ namespace XN
             _scrollRect.onValueChanged.AddListener(OnScroll);
         }
 
-        private void OnDestroy()
+        public void OnClose()
         {
+            ClearData();
             ReturnAllItems();
         }
 
@@ -73,6 +74,11 @@ namespace XN
             int viewCount = Mathf.CeilToInt(_viewHeight / (_itemHeight + _spacing)) + 1;
             _instantiateCount = viewCount + 2;
 
+            if (_itemList == null)
+            {
+                _itemList = new(_instantiateCount);
+            }
+            
             // 预先加载Item
             for (int i = 0; i < _instantiateCount; i++)
             {
@@ -81,7 +87,7 @@ namespace XN
 
                 // 设置锚点为左上角
                 var rect = item.GetComponent<RectTransform>();
-                rect.pivot = new Vector2(0.5f, 1);
+                rect.pivot = new Vector2(0, 1);
                 rect.anchorMin = new Vector2(0, 1);
                 rect.anchorMax = new Vector2(1, 1);
                 rect.anchoredPosition = Vector2.zero;
@@ -108,7 +114,7 @@ namespace XN
                 item.SetActive(false);
 
                 var rect = item.GetComponent<RectTransform>();
-                rect.pivot = new Vector2(0.5f, 1);
+                rect.pivot = new Vector2(0, 1);
                 rect.anchorMin = new Vector2(0, 1);
                 rect.anchorMax = new Vector2(1, 1);
                 rect.anchoredPosition = Vector2.zero;
@@ -492,13 +498,12 @@ namespace XN
         {
             if (_itemList.Count > 0)
             {
-                List<GameObject> gos = new List<GameObject>();
                 foreach (var item in _itemList)
                 {
-                    gos.Add(item.Go);
+                    ObjectPoolManager.Instance.ReturnToPool(item.Go);
+                    item.UIItem.Recycle();
                 }
 
-                ObjectPoolManager.Instance.ReturnToPool(gos);
                 _itemList.Clear();
             }
 

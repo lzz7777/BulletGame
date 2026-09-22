@@ -16,22 +16,13 @@ namespace XN
         {
             this.OnRefresh(data);
         }
-        
+
         #region CustomFields
 
         public CancellationTokenSource Cts;
 
         public override void ShowLoadingState() => this.OnShowLoadingState();
-
-        private void OnDestroy()
-        {
-            if (Cts != null)
-            {
-                Cts.Cancel();
-                Cts.Dispose();
-                Cts = null;
-            }
-        }
+        public override void Recycle() => this.OnRecycle();
 
         #endregion
     }

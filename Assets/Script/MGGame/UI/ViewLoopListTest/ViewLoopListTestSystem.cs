@@ -20,7 +20,8 @@ public static class ViewLoopListTestSystem
 		    itemHeights.Add(i % 2 == 0 ? 100f : 200f);
 	    }
 
-	    self.ScrollViewUILoopList.RefreshItem(true, itemHeights).Forget();
+	    // self.ScrollViewUILoopList.RefreshItem(true, itemHeights).Forget();
+	    self.ScrollViewUILoopList.RefreshItem(true).Forget();
     }
     
     public static void OnCloseSystem(this ViewLoopListTest self)

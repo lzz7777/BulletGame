@@ -5768,6 +5768,7 @@ MonoBehaviour:
   EffectRoot: {fileID: 1107647270}
   RoomUnitId: 0
   GlobalChangeGroupNextTime: 0
+  UpdateCarsMileageCD: 0
 --- !u!114 &1465085754
 MonoBehaviour:
   m_ObjectHideFlags: 0

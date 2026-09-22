@@ -29,7 +29,7 @@ namespace XN
 
         private struct RefreshTask
         {
-            public ItemInfo ItemInfo;
+            public int ItemIndex;
             public int DataIndex;
         }
 
@@ -174,7 +174,7 @@ namespace XN
                 {
                     _refreshQueue.Enqueue(new RefreshTask 
                     { 
-                        ItemInfo = itemInfo, 
+                        ItemIndex = itemIndex,
                         DataIndex = index 
                     });
                     itemInfo.UIItem.ShowLoadingState();
@@ -335,7 +335,7 @@ namespace XN
                             // 加入分帧刷新队列
                             _refreshQueue.Enqueue(new RefreshTask 
                             { 
-                                ItemInfo = itemInfo, 
+                                ItemIndex = itemIndex,
                                 DataIndex = dataIndex 
                             });
                             // 显示加载状态防串位
@@ -374,13 +374,12 @@ namespace XN
         {
             if (_itemList.Count > 0)
             {
-                List<GameObject> gos = new List<GameObject>();
                 foreach (var item in _itemList)
                 {
-                    gos.Add(item.Go);
+                    ObjectPoolManager.Instance.ReturnToPool(item.Go);
+                    item.UIItem.Recycle();
                 }
 
-                ObjectPoolManager.Instance.ReturnToPool(gos);
                 _itemList.Clear();
             }
 
@@ -399,10 +398,17 @@ namespace XN
                 var task = _refreshQueue.Dequeue();
                 
                 // 防御性校验：快速滑动时，该UI可能已经被重新分配给别的数据索引
-                // 只有队列里的索引和UI实际当前绑定的索引一致时，才执行耗时的刷新逻辑
-                if (task.ItemInfo.DataIndex == task.DataIndex && task.DataIndex < _itemDataList.Count)
+                // 只有槽位当前仍绑定着相同的数据索引时，才执行耗时的刷新逻辑
+                if (task.ItemIndex >= 0 &&
+                    task.ItemIndex < _itemList.Count &&
+                    task.DataIndex >= 0 &&
+                    task.DataIndex < _itemDataList.Count)
                 {
-                    task.ItemInfo.UIItem.Refresh(_itemDataList[task.DataIndex]);
+                    var currentItemInfo = _itemList[task.ItemIndex];
+                    if (currentItemInfo.DataIndex == task.DataIndex && currentItemInfo.Go.activeSelf)
+                    {
+                        currentItemInfo.UIItem.Refresh(_itemDataList[task.DataIndex]);
+                    }
                 }
 
                 // 耗时超过预算，中断循环，剩余任务留到下一帧
