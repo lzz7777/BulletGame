@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace XN
@@ -12,7 +12,7 @@ namespace XN
         Net,
     }
 
-    public abstract class UIPanelBase : MonoBehaviour
+    public abstract class UIPanelBase : UIAssetHandleOwnerBase
     {
         public UIPanelType UIPanelType;
 
@@ -28,6 +28,8 @@ namespace XN
             {
                 this.CloseSubWindowAsync(subViewName);
             }
+
+            ReleaseAllManagedAssetHandles();
         }
     }
 }

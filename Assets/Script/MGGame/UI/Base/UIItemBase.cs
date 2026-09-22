@@ -1,18 +1,27 @@
-using UnityEngine;
-
 namespace XN
 {
-    public abstract class UIItemBase : MonoBehaviour
+    public abstract class UIItemBase : UIAssetHandleOwnerBase
     {
-        public virtual void Refresh(UIItemDataBase uIItemDataBase) { }
-        
+        public virtual void Refresh(UIItemDataBase uIItemDataBase)
+        {
+        }
+
         /// <summary>
         /// 当该Item进入分帧加载队列时触发。
         /// 子类可重写此方法，显示加载中状态（如隐藏旧内容、显示白块或Loading特效），避免数据串位。
         /// </summary>
-        public virtual void ShowLoadingState() { }
+        public virtual void ShowLoadingState()
+        {
+        }
+
+        /// <summary>
+        /// 回收item触发
+        /// </summary>
+        public virtual void Recycle()
+        {
+        }
     }
-    
+
     // 增加一个泛型基类
     public abstract class UIItemBase<TData> : UIItemBase where TData : UIItemDataBase
     {

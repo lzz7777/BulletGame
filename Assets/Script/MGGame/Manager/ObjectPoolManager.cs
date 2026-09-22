@@ -2,11 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.SceneManagement;
-#endif
+using YooAsset;
 
 namespace XN
 {
@@ -21,6 +17,8 @@ namespace XN
         public Queue<GameObject> GoQueue = new();
         public int Count;
         public PrefabType PrefabType;
+        public AssetHandle PrefabHandle;
+        public GameObject Prefab;
     }
 
     public class ObjectPoolManager : MonoSingleton<ObjectPoolManager>
@@ -56,6 +54,13 @@ namespace XN
 
         protected override void OnRemove()
         {
+            if (_poolDictionary != null)
+            {
+                foreach (var pair in _poolDictionary)
+                {
+                    pair.Value?.PrefabHandle?.Release();
+                }
+            }
         }
 
         public UniTask<List<GameObject>> GetFromPool<T>(int num, Transform parentRoot, bool setZero = true)
@@ -97,17 +102,16 @@ namespace XN
         public async UniTask AdvanceAddRes(string tag, int num, PrefabType prefabType = PrefabType.None,
             Action<GameObject> cb = null, Transform parentRoot = null)
         {
-            // 修复 TryAdd 传 new PoolData() 导致的每帧 GC Alloc
-            if (!_poolDictionary.TryGetValue(tag, out var poolData))
+            var poolData = GetOrCreatePoolData(tag, prefabType);
+            if (!await EnsurePrefabLoadedAsync(tag, poolData))
             {
-                poolData = new PoolData { PrefabType = prefabType };
-                _poolDictionary.Add(tag, poolData);
+                return;
             }
 
             for (int i = 0; i < num; i++)
             {
                 parentRoot ??= _poolRoot.transform;
-                var obj = await YooAssetManager.Instance.InstantiateAsync(tag, parentRoot);
+                var obj = InstantiateFromPoolData(poolData, parentRoot);
 
                 if (!obj)
                 {
@@ -160,27 +164,22 @@ namespace XN
         /// </summary>
         public GameObject GetFromPoolSync(string tag, Transform parentRoot, PrefabType prefabType = PrefabType.None)
         {
-            if (!_poolDictionary.TryGetValue(tag, out var poolData))
-            {
-                poolData = new PoolData { PrefabType = prefabType };
-                _poolDictionary.Add(tag, poolData);
-            }
+            var poolData = GetOrCreatePoolData(tag, prefabType);
 
             if (poolData.GoQueue.Count == 0)
             {
-                goMaxNumDic.TryGetValue(tag, out var goMaxNum);
-                if (goMaxNum == -1) return null;
-                if (goMaxNum != 0 && poolData.Count >= goMaxNum) return null;
-
-                if (poolData.PrefabType == PrefabType.Effect)
-                {
-                    if (commonGoMaxNum == -1) return null;
-                    if (commonGoMaxNum != 0 && poolData.Count >= commonGoMaxNum) return null;
-                }
+                if (!CanCreateNewInstance(tag, poolData))
+                    return null;
 
                 if (!parentRoot) Debug.LogError("parentRoot is null");
 
-                var newObj = YooAssetManager.Instance.InstantiateSync(tag, parentRoot);
+                if (!EnsurePrefabLoadedSync(tag, poolData))
+                    return null;
+
+                var newObj = InstantiateFromPoolData(poolData, parentRoot);
+                if (!newObj)
+                    return null;
+
                 newObj.transform.localScale = Vector3.zero;
 
                 _instanceIdToTag[newObj.GetInstanceID()] = tag;
@@ -198,18 +197,19 @@ namespace XN
         /// </summary>
         public async UniTask<GameObject> GetFromPoolAsync(string tag, Transform parentRoot, PrefabType prefabType = PrefabType.None)
         {
-            if (!_poolDictionary.TryGetValue(tag, out var poolData))
-            {
-                poolData = new PoolData { PrefabType = prefabType };
-                _poolDictionary.Add(tag, poolData);
-            }
+            var poolData = GetOrCreatePoolData(tag, prefabType);
 
             if (poolData.GoQueue.Count == 0)
             {
+                if (!CanCreateNewInstance(tag, poolData))
+                    return null;
+
                 if (!parentRoot) Debug.LogError("parentRoot is null");
 
-                // 使用异步加载，不卡主线程
-                var newObj = await YooAssetManager.Instance.InstantiateAsync(tag, parentRoot);
+                if (!await EnsurePrefabLoadedAsync(tag, poolData))
+                    return null;
+
+                var newObj = InstantiateFromPoolData(poolData, parentRoot);
                 if (!newObj) return null;
 
                 newObj.transform.localScale = Vector3.zero;
@@ -271,6 +271,99 @@ namespace XN
                 obj.transform.SetParent(_poolRoot.transform);
 
             poolData.GoQueue.Enqueue(obj); // 放回队列
+        }
+
+        private PoolData GetOrCreatePoolData(string tag, PrefabType prefabType)
+        {
+            if (_poolDictionary.TryGetValue(tag, out var poolData))
+            {
+                if (poolData.PrefabType == PrefabType.None && prefabType != PrefabType.None)
+                {
+                    poolData.PrefabType = prefabType;
+                }
+                return poolData;
+            }
+
+            poolData = new PoolData { PrefabType = prefabType };
+            _poolDictionary.Add(tag, poolData);
+            return poolData;
+        }
+
+        private bool CanCreateNewInstance(string tag, PoolData poolData)
+        {
+            goMaxNumDic.TryGetValue(tag, out var goMaxNum);
+            if (goMaxNum == -1) return false;
+            if (goMaxNum != 0 && poolData.Count >= goMaxNum) return false;
+
+            if (poolData.PrefabType == PrefabType.Effect)
+            {
+                if (commonGoMaxNum == -1) return false;
+                if (commonGoMaxNum != 0 && poolData.Count >= commonGoMaxNum) return false;
+            }
+
+            return true;
+        }
+
+        private async UniTask<bool> EnsurePrefabLoadedAsync(string tag, PoolData poolData)
+        {
+            if (poolData.Prefab != null && poolData.PrefabHandle != null)
+            {
+                return true;
+            }
+
+            var handle = await YooAssetManager.Instance.LoadAssetHandleAsync<GameObject>(tag);
+            if (handle == null)
+            {
+                return false;
+            }
+
+            poolData.PrefabHandle?.Release();
+            poolData.PrefabHandle = handle;
+            poolData.Prefab = handle.AssetObject as GameObject;
+            if (poolData.Prefab == null)
+            {
+                poolData.PrefabHandle.Release();
+                poolData.PrefabHandle = null;
+                return false;
+            }
+            return poolData.Prefab != null;
+        }
+
+        private bool EnsurePrefabLoadedSync(string tag, PoolData poolData)
+        {
+            if (poolData.Prefab != null && poolData.PrefabHandle != null)
+            {
+                return true;
+            }
+
+            var handle = YooAssetManager.Instance.LoadAssetHandleSync<GameObject>(tag);
+            if (handle == null)
+            {
+                return false;
+            }
+
+            poolData.PrefabHandle?.Release();
+            poolData.PrefabHandle = handle;
+            poolData.Prefab = handle.AssetObject as GameObject;
+            if (poolData.Prefab == null)
+            {
+                poolData.PrefabHandle.Release();
+                poolData.PrefabHandle = null;
+                return false;
+            }
+            return poolData.Prefab != null;
+        }
+
+        private static GameObject InstantiateFromPoolData(PoolData poolData, Transform parentRoot)
+        {
+            if (poolData?.Prefab == null)
+            {
+                return null;
+            }
+
+            return parentRoot != null
+                ? UnityEngine.Object.Instantiate(poolData.Prefab, parentRoot, false)
+                : UnityEngine.Object.Instantiate(poolData.Prefab);
         }
     }
 }

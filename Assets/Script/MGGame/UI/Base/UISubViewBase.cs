@@ -1,8 +1,6 @@
-using UnityEngine;
-
 namespace XN
 {
-    public class UISubViewBase : MonoBehaviour
+    public class UISubViewBase : UIAssetHandleOwnerBase
     {
         public bool IsOpen;
         
