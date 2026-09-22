@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public class UICollectorComponentData
 {
+    // [ReadOnly]：设置字段为只读，这里 name 字段是最终生成的变量名，不允许手动修改，只能通过后缀拼接自动生成。
     [HorizontalGroup("A")] [HideLabel, ReadOnly]
     public string name;
 
@@ -16,6 +17,7 @@ public class UICollectorComponentData
     [HideLabel, ReadOnly, HorizontalGroup("A", width: 100)]
     public UICollectorComponentEnum ComponentEnum;
 
+    // [OnValueChanged]：当用户修改自定义后缀时，触发 OnSuffixValueChanged，自动把 节点名+后缀+组件类型 拼接成最终的字段名 (如：Btn_Confirm_Button)
     [HorizontalGroup("A", width: 200)] [OnValueChanged("OnSuffixValueChanged")]
     public string suffix;
 

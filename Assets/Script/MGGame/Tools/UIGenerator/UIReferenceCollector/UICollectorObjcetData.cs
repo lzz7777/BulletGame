@@ -9,11 +9,14 @@ using UnityEngine;
 [Serializable]
 public class UICollectorObjcetData : ISearchFilterable
 {
+    // [GUIColor]：结合 @表达式 调用 TransformColor()，根据当前节点是否丢失（或者没有选择组件）动态变色。
+    // 如果节点丢失变红，正常变绿，实现直观的错误提示。
     [GUIColor(0, 1, 0, GetColor = "@TransformColor()")]
     [VerticalGroup("A")]
     [HideLabel, HorizontalGroup("A/节点", width: 200)]
     public Transform transform;
     
+    // [ValueDropdown]：Odin 核心特性，动态生成下拉菜单。这里调用 GetComponentEnums 方法，只显示当前 Transform 上实际挂载的组件，实现防呆过滤。
     [GUIColor(0, 1, 0, GetColor = "@ComponentEnumColor()")]
     [ValueDropdown("GetComponentEnums", IsUniqueList = false)]
     [HorizontalGroup("A/节点")]
@@ -21,12 +24,15 @@ public class UICollectorObjcetData : ISearchFilterable
     [HideLabel]
     public UICollectorComponentEnum componentEnum;
     
+    // [ShowIf]：只有当组件列表有数据时才展开显示，保持面板整洁。
+    // [ListDrawerSettings]：通过 CustomRemoveIndexFunction="RemoveButton" 拦截删除操作，方便附加额外逻辑。
     [ShowIf("@componentDatas.Count > 0")]
     [VerticalGroup("A")]
     [ListDrawerSettings(ShowFoldout = true, HideAddButton = true, HideRemoveButton = false, CustomRemoveIndexFunction = "RemoveButton")]
     [LabelText("组件事件列表")]
     public List<UICollectorComponentData> componentDatas = new();
 
+    // 实现 ISearchFilterable 接口，配合父级的 [Searchable] 实现按节点名搜索
     public bool IsMatch(string searchString)
     {
         // 只搜索 transform.name

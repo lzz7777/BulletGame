@@ -7,39 +7,65 @@ using YooAsset;
 namespace XN
 {
     /// <summary>
-    /// 热更层入口类：负责资源包（AssetPackage）和配置包（ConfigPackage）的初始化与更新，最终切换游戏场景
-    /// 由 AOT 层的 LoadDll.cs 通过反射调用启动
+    /// 热更层启动入口。
+    /// 该类由 AOT 层的 LoadDll 通过反射唤起，
+    /// 负责接管后续业务资源与配置更新流程，并在准备完毕后进入主场景。
+    ///
+    /// 如果说 LoadDll 解决的是“代码能不能先跑起来”，
+    /// 那么 HotUpdateAsset 解决的就是“资源和配置能不能切到最新版本并安全进入游戏”。
     /// </summary>
     public class HotUpdateAsset : MonoBehaviour
     {
-        private ResourcePackage _assetPackage; // 核心资源包实例
+        /// <summary>
+        /// 主资源包实例。
+        /// 默认包设置为它后，不带包名的加载接口都会优先走这里。
+        /// </summary>
+        private ResourcePackage _assetPackage;
 
-        private const string AssetPackageName = "DefaultPackage"; // 核心资源包名称
-        private const string ConfigPackageName = "ConfigPackage"; // 配置文件包名称
+        /// <summary>
+        /// 主资源包名称，存放场景、Prefab、贴图、音频等核心业务资源。
+        /// </summary>
+        private const string AssetPackageName = "DefaultPackage";
+
+        /// <summary>
+        /// 配置包名称，存放配表、配置文件等轻量但高频迭代内容。
+        /// </summary>
+        private const string ConfigPackageName = "ConfigPackage";
 
         private void Start()
         {
+            // 组件挂上后，正式开始热更层自己的资源初始化流程。
             InitYooAssets();
         }
 
         /// <summary>
-        /// AOT 层反射调用的唯一入口点
-        /// 接收 AOT 层传来的运行模式，挂载自身以触发生命周期
+        /// AOT 层通过反射调用的唯一入口。
+        /// 这里只做两件事：
+        /// 1. 接收并缓存运行模式。
+        /// 2. 把 HotUpdateAsset 挂到常驻启动节点上，触发 MonoBehaviour 生命周期。
         /// </summary>
         public static void StartLoadAssets(EPlayMode mode)
         {
             Debug.Log($"热更层接收到了当前运行模式: {mode}");
-            GameConst.PlayMode = mode; // 缓存运行模式供后续资源初始化使用
+            GameConst.PlayMode = mode;
             
-            // 挂载到常驻节点上，触发 Start() 开始资源包热更流程
+            // 复用 AOT 层的启动节点，避免重复创建启动器对象。
             GameObject.Find("LoadDll").AddComponent<HotUpdateAsset>();
         }
 
-        #region YooAsset初始化及资源热更流程
+        #region 资源与配置包启动流程
 
+        /// <summary>
+        /// 热更层总启动流程。
+        /// 顺序为：
+        /// 1. 初始化并更新主资源包。
+        /// 2. 初始化并更新配置包。
+        /// 3. 挂载资源管理器。
+        /// 4. 切换到主场景。
+        /// </summary>
         private async UniTask InitYooAssets()
         {
-            // 1. 初始化核心资源包 (AssetPackage)
+            // 资源包通常体积最大，且场景加载直接依赖它，所以优先初始化。
             var (assetPackage, defaultSucceed) = await InitPackageSingle(AssetPackageName, PackageType.Asset, VersionType.AssetVersion);
             if (!defaultSucceed)
             {
@@ -47,11 +73,11 @@ namespace XN
                 return;
             }
 
-            // 将核心资源包设为默认包，后续不带包名的 YooAssets 加载 API 都会默认走这里
+            // 默认包设置完成后，YooAssets.LoadAssetAsync 这类接口可以省略包名。
             YooAssets.SetDefaultPackage(assetPackage);
             _assetPackage = assetPackage;
 
-            // 2. 初始化配置包 (ConfigPackage)
+            // 配置包与资源包拆开，方便小包高频热更。
             var (confPackage, confSucceed) = await InitPackageSingle(ConfigPackageName, PackageType.Config, VersionType.ConfigVersion);
             if (!confSucceed)
             {
@@ -59,21 +85,24 @@ namespace XN
                 return;
             }
 
+            // 资源管理器建立在热更层，后续业务统一走这一套加载入口。
             gameObject.AddComponent<YooAssetManager>();
             
-            // 3. 所有资源和配置更新完毕，进入游戏主场景
+            // 至此主资源和配置都已经可用，可以安全进入主场景。
             LoadScene();
         }
 
         /// <summary>
-        /// 单个 YooAsset 包的标准化初始化与更新流程
+        /// 单个包的标准初始化流程。
+        /// 该方法把“按模式初始化 + 激活 Manifest + 联机下载”三件事封装成统一模板，
+        /// 避免 Asset 包和 Config 包重复写两套近似逻辑。
         /// </summary>
         private async UniTask<(ResourcePackage, bool)> InitPackageSingle(string packageName, PackageType packageType, VersionType versionType)
         {
             var package = YooAssets.CreatePackage(packageName);
             InitializationOperation initializationOperation = null;
 
-            // 1. 根据模式进行本地配置初始化
+            // 第一步：根据运行模式初始化文件系统。
             switch (GameConst.PlayMode)
             {
                 case EPlayMode.EditorSimulateMode:
@@ -87,7 +116,7 @@ namespace XN
                     break;
             }
 
-            // 校验初始化结果
+            // 如果初始化失败，后续版本查询和资源访问都无法继续。
             if (initializationOperation?.Status == EOperationStatus.Succeed)
             {
                 Debug.Log($"{packageType} 包初始化成功！");
@@ -98,15 +127,17 @@ namespace XN
                 return (package, false); // 失败阻断
             }
 
-            // 2. 获取版本并激活清单 (所有模式都需要)
+            // 第二步：所有模式都必须激活 Manifest。
+            // 只有联机模式才需要访问远端版本与下载差异包。
             if (GameConst.PlayMode == EPlayMode.HostPlayMode)
             {
-                // 联机模式专属：执行网络热更下载
+                // 联机模式走完整热更状态机。
                 await UpdatePackageHostPlayMode(package);
             }
             else
             {
-                // 单机模式/编辑器模拟模式：也必须激活清单
+                // 编辑器模拟 / 离线模式虽然不联网，
+                // 但依然需要激活本地版本的 Manifest 才能正常加载资源。
                 var versionOp = package.RequestPackageVersionAsync();
                 await versionOp;
                 if (versionOp.Status == EOperationStatus.Succeed)
@@ -130,17 +161,23 @@ namespace XN
         }
 
         /// <summary>
-        /// 联机模式网络热更状态机：获取版本 -> 更新清单 -> 下载包 -> 清理缓存
+        /// 联机模式下的标准热更状态机。
+        /// 对 Asset 包和 Config 包都通用：
+        /// 1. 拉远端版本号。
+        /// 2. 更新 Manifest。
+        /// 3. 下载差异资源。
+        /// 4. 清理旧缓存。
         /// </summary>
         private async UniTask UpdatePackageHostPlayMode(ResourcePackage package)
         {
             string packageVersion = string.Empty;
 
-            // [状态1] 获取资源版本号
+            // 状态 1：请求远端版本号。
             bool requestVersionSuccess = false;
             while (!requestVersionSuccess)
             {
-                var operation = package.RequestPackageVersionAsync(false); // false：禁止追加时间戳破坏OSS签名
+                // false：禁止追加时间戳，避免某些 OSS/CDN 的签名 URL 被破坏。
+                var operation = package.RequestPackageVersionAsync(false);
                 await operation;
 
                 if (operation.Status != EOperationStatus.Succeed)
@@ -156,7 +193,7 @@ namespace XN
                 }
             }
 
-            // [状态2] 更新补丁清单
+            // 状态 2：下载并激活该版本对应的 Manifest。
             bool updateManifestSuccess = false;
             while (!updateManifestSuccess)
             {
@@ -174,7 +211,7 @@ namespace XN
                 }
             }
 
-            // [状态3] 下载热更资源包
+            // 状态 3：按差异列表下载缺失资源。
             bool downloadSuccess = false;
             while (!downloadSuccess)
             {
@@ -186,11 +223,14 @@ namespace XN
                 }
             }
 
-            // [状态4] 清理旧版无用缓存（释放磁盘空间）
+            // 状态 4：清理历史无用缓存，避免持久化目录无限增长。
             await ClearPackageUnusedCacheBundleFiles(package);
         }
 
-        // 模拟重试UI弹窗 (TODO: 需绑定真实UGUI界面与按钮)
+        /// <summary>
+        /// 热更层的重试弹窗占位实现。
+        /// 当前仅用于模拟真实 UI 阻塞等待流程。
+        /// </summary>
         private async UniTask ShowRetryUIDialogAsync(string message)
         {
             Debug.LogWarning($"[UI Mock] 弹出错误提示面板: {message}");
@@ -198,9 +238,13 @@ namespace XN
             await UniTask.Delay(TimeSpan.FromSeconds(2f));
         }
 
+        /// <summary>
+        /// 编辑器模拟模式初始化。
+        /// 直接读取项目资源数据库，不依赖真实 AB 文件。
+        /// </summary>
         private async UniTask<InitializationOperation> InitPackageEditorSimulateMode(ResourcePackage package, string packageName)
         {
-            // 编辑器模拟：直接使用项目绝对路径读取Asset，无需打AB包
+            // 适合本地开发期高频验证，免去打包等待时间。
             var buildResult = EditorSimulateModeHelper.SimulateBuild(packageName);
             var fileSystemParams = FileSystemParameters.CreateDefaultEditorFileSystemParameters(buildResult.PackageRootDirectory);
             var createParameters = new EditorSimulateModeParameters { EditorFileSystemParameters = fileSystemParams };
@@ -210,9 +254,13 @@ namespace XN
             return initOperation;
         }
 
+        /// <summary>
+        /// 联机模式初始化。
+        /// 远端版本、包类型与本地缓存目录共同决定运行时读到的最终资源内容。
+        /// </summary>
         private async UniTask<InitializationOperation> InitPackageHostPlayMode(ResourcePackage package, PackageType packageType, VersionType versionType)
         {
-            // 联机模式：内置目录兜底 + 沙盒缓存读写
+            // 内置目录负责首包可用，缓存目录负责接收热更后的最新资源。
             var packVersion = OnlineConfig.Data[versionType.ToString()].ToString();
             Debug.Log($"Init HostPlayMode: {versionType} = {packVersion}");
             
@@ -229,9 +277,13 @@ namespace XN
             return initOperation;
         }
 
+        /// <summary>
+        /// 离线模式初始化。
+        /// 只读取包体内置资源，不与远端交互。
+        /// </summary>
         private async UniTask<InitializationOperation> InitPackageOfflinePlayMode(ResourcePackage package)
         {
-            // 单机模式：只读取内置首包目录(StreamingAssets)，无网络请求
+            // 常用于无网络环境或首包流程验证。
             var fileSystemParams = FileSystemParameters.CreateDefaultBuildinFileSystemParameters();
             var createParameters = new OfflinePlayModeParameters { BuildinFileSystemParameters = fileSystemParams };
 
@@ -240,6 +292,10 @@ namespace XN
             return initOperation;
         }
 
+        /// <summary>
+        /// 清理指定包的旧缓存。
+        /// 只移除当前版本不再需要的 Bundle 文件。
+        /// </summary>
         private async UniTask ClearPackageUnusedCacheBundleFiles(ResourcePackage package)
         {
             var operation = package.ClearCacheFilesAsync(EFileClearMode.ClearUnusedBundleFiles);
@@ -253,10 +309,11 @@ namespace XN
 
         #endregion
 
-        #region 下载热更资源
+        #region 下载资源包内容
 
         /// <summary>
-        /// 封装YooAsset的下载器逻辑
+        /// 执行单个包的差异资源下载。
+        /// 返回值表示这一轮下载是否完成成功，失败时由上层决定是否弹窗重试。
         /// </summary>
         async UniTask<bool> Download(ResourcePackage package)
         {
@@ -275,7 +332,7 @@ namespace XN
             float totalDownloadMb = downloader.TotalDownloadBytes * 1.0f / (1024 * 1024);
             Debug.Log($"{package.PackageName} 需下载文件数: {downloader.TotalDownloadCount}\n 总大小: {totalDownloadMb:F2} MB");
 
-            // 绑定回调委托
+            // 挂上下载生命周期回调，方便后续接 UI 进度条或日志系统。
             downloader.DownloadErrorCallback = OnDownloadErrorFunction;
             downloader.DownloadUpdateCallback = OnDownloadProgressUpdateFunction;
             downloader.DownloadFinishCallback = OnDownloadOverFunction;
@@ -309,19 +366,20 @@ namespace XN
 
         #endregion
 
-        #region 启动游戏
+        #region 进入游戏
 
         /// <summary>
-        /// 资源全部就绪，切换到游戏主场景
+        /// 当资源包和配置包都准备完成后，异步切换到游戏主场景。
+        /// 这里依赖 DefaultPackage 已经被设置为默认包。
         /// </summary>
         private async UniTask LoadScene()
         {
             string location = "Game";
             var sceneMode = LoadSceneMode.Single;
             var physicsMode = LocalPhysicsMode.None;
-            bool suspendLoad = false; // 是否在加载到 90% 时挂起，这里选择直接加载完切场景
+            bool suspendLoad = false; // 不做 90% 挂起，资源就绪后直接切场景。
             
-            // 使用 YooAsset 提供的场景异步加载接口
+            // 通过 YooAsset 场景接口加载，确保场景依赖资源也走统一资源体系。
             SceneHandle handle = _assetPackage.LoadSceneAsync(location, sceneMode, physicsMode, suspendLoad);
             await handle;
             
